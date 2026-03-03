@@ -167,7 +167,7 @@ class LoginForm {
         document.querySelector('.login-card').appendChild(overlay);
         
         setTimeout(() => {
-            alert('Welcome to the Student Portal!');
+            alert('Welcome to the Faculty Portal!');
             overlay.remove();
         }, 1000);
     }
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
-    console.log('✨ Student Login initialized');
+    console.log('✨ Faculty Login initialized');
 });
 
 const style = document.createElement('style');
