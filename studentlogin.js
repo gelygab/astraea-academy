@@ -173,6 +173,22 @@ class LoginForm {
     }
 }
 
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevents the default form submission
+    
+    // Optional: Add validation logic here
+    const uid = document.getElementById('uid').value;
+    const password = document.getElementById('password').value;
+    
+    // Optional: Check if fields are filled
+    if (uid && password) {
+        // Redirect to the dashboard
+        window.location.href = 'studentdashboardHOME.html';
+    } else {
+        alert('Please fill in all fields');
+    }
+});
+
 // ==========================================
 // NAVIGATION
 // ==========================================
