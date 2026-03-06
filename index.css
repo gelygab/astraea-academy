@@ -166,6 +166,8 @@ body {
 
 @keyframes badgeDrop {
     0% {
+
+        
         top: -300px;
         transform: rotate(-8deg);
         opacity: 0;
