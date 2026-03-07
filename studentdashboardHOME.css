@@ -165,9 +165,36 @@ aside .below {
 .card {
     background: #f57190; 
     border-radius: 1.6rem;
-    padding: 2rem; color: white; flex: 1;
+    padding: 2rem; 
+    color: white; 
+    flex: 1;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    position: relative; /* REQUIRED to anchor the side content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 140px;
+}
+
+/* CONTAINER FOR DATA ON THE RIGHT SIDE */
+.card-value-side {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%); /* Centers vertically on the right */
+    text-align: right;
+}
+
+.card-value-side h2 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.card-value-side p {
+    font-size: 1.1rem;
+    margin-top: 2px;
 }
 
 .card h3 {
@@ -252,6 +279,15 @@ aside .below {
     background: #ffe4e1;
 }
 
+
+.dropdown-menu {
+    display: none; /* Hidden by default */
+}
+
+.dropdown-menu.show {
+    display: block; /* Visible when clicked */
+}
+
 /* DOWNLOAD BUTTON */
 .download-btn{
     background:#c74b67;
@@ -305,20 +341,23 @@ aside .below {
 }
 
 /* ATTENDANCE BOXES */
-.attendance-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:1rem;
+.attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem; 
+    width: 100%;
 }
 
-.peach-box{
-    background:#ffd4c4;
-    color:#444;
-    padding:1rem;
-    border-radius:13.33px;
-    display:flex;
-    align-items:center;
-    gap:10px;
+.peach-box {
+    background: #ffd4c4; 
+    color: #444;
+    padding: 1.2rem;
+    border-radius: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0; 
 }
 
 .peach-box .box-content strong{
@@ -334,39 +373,53 @@ aside .below {
 }
 
 /* BAR CHART */
-.bar-chart{
-    display:flex;
-    justify-content:space-around;
-    align-items:flex-end;
-    height:150px;
-    gap:1rem;
-    width:100%;
+.bar-chart {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 150px; 
+    gap: 0.8rem;
+    width: 100%;
 }
 
-.bar-bg{
-    flex:1;
-    height:100%;
-    background:rgba(255,248,228,0.932);
-    border-radius:8px;
-    position:relative;
-    overflow:hidden;
+.bar-bg {
+    flex: 1;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05); 
+    border-radius: 8px;
+    position: relative;
+    max-width: 70px; 
+    min-width: 50px;
 }
 
-.bar-fill{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    transition:height 1s cubic-bezier(0.175,0.885,0.32,1.275);
+.bar-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: end;
+    padding-top: 12px;
+    transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden; 
 }
 
-.bar-label{
-    font-size:0.7rem;
-    color:white;
-    padding-bottom:8px;
-    font-weight:600;
+
+.bar-number-inside {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+}
+
+.bar-label-inside {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: none;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
 }
 
 /* LOWER GRID */
@@ -391,6 +444,94 @@ aside .below {
     z-index: 10;
 }
 
+/* --- INTERNAL CARD LAYOUT --- */
+
+/* This targets the wrapper inside your left-column divs */
+.left-column-1, .left-column-2, .left-column-3 {
+    background: #f57190; 
+    border-radius: 1.6rem;
+    padding: 1.5rem 2rem;
+    display: flex;             /* Makes children side-by-side */
+    justify-content: space-between; /* Pushes text left, data right */
+    align-items: center;       /* Vertically centers them */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    color: white;
+    min-height: 120px;
+}
+
+/* Ensure the sections inside don't take up full width */
+.left-column-1 section, 
+.left-column-2 section, 
+.left-column-3 section {
+    background: transparent;
+    padding: 0;
+}
+
+/* Right-side data text styling */
+.right-column-data {
+    text-align: right;
+}
+
+.right-column-data h2 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.right-column-data p {
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+
+/* PIE CHART SIDE FIT */
+.pie-chart {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid #f57190; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --explode: 5px; 
+}
+
+.pie-chart-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pie-wedge {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
+}
+
+/* The Pop-Out Effect */
+.pie-wedge:hover {
+    transform: scale(1.1); /* Scales out from the center (0,0) */
+    filter: brightness(1.1);
+    outline: none;
+}
+
+.pie-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    pointer-events: none;
+    opacity: 0;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+
 /* TAG */
 .tag{
     background:#f4b6c2;
@@ -402,3 +543,70 @@ aside .below {
     font-size:0.75rem;
 }
 
+.card {
+    background: #f57190; border-radius: 1.6rem;
+    padding: 2rem; color: white; flex: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative; /* Added to allow absolute positioning of values */
+}
+
+/* DYNAMIC POSITIONING (Top-Right like image) */
+.card-value-pos {
+    position: absolute;
+    top: 1.5rem;
+    right: 2.5rem;
+    text-align: right;
+}
+
+.card-value-pos h2 {
+    font-size: 2.4rem;
+    font-weight: 600;
+}
+
+.card-value-pos p {
+    font-size: 1.1rem;
+    margin-top: -5px;
+}
+
+/* PIE CHART (Exploded logic integrated) */
+/* PIE CHART SIDE POSITIONING */
+.pie-chart-side {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.pie-chart {
+    width: 100px; /* Sized for the side of the card */
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 3px solid #f57190;
+    --explode: 5px; 
+}
+
+.pie-chart::before {
+    content: ''; position: absolute; inset: -5px; border-radius: 50%;
+    background: inherit; z-index: -1;
+    transform: translate(var(--explode), calc(-1 * var(--explode)));
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+
+/* BAR CHART GLASS EFFECT */
+.bar-bg {
+    flex: 1; height: 100%;
+    background: rgba(255, 255, 255, 0.15); /* Glassy background */
+    border-radius: 8px; position: relative; overflow: hidden;
+}
+
+.bar-fill {
+    position: absolute; bottom: 0; width: 100%;
+    transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
