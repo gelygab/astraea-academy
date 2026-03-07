@@ -170,7 +170,7 @@ aside .below {
     flex: 1;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
-    position: relative; /* REQUIRED to anchor the side content */
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -182,7 +182,7 @@ aside .below {
     position: absolute;
     right: 2rem;
     top: 50%;
-    transform: translateY(-50%); /* Centers vertically on the right */
+    transform: translateY(-50%); 
     text-align: right;
 }
 
@@ -281,11 +281,11 @@ aside .below {
 
 
 .dropdown-menu {
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .dropdown-menu.show {
-    display: block; /* Visible when clicked */
+    display: block; 
 }
 
 /* DOWNLOAD BUTTON */
@@ -446,21 +446,19 @@ aside .below {
 
 /* --- INTERNAL CARD LAYOUT --- */
 
-/* This targets the wrapper inside your left-column divs */
 .left-column-1, .left-column-2, .left-column-3 {
     background: #f57190; 
     border-radius: 1.6rem;
     padding: 1.5rem 2rem;
-    display: flex;             /* Makes children side-by-side */
-    justify-content: space-between; /* Pushes text left, data right */
-    align-items: center;       /* Vertically centers them */
+    display: flex;            
+    justify-content: space-between; 
+    align-items: center;      
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     color: white;
     min-height: 120px;
 }
 
-/* Ensure the sections inside don't take up full width */
 .left-column-1 section, 
 .left-column-2 section, 
 .left-column-3 section {
@@ -468,7 +466,6 @@ aside .below {
     padding: 0;
 }
 
-/* Right-side data text styling */
 .right-column-data {
     text-align: right;
 }
@@ -484,7 +481,7 @@ aside .below {
     margin-top: 2px;
 }
 
-/* PIE CHART SIDE FIT */
+
 .pie-chart {
     width: 90px;
     height: 90px;
@@ -513,7 +510,7 @@ aside .below {
 
 /* The Pop-Out Effect */
 .pie-wedge:hover {
-    transform: scale(1.1); /* Scales out from the center (0,0) */
+    transform: scale(1.1); 
     filter: brightness(1.1);
     outline: none;
 }
@@ -548,10 +545,9 @@ aside .below {
     padding: 2rem; color: white; flex: 1;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
-    position: relative; /* Added to allow absolute positioning of values */
+    position: relative; 
 }
 
-/* DYNAMIC POSITIONING (Top-Right like image) */
 .card-value-pos {
     position: absolute;
     top: 1.5rem;
@@ -569,7 +565,6 @@ aside .below {
     margin-top: -5px;
 }
 
-/* PIE CHART (Exploded logic integrated) */
 /* PIE CHART SIDE POSITIONING */
 .pie-chart-side {
     position: absolute;
@@ -579,7 +574,7 @@ aside .below {
 }
 
 .pie-chart {
-    width: 100px; /* Sized for the side of the card */
+    width: 100px; 
     height: 100px;
     border-radius: 50%;
     display: flex;
@@ -601,8 +596,8 @@ aside .below {
 
 /* BAR CHART GLASS EFFECT */
 .bar-bg {
-    flex: 1; height: 100%;
-    background: rgba(255, 255, 255, 0.15); /* Glassy background */
+    flex: 1; height: 110%;
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 8px; position: relative; overflow: hidden;
 }
 
