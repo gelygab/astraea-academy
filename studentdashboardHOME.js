@@ -14,7 +14,6 @@ async function loadDashboard() {
             return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
         });
 
-        // 1. Initial Load
         updateProfile(student);
         updateClassDays(monthlyLogs, now);
         updateBarChart(monthlyLogs);
@@ -22,7 +21,6 @@ async function loadDashboard() {
         updateSixMonthPie(student, now);
         updatePeachBoxes(student.attendanceLogs, 'monthly', now); // Initial Load
 
-        // 2. Dropdown Logic Fixed
         const dropdown = document.getElementById('customDropdown');
         const menu = document.getElementById('dropdownMenu');
         const displayValue = document.getElementById('displayValue');
@@ -75,7 +73,7 @@ function updatePeachBoxes(logs, type, now) {
                 <div class="peach-box">
                     <span class="material-symbols-outlined">star</span>
                     <div class="box-content">
-                        <strong>${count} Days</strong>
+                        <strong>${count} Day</strong>
                         <p>${s.label}</p>
                     </div>
                 </div>`;
@@ -121,7 +119,7 @@ function updateSixMonthPie(student, now) {
     }
 
     svg.innerHTML = data.map(item => {
-        if (item.value === 0 && data.length > 1) return ''; // Skip empty months
+        if (item.value === 0 && data.length > 1) return ''; 
 
         const percent = item.value / (totalPresent || 1);
         const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
@@ -130,7 +128,6 @@ function updateSixMonthPie(student, now) {
 
         const largeArcFlag = percent > 0.5 ? 1 : 0;
 
-        // Create a path that goes: Center -> Start Point -> Arc -> End Point -> Close
         const pathData = [
             `M 0 0`,
             `L ${startX} ${startY}`,
@@ -150,7 +147,6 @@ function updateSixMonthPie(student, now) {
     }).join('');
 };
 
-// Global Tooltip Handlers
 window.showTooltip = (e, text) => {
     const tooltip = document.getElementById('pieTooltip');
     tooltip.innerText = text;
@@ -159,7 +155,6 @@ window.showTooltip = (e, text) => {
 
 window.moveTooltip = (e) => {
     const tooltip = document.getElementById('pieTooltip');
-    // Position tooltip near the mouse inside the container
     tooltip.style.left = `${e.offsetX + 15}px`;
     tooltip.style.top = `${e.offsetY - 25}px`;
 };
@@ -168,7 +163,6 @@ window.hideTooltip = () => {
     document.getElementById('pieTooltip').style.opacity = '0';
 };
 
-// Tooltip Helpers
 window.showTooltip = (e, text) => {
     const tooltip = document.getElementById('pieTooltip');
     tooltip.innerText = text;
@@ -188,7 +182,6 @@ function updateBarChart(logs) {
     });
 
     const max = Math.max(...Object.values(stats), 1);
-    // Matching your theme colors
     const colors = ['#3498db', '#82cc00', '#f39c12', '#e74c3c'];
 
     const container = document.getElementById('barChartContainer');

@@ -596,7 +596,7 @@ aside .below {
 
 /* BAR CHART GLASS EFFECT */
 .bar-bg {
-    flex: 1; height: 110%;
+    flex: 1; height: 95%;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 8px; position: relative; overflow: hidden;
 }
