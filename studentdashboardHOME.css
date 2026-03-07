@@ -191,76 +191,185 @@ aside .below {
     align-items: center;
 }
 
-/* DROPDOWN PILL - Fixed to match Figma */
+/* PILL WRAPPER */
 .dropdown-pill {
-    background: #ffe4e1; 
-    padding: 8px 16px;
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #333;
-    cursor: pointer;
-    position: relative;
-    min-width: 100px;
-    justify-content: space-between;
-}
-
-.dropdown-pill select {
-    background: transparent;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border: none;
-    color: #333;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    padding-right: 20px;
-}
-
-.dropdown-pill .dropdown-arrow {
-    font-size: 1.2rem;
-    color: #666;
-    pointer-events: none;
-}
-
-/* Custom dropdown styling */
-.dropdown-pill select:focus {
-    outline: none;
-}
-
-.dropdown-pill select option {
     background: #ffe4e1;
-    color: #333;
-    font-weight: 500;
-    padding: 8px;
+    border-radius: 25px;
+    padding: 6px 15px;
+    position: relative;
+    min-width: 130px;
+    cursor: pointer;
+    z-index: 100;
 }
 
-.download-btn {
-    background: #c74b67; 
-    color: white;
-    padding: 8px 20px;
-    border-radius: 18px;
+.selected-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    width: 100%;
+    color: #333;
+}
+
+/* DROP DOWN */
+.dropdown-menu {
+    position: absolute;
+    color: #333;
+    top: 110%; 
+    left: 0;
+    width: 100%;
+    background: #ffe4e1; 
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: #333;
+    border-radius: 15px;
+    border: 1.5px solid #333;
+}
+
+.dropdown-pill.active .dropdown-menu {
+    display: flex;
+    color:#333;
+}
+
+.dropdown-menu li {
+    padding: 12px;
+    text-align: center;
+    color: #333;
     font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s;
-    border: none;
-    font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    text-transform: none;
+    transition: background 0.2s;
 }
 
-.download-btn:hover {
-    transform: scale(1.05);
-    background: #b03e58;
+.dropdown-menu li.active-item {
+    background: #ffd4c4; 
+    color: #333;
+    border-radius: 50px;
 }
 
-.download-btn span { font-size: 1.2rem; }
+.dropdown-menu li:hover:not(.active-item) {
+    background: #ffe4e1;
+}
 
+/* DOWNLOAD BUTTON */
+.download-btn{
+    background:#c74b67;
+    color:white;
+    padding:8px 20px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 0.2s, background 0.2s;
+    font-size:0.9rem;
+}
+
+.download-btn:hover{
+    transform:scale(1.05);
+    background:#b03e58;
+}
+
+/* STUDENT INFO */
+.student-info-flex{
+    display:flex;
+    gap:2rem;
+    align-items:center;
+    margin-bottom:2rem;
+}
+
+.pfp-circle{
+    width:80px;
+    height:80px;
+    border:2px solid white;
+    border-radius:50%;
+    background:rgba(255,255,255,0.2);
+}
+
+.details-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1.5rem;
+    font-size:0.8rem;
+}
+
+.details-grid p{
+    color:rgba(255,255,255,0.9);
+}
+
+.details-grid strong{
+    color:white;
+    font-weight:600;
+}
+
+/* ATTENDANCE BOXES */
+.attendance-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1rem;
+}
+
+.peach-box{
+    background:#ffd4c4;
+    color:#444;
+    padding:1rem;
+    border-radius:13.33px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.peach-box .box-content strong{
+    display:block;
+    font-size:1rem;
+    color:#333;
+}
+
+.peach-box .box-content p{
+    font-size:0.75rem;
+    color:#666;
+    margin-top:2px;
+}
+
+/* BAR CHART */
+.bar-chart{
+    display:flex;
+    justify-content:space-around;
+    align-items:flex-end;
+    height:150px;
+    gap:1rem;
+    width:100%;
+}
+
+.bar-bg{
+    flex:1;
+    height:100%;
+    background:rgba(255,248,228,0.932);
+    border-radius:8px;
+    position:relative;
+    overflow:hidden;
+}
+
+.bar-fill{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    transition:height 1s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+
+.bar-label{
+    font-size:0.7rem;
+    color:white;
+    padding-bottom:8px;
+    font-weight:600;
+}
+
+/* LOWER GRID */
 .main-grid-layout {
     display: grid; 
     grid-template-columns: 1fr 1.2fr; 
@@ -273,7 +382,7 @@ aside .below {
     gap: 1.8rem
 }
 
-.left-column-1:hover, .left-column-2:hover, .right-column-1:hover, .right-column-2:hover {
+.left-column-1:hover, .left-column-2:hover, .left-column-3:hover, .right-column-1:hover, .right-column-2:hover {
     transition: transform 0.3s ease; 
     transform: scale(1.3); 
     cursor: pointer;
@@ -282,120 +391,14 @@ aside .below {
     z-index: 10;
 }
 
-/* DYNAMIC CONTENT STYLES */
-.student-info-flex { 
-    display: flex; gap: 2rem; 
-    align-items: center; 
-    margin-bottom: 2rem; 
+/* TAG */
+.tag{
+    background:#f4b6c2;
+    color:#d8657b;
+    padding:4px 12px;
+    border-radius:20px;
+    display:inline-block;
+    font-weight:bold;
+    font-size:0.75rem;
 }
 
-.pfp-circle { 
-    width: 80px; height: 80px; 
-    border: 2px solid white; 
-    border-radius: 50%; 
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.details-grid {
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 1.5rem; font-size: 0.8rem; 
-}
-
-.details-grid p {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.details-grid strong {
-    color: white;
-    font-weight: 600;
-}
-
-.attendance-grid { 
-    display: grid; 
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 1rem; 
-}
-
-.peach-box {
-    background: #ffd4c4; 
-    color: #444; 
-    padding: 1rem;
-    border-radius: 13.33px;
-    display: flex; 
-    align-items: center; 
-    gap: 10px;
-}
-
-.peach-box .material-symbols-outlined {
-    color: #666;
-    font-size: 1.5rem;
-}
-
-.peach-box .box-content strong {
-    display: block;
-    font-size: 1rem;
-    color: #333;
-}
-
-.peach-box .box-content p {
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 2px;
-}
-
-.bar-chart { 
-    display: flex; 
-    justify-content: space-around; 
-    align-items: flex-end; 
-    height: 150px; 
-    gap: 1rem;
-}
-
-.bar-bg { 
-    flex: 1;
-    height: 100%; 
-    background: rgba(255, 248, 228, 0.932); 
-    border-radius: 8px; 
-    position: relative; overflow: hidden; 
-}
-
-.bar-fill { 
-    position: absolute; bottom: 0; 
-    width: 100%; display: flex; 
-    align-items: flex-end; 
-    justify-content: center; 
-    transition: height 1s; 
-    border-radius: 0 0 8px 8px;
-}
-
-.bar-label { 
-    font-size: 0.7rem; 
-    color: white; 
-    padding-bottom: 8px; 
-    font-weight: 600;
-}
-
-/* TAGS & HR */
-.tag { 
-    background: #f4b6c2; color: #d8657b; 
-    padding: 4px 12px; border-radius: 20px; 
-    display: inline-block; font-weight: bold; 
-    font-size: 0.75rem;
-}
-
-hr { 
-    border-top: 1px solid rgba(255, 255, 255, 0.3); 
-    margin: 1.5rem 0; 
-}
-
-/* Class Days and Attendance Rate cards */
-.class-days p, .attendance-rate-card h3:last-child {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
-}
-
-/* Extra card */
-.extra-card h3 {
-    color: rgba(255, 255, 255, 0.9);
-}

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="studentdashboardHOME.css">
 </head>
 <body>
-     <div class="background-container">
+    <div class="background-container">
         <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
     </div>
 
@@ -23,17 +23,17 @@
 
             <div class="sidebar">
                 <h3>MAIN MENU</h3>
-               <a href="studentdashboardHOME.html"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
+                <a href="studentdashboardHOME.html" class="active"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
                 <a href="studentdashboardSCHED.html"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
                 <a href="studentdashboardLEAVE.html"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
-                <a href="studentdashboardEXCUSE.html" class="active"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
+                <a href="studentdashboardEXCUSE.html"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
                 <a href="studentdashboardAPPEALS.html"><span class="material-symbols-outlined">star</span><h2>View Pending Appeals</h2></a>
 
-            <div class="below">
-                <h3>SETTINGS</h3>
-                <a href="studentlogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                <div class="below">
+                    <h3>SETTINGS</h3>
+                    <a href="studentlogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                </div>
             </div>
-        </div>
         </aside>
 
         <main class="student-dashboard">
@@ -41,25 +41,34 @@
                 <div class="card-header">
                     <h3>Student Details</h3>
                     <div class="header-controls">
-                    <div class="dropdown-pill">
-                       <select id="periodSelect">
-                         <option value="daily">Daily</option>
-                         <option value="weekly">Weekly</option>
-                         <option value="monthly" selected>Monthly</option>
-                       </select>
-                       <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
+                        <div class="dropdown-pill" id="customDropdown">
+                            <div class="selected-wrapper">
+                                 <span class="selected-value" id="displayValue">Monthly</span>
+                                 <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
+                            </div>
+
+                             <ul class="dropdown-menu" id="dropdownMenu">
+                                 <li data-value="daily">Daily</li>
+                                 <li data-value="weekly">Weekly</li>
+                                  <li data-value="monthly" class="active-item">Monthly</li>
+                                 </ul>
+                        </div>
+                        <button class="download-btn" onclick="downloadData()">
+                            <span class="material-symbols-outlined">download</span> Download
+                        </button>
                     </div>
-                    <button class="download-btn" onclick="downloadData()">
-                       <span class="material-symbols-outlined">download</span>
-                       Download
-                    </button>
                 </div>
-            </div>
+
                 <div class="student-info-flex">
                     <div class="pfp-circle"></div>
                     <div class="info-details">
                         <h2 id="studentName">Loading...</h2>
-                        <div id="studentDetailsGrid" class="details-grid"></div>
+                        <div id="studentDetailsGrid" class="details-grid">
+                            <p><strong>UID:</strong><br><span id="uid-val">...</span></p>
+                            <p><strong>Contact:</strong><br><span id="contact-val">...</span></p>
+                            <p><strong>Email:</strong><br><span id="email-val">...</span></p>
+                            <p><strong>Address:</strong><br><span id="address-val">...</span></p>
+                        </div>
                     </div>
                 </div>
                 <div id="attendanceGrid" class="attendance-grid"></div>
@@ -68,32 +77,39 @@
             <div class="main-grid-layout">
                 <div class="left-column">
                     <div class="left-column-1">
-                    <section class="card small-card class-days">
-                        <h3>Class Days</h3>
-                        <p>Class days for Monthly</p>
-                    </section>
+                        <section class="card small-card class-days">
+                            <h3>Class Days</h3>
+                            <div id="classDaysText">
+                                <h2 style="color: #e2e2e2;">Class days for Monthly</h2>
+                            </div>
+                        </section>
                     </div>
                     <div class="left-column-2">
-                    <section class="card attendance-rate-card">
-                        <h3>Attendance Rate</h3>
-                        <div class="tag">This Year</div>
-                        <hr>
-                        <h3>Monthly Rate</h3>
-                    </section>
+                        <section class="card attendance-rate-card">
+                            <h3>Attendance Rate</h3>
+                            <div class="tag">This Month</div>
+                        </section>
+                    </div>
+                    <div class="left-column-3">
+                        <section class="card attendance-monthly-rate">
+                            <h3>Monthly Rate</h3>
+                            <div class="tag">Last 6 months</div>
+                            <div class="pie-chart" id="pieChartContainer"></div>
+                       </section>
                     </div>
                 </div>
 
                 <div class="right-column">
                     <div class="right-column-1">
-                    <section class="card summary-card">
-                        <h3 id="summaryTitle">Summary</h3>
-                        <div class="bar-chart" id="barChartContainer"></div>
-                    </section>
+                        <section class="card summary-card">
+                            <h3 id="summaryTitle">Summary</h3>
+                            <div class="bar-chart" id="barChartContainer"></div>
+                        </section>
                     </div>
                     <div class="right-column-2">
-                    <section class="card extra-card">
-                        <h3>Ewan ko pa</h3>
-                    </section>
+                        <section class="card extra-card">
+                            <h3>Ewan ko pa</h3>
+                        </section>
                     </div>
                 </div>
             </div>
