@@ -69,11 +69,13 @@ function updatePeachBoxes(logs, type, now) {
     if (grid) {
         grid.innerHTML = stats.map(s => {
             const count = filtered.filter(l => l.status === s.status).length;
+            const dayText = count === 1 ? 'Day' : 'Days';
+
             return `
                 <div class="peach-box">
                     <span class="material-symbols-outlined">star</span>
                     <div class="box-content">
-                        <strong>${count} Day</strong>
+                        <strong>${count} ${dayText}</strong>
                         <p>${s.label}</p>
                     </div>
                 </div>`;

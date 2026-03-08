@@ -444,8 +444,6 @@ aside .below {
     z-index: 10;
 }
 
-/* --- INTERNAL CARD LAYOUT --- */
-
 .left-column-1, .left-column-2, .left-column-3 {
     background: #f57190; 
     border-radius: 1.6rem;
@@ -565,7 +563,6 @@ aside .below {
     margin-top: -5px;
 }
 
-/* PIE CHART SIDE POSITIONING */
 .pie-chart-side {
     position: absolute;
     right: 1.5rem;
