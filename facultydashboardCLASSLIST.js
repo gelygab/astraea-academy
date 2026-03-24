@@ -1,47 +1,69 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- 1. LIVE SEARCH FILTERING (Class List Page) ---
+    // --- 1. TABLE-BASED LOGIC (Search & Sort) ---
     const searchInput = document.getElementById("searchInput");
-    const tableRows = document.querySelectorAll("#studentTable tbody tr");
+    const tableBody = document.querySelector("#studentTable tbody");
 
-    if (searchInput) {
-        searchInput.addEventListener("keyup", function() {
-            const filterValue = this.value.toLowerCase();
+    // ONLY run this if the table exists (Prevents script crash on other pages)
+    if (tableBody) {
+        let tableRows = Array.from(tableBody.querySelectorAll("tr"));
 
-            tableRows.forEach(row => {
-                // Target the 2nd column (index 1) which holds the Name
-                const nameCell = row.cells[1].textContent.toLowerCase();
-                
-                if (nameCell.includes(filterValue)) {
-                    row.style.display = ""; 
-                } else {
-                    row.style.display = "none"; 
-                }
+        // Search Logic
+        if (searchInput) {
+            searchInput.addEventListener("keyup", function() {
+                const filterValue = this.value.toLowerCase();
+                tableRows.forEach(row => {
+                    const nameCell = row.cells[1].textContent.toLowerCase();
+                    row.style.display = nameCell.includes(filterValue) ? "" : "none";
+                });
+            });
+        }
+
+        // Sorting Logic
+        const sortLinks = document.querySelectorAll(".sort-dropdown a");
+        sortLinks.forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                const criteria = link.textContent.trim();
+                let rowsToSort = Array.from(tableBody.querySelectorAll("tr"));
+
+                rowsToSort.sort((a, b) => {
+                    const valA = a.cells;
+                    const valB = b.cells;
+                    switch (criteria) {
+                        case "Student Name (A-Z)": return valA[1].textContent.localeCompare(valB[1].textContent);
+                        case "Student Name (Z-A)": return valB[1].textContent.localeCompare(valA[1].textContent);
+                        case "Attendance: Highest to Lowest": return parseInt(valB[2].textContent) - parseInt(valA[2].textContent);
+                        case "Attendance: Lowest to Highest": return parseInt(valA[2].textContent) - parseInt(valB[2].textContent);
+                        case "Student ID: Ascending": return valA[0].textContent.localeCompare(valB[0].textContent);
+                        case "Student ID: Descending": return valB[0].textContent.localeCompare(valA[0].textContent);
+                        default: return 0;
+                    }
+                });
+
+                tableBody.innerHTML = "";
+                rowsToSort.forEach(row => tableBody.appendChild(row));
+                tableRows = Array.from(tableBody.querySelectorAll("tr"));
             });
         });
     }
 
-    // --- 2. VIEW FULL RECORD NAVIGATION ---
+    // --- 2. NAVIGATION ---
     const viewButtons = document.querySelectorAll(".btn-view");
     viewButtons.forEach(button => {
         button.addEventListener("click", () => {
-            // Links to the new page we created
             window.location.href = 'facultydashboardVIEWRECORD.html';
         });
     });
 
-    // --- 3. PROFILE PICTURE UPLOAD (View Record Page) ---
+    // --- 3. PROFILE PICTURE UPLOAD ---
     const profileCircle = document.getElementById('profileCircle');
     const imageUpload = document.getElementById('imageUpload');
     const profileImg = document.getElementById('profileImg');
 
     if (profileCircle && imageUpload && profileImg) {
-        // Clicking the circle triggers the hidden file input
-        profileCircle.addEventListener('click', () => {
-            imageUpload.click();
-        });
+        profileCircle.addEventListener('click', () => imageUpload.click());
 
-        // Handle the file selection
         imageUpload.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -54,14 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 4. DOWNLOAD RECORD AS PDF (View Record Page) ---
+    // --- 4. DOWNLOAD RECORD AS PDF ---
     const downloadBtn = document.getElementById('downloadBtn');
-
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
-            // Opens the browser print dialog (Save as PDF)
             window.print();
         });
     }
-
 });
