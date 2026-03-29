@@ -129,19 +129,18 @@ class LoginForm {
             
             if (result === 'first_login' || result === 'dashboard') {
                 this.showSuccessMessage();
-
                 setTimeout(() => {
                     if (result === 'first_login') {
                         window.location.href = 'change_password.php';
-                    } else {
+                    } else if (result === 'dashboard') {
                         window.location.href = 'studentdashboardHOME.php';
                     }
                 }, 2000);
-            }else {
+            } else {
                 this.setLoading(false);
-                alert('Invalid UID or Password!');
+                alert('Login Failed: ' + result);
                 this.passwordInput.value = '';
-            } 
+            }
         })
         
         .catch(error => {
@@ -191,18 +190,6 @@ class LoginForm {
 
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevents the default form submission
-    
-    // Optional: Add validation logic here
-    const uid = document.getElementById('uid').value;
-    const password = document.getElementById('password').value;
-    
-    // Optional: Check if fields are filled
-    if (uid && password) {
-        // Redirect to the dashboard
-        window.location.href = 'studentdashboardHOME.html';
-    } else {
-        alert('Please fill in all fields');
-    }
 });
 
 // ==========================================
