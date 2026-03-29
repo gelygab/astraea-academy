@@ -1,0 +1,710 @@
+// PRODUCTION VERSION - Placeholder data included for development
+
+const API_CONFIG = {
+    baseUrl: '/api/',
+    
+    endpoints: {
+        getSchedule: 'get_schedule.php',
+        getSubjectAttendance: 'get_subject_attendance.php',
+        getApprovedRecords: 'get_approved_records.php'
+    }
+};
+
+const SCHEDULE_CONFIG = {
+    startHour: 7,
+    endHour: 21,
+    intervalMinutes: 30,
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+};
+
+let currentStudentId = null;
+let currentScheduleData = null;
+let currentAttendanceCalendar = {
+    currentDate: new Date(),
+    selectedSubject: null,
+    attendanceData: null,
+    selectedDate: null
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeScheduleDashboard();
+    
+    document.getElementById('schoolYear').addEventListener('change', handleFilterChange);
+    document.getElementById('semester').addEventListener('change', handleFilterChange);
+    
+    document.getElementById('attendanceCalendarModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAttendanceModal();
+    });
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeAttendanceModal();
+    });
+});
+
+async function initializeScheduleDashboard() {
+    currentStudentId = getCurrentStudentId();
+    
+    if (!currentStudentId) {
+        // For development: use placeholder if no login
+        // REMOVE IN PRODUCTION: usePlaceholderData();
+        // REPLACE WITH: window.location.href = 'studentlogin.html';
+        usePlaceholderData();
+        return;
+    }
+    
+    await loadScheduleData();
+}
+
+function getCurrentStudentId() {
+    return sessionStorage.getItem('student_id') || localStorage.getItem('student_id') || null;
+}
+
+function getAuthToken() {
+    return sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token') || '';
+}
+
+async function loadScheduleData() {
+    showLoading(true);
+    
+    try {
+        const schoolYear = document.getElementById('schoolYear').value;
+        const semester = document.getElementById('semester').value;
+        
+        const params = new URLSearchParams({
+            student_id: currentStudentId,
+            ...(schoolYear && { school_year: schoolYear }),
+            ...(semester && { semester: semester })
+        });
+        
+        const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getSchedule}?${params}`;
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
+            },
+            credentials: 'include'
+        });
+        
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            currentScheduleData = result.data;
+            populateFilters(result.data.available_years, result.data.available_semesters);
+            renderSchedule(result.data);
+        } else {
+            throw new Error(result.message || 'Invalid response');
+        }
+        
+    } catch (error) {
+        console.error('Failed to load schedule:', error);
+        // For development: show placeholder on error
+        // REMOVE IN PRODUCTION: usePlaceholderData();
+        // REPLACE WITH: showEmptyState(true);
+        usePlaceholderData();
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function handleFilterChange() {
+    await loadScheduleData();
+}
+
+function populateFilters(years, semesters) {
+    const yearSelect = document.getElementById('schoolYear');
+    const semesterSelect = document.getElementById('semester');
+    
+    if (yearSelect.options.length === 0 && years) {
+        yearSelect.innerHTML = years.map(y => 
+            `<option value="${y}" ${y === currentScheduleData?.school_year ? 'selected' : ''}>${y}</option>`
+        ).join('');
+    }
+    
+    if (semesterSelect.options.length === 0 && semesters) {
+        semesterSelect.innerHTML = semesters.map(s => 
+            `<option value="${s}" ${s === currentScheduleData?.semester ? 'selected' : ''}>${s}</option>`
+        ).join('');
+    }
+}
+
+function renderSchedule(data) {
+    if (!data.subjects || data.subjects.length === 0) {
+        showEmptyState(true);
+        return;
+    }
+    
+    showEmptyState(false);
+    renderSubjectsTable(data.subjects);
+    renderWeeklyGrid(data.schedule_slots || []);
+}
+
+function renderSubjectsTable(subjects) {
+    const tbody = document.getElementById('subjectsTableBody');
+    tbody.innerHTML = subjects.map(subject => `
+        <tr>
+            <td>${escapeHtml(subject.subject_code)}</td>
+            <td>${escapeHtml(subject.description)}</td>
+            <td>${escapeHtml(subject.schedule_display || formatSchedule(subject))}</td>
+        </tr>
+    `).join('');
+}
+
+// Render weekly grid with proper spanning class blocks
+function renderWeeklyGrid(scheduleSlots) {
+    const grid = document.getElementById('weeklyScheduleGrid');
+    grid.innerHTML = '';
+    
+    // Create header row
+    const cornerCell = document.createElement('div');
+    cornerCell.className = 'grid-time-header';
+    cornerCell.textContent = 'Time';
+    grid.appendChild(cornerCell);
+    
+    SCHEDULE_CONFIG.days.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'grid-header';
+        dayHeader.textContent = day.substring(0, 3);
+        grid.appendChild(dayHeader);
+    });
+    
+    // Generate time slots with full format
+    const timeSlots = generateTimeSlots();
+    
+    // Create empty grid cells first 
+    timeSlots.forEach((slot, index) => {
+        // Time label column
+        const timeCell = document.createElement('div');
+        timeCell.className = 'grid-time-header';
+        timeCell.textContent = slot.label;
+        grid.appendChild(timeCell);
+        
+        // Day columns
+        SCHEDULE_CONFIG.days.forEach(day => {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            cell.dataset.time = slot.time;
+            cell.dataset.day = day;
+            cell.dataset.rowIndex = index;
+            grid.appendChild(cell);
+        });
+    });
+    
+    // Class blocks that span multiple rows
+    if (scheduleSlots) {
+        scheduleSlots.forEach(slot => {
+            placeClassBlock(grid, slot, timeSlots);
+        });
+    }
+}
+
+function generateTimeSlots() {
+    const slots = [];
+    const { startHour, endHour, intervalMinutes } = SCHEDULE_CONFIG;
+    
+    for (let hour = startHour; hour < endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += intervalMinutes) {
+            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const label = formatTimeFull(hour, minute);
+            slots.push({ time, label, hour, minute });
+        }
+    }
+    
+    return slots;
+}
+
+// Full time format 
+function formatTimeFull(hour, minute) {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+    const displayMinute = minute.toString().padStart(2, '0');
+    return `${displayHour}:${displayMinute} ${period}`;
+}
+
+// Place class block spanning multiple time slots
+function placeClassBlock(grid, classData, timeSlots) {
+    const dayIndex = SCHEDULE_CONFIG.days.indexOf(classData.day);
+    if (dayIndex === -1) return;
+    
+    // Find start and end row indices
+    const startRow = timeSlots.findIndex(t => t.time === classData.start_time);
+    const endRow = timeSlots.findIndex(t => t.time === classData.end_time);
+    
+    if (startRow === -1) return;
+    
+    // Calculate span (how many 30-min slots)
+    const rowSpan = endRow - startRow;
+    
+    // Find the cell at start time + day
+    const gridCells = grid.querySelectorAll('.grid-cell');
+    const cellIndex = startRow * 7 + dayIndex;
+    const targetCell = gridCells[cellIndex];
+    
+    if (!targetCell) return;
+    
+    // Create the class block
+    const block = document.createElement('div');
+    block.className = 'class-block';
+    block.style.gridRow = `span ${rowSpan}`;
+    block.style.height = `${rowSpan * 50 - 4}px`; // 50px per row, minus gap
+    
+    block.innerHTML = `
+        <span class="subject-code">${escapeHtml(classData.subject_code)}</span>
+        <span class="subject-room">${escapeHtml(classData.room || '')}</span>
+    `;
+    
+    block.onclick = () => openSubjectAttendance(classData.subject_code);
+    
+    // Position absolutely within the cell
+    targetCell.style.position = 'relative';
+    targetCell.appendChild(block);
+    
+    // Mark cells as occupied
+    for (let i = 0; i < rowSpan; i++) {
+        const occupiedIndex = (startRow + i) * 7 + dayIndex;
+        if (gridCells[occupiedIndex]) {
+            gridCells[occupiedIndex].dataset.occupied = 'true';
+        }
+    }
+}
+
+function formatSchedule(subject) {
+    return `${subject.section || ''} - ${subject.days || ''} ${subject.time || ''}`;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// View Navigation
+function showSubjectDetailsView() {
+    document.getElementById('mainScheduleView').classList.add('hidden');
+    document.getElementById('subjectDetailsView').classList.remove('hidden');
+    renderSubjectCards();
+}
+
+function showMainScheduleView() {
+    document.getElementById('subjectDetailsView').classList.add('hidden');
+    document.getElementById('mainScheduleView').classList.remove('hidden');
+}
+
+function renderSubjectCards() {
+    if (!currentScheduleData?.subjects) return;
+    
+    const grid = document.getElementById('subjectCardsGrid');
+    grid.innerHTML = currentScheduleData.subjects.map(subject => `
+        <div class="subject-card">
+            <div class="subject-card-header">
+                ${escapeHtml(subject.subject_code)}
+            </div>
+            <div class="subject-card-body">
+                <p><strong>${escapeHtml(subject.description)}</strong></p>
+                <p>Units: ${subject.units || 'N/A'}</p>
+                <p>${escapeHtml(subject.schedule_display || formatSchedule(subject))}</p>
+                <button class="view-record-btn" onclick="openSubjectAttendance('${subject.subject_code}')">
+                    View Leave and Excuse Record
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Attendance Calendar
+async function openSubjectAttendance(subjectCode) {
+    currentAttendanceCalendar.selectedSubject = subjectCode;
+    currentAttendanceCalendar.currentDate = new Date();
+    currentAttendanceCalendar.selectedDate = new Date().getDate();
+    
+    document.getElementById('attendanceCalendarModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    await loadAttendanceData(subjectCode);
+    renderAttendanceCalendar();
+}
+
+async function loadAttendanceData(subjectCode) {
+    try {
+        const year = currentAttendanceCalendar.currentDate.getFullYear();
+        const month = currentAttendanceCalendar.currentDate.getMonth() + 1;
+        
+        const params = new URLSearchParams({
+            student_id: currentStudentId,
+            subject_code: subjectCode,
+            year: year,
+            month: month
+        });
+        
+        const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getSubjectAttendance}?${params}`;
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
+            },
+            credentials: 'include'
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch attendance');
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            currentAttendanceCalendar.attendanceData = result.data;
+        } else {
+            throw new Error(result.message);
+        }
+        
+    } catch (error) {
+        // For development: use placeholder attendance data
+        // REMOVE IN PRODUCTION: usePlaceholderAttendanceData(subjectCode);
+        // REPLACE WITH:
+        currentAttendanceCalendar.attendanceData = {
+            subject_code: subjectCode,
+            subject_name: getSubjectName(subjectCode),
+            attendance_days: []
+        };
+        usePlaceholderAttendanceData(subjectCode);
+    }
+}
+
+function getSubjectName(code) {
+    const subject = currentScheduleData?.subjects?.find(s => s.subject_code === code);
+    return subject?.description || code;
+}
+
+// Calendar 
+function renderAttendanceCalendar() {
+    const date = currentAttendanceCalendar.currentDate;
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const selectedDay = currentAttendanceCalendar.selectedDate;
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+    
+    document.getElementById('attendanceMonthYear').textContent = 
+        `${monthNames[month]} ${year}`;
+    
+    const grid = document.getElementById('attendanceCalendarGrid');
+    grid.innerHTML = '';
+    
+    // Weekday headers
+    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    weekdays.forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'calendar-weekday-header';
+        header.textContent = day;
+        grid.appendChild(header);
+    });
+    
+    // Calculate calendar structure
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    
+    const today = new Date();
+    const attendanceMap = buildAttendanceMap();
+    
+    // Previous month days
+    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+        const day = daysInPrevMonth - i;
+        const dayDiv = createCalendarDay(day, true, false, false, []);
+        grid.appendChild(dayDiv);
+    }
+    
+    // Current month days
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const isSelected = day === selectedDay;
+        const indicators = attendanceMap.get(dateStr) || [];
+        
+        const dayDiv = createCalendarDay(day, false, isToday, isSelected, indicators);
+        grid.appendChild(dayDiv);
+    }
+    
+    // Next month days (gray) - fill to complete 6 rows (42 cells)
+    const totalCellsSoFar = firstDayOfMonth + daysInMonth;
+    const remainingCells = 42 - totalCellsSoFar;
+    
+    for (let day = 1; day <= remainingCells; day++) {
+        const dayDiv = createCalendarDay(day, true, false, false, []);
+        grid.appendChild(dayDiv);
+    }
+}
+
+function createCalendarDay(day, isOtherMonth, isToday, isSelected, indicators) {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-day-cell';
+    
+    if (isOtherMonth) cell.classList.add('other-month');
+    if (isToday) cell.classList.add('today');
+    if (isSelected) cell.classList.add('selected');
+    
+    const numberSpan = document.createElement('span');
+    numberSpan.className = 'calendar-day-number';
+    numberSpan.textContent = day;
+    cell.appendChild(numberSpan);
+    
+    // Indicators only for current month
+    if (!isOtherMonth && indicators.length > 0) {
+        const indicatorsDiv = document.createElement('div');
+        indicatorsDiv.className = 'day-indicators';
+        
+        indicators.forEach(status => {
+            const dot = document.createElement('span');
+            dot.className = `day-indicator ${status}`;
+            indicatorsDiv.appendChild(dot);
+        });
+        
+        cell.appendChild(indicatorsDiv);
+    } else {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'day-indicators';
+        cell.appendChild(emptyDiv);
+    }
+    
+    if (!isOtherMonth) {
+        cell.addEventListener('click', () => {
+            document.querySelectorAll('.calendar-day-cell').forEach(c => c.classList.remove('selected'));
+            cell.classList.add('selected');
+            currentAttendanceCalendar.selectedDate = day;
+        });
+    }
+    
+    return cell;
+}
+
+function buildAttendanceMap() {
+    const map = new Map();
+    const data = currentAttendanceCalendar.attendanceData?.attendance_days || [];
+    
+    data.forEach(record => {
+        if (!map.has(record.date)) {
+            map.set(record.date, []);
+        }
+        map.get(record.date).push(record.status);
+    });
+    
+    return map;
+}
+
+function changeAttendanceMonth(direction) {
+    currentAttendanceCalendar.currentDate.setMonth(
+        currentAttendanceCalendar.currentDate.getMonth() + direction
+    );
+    loadAttendanceData(currentAttendanceCalendar.selectedSubject).then(renderAttendanceCalendar);
+}
+
+function closeAttendanceModal() {
+    document.getElementById('attendanceCalendarModal').classList.add('hidden');
+    document.body.style.overflow = '';
+    currentAttendanceCalendar.selectedSubject = null;
+    currentAttendanceCalendar.attendanceData = null;
+}
+
+function showLoading(show) {
+    document.getElementById('loadingState').classList.toggle('hidden', !show);
+    document.getElementById('mainScheduleView').classList.toggle('hidden', show);
+}
+
+function showEmptyState(show) {
+    document.getElementById('emptyState').classList.toggle('hidden', !show);
+    if (show) {
+        document.getElementById('mainScheduleView').classList.add('hidden');
+    }
+}
+
+// ==========================================
+// PLACEHOLDER DATA - REMOVE IN PRODUCTION
+// ==========================================
+
+function usePlaceholderData() {
+    // PLACEHOLDER 1: 
+    const placeholder1 = {
+        school_year: "2025-2026",
+        semester: "First Semester",
+        available_years: ["2025-2026"],
+        available_semesters: ["First Semester"],
+        subjects: [
+            {
+                subject_code: "ENG_ECON",
+                description: "Engineering Economics",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "1 - BSCpE 1-1 - S 05:30PM-08:30PM GV 311"
+            },
+            {
+                subject_code: "CPE 0222",
+                description: "Software Design (Lecture)",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "2 - BSCpE 2-2 - W 06:00PM-09:00PM GV 208"
+            },
+            {
+                subject_code: "CPE 0222.1",
+                description: "Software Design (Laboratory)",
+                lec_hours: 0,
+                lab_hours: 3,
+                units: 1,
+                schedule_display: "2 - BSCpE 2-2 - TH 06:00PM-09:00PM GV 311"
+            },
+            {
+                subject_code: "CPE 0223",
+                description: "Fundamentals of Electronic Circuits (Lecture)",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "2 - BSCpE 2-2 - T 11:30AM-01:00PM GV 208/F 11:30AM-01:00PM GV 208"
+            },
+            {
+                subject_code: "CPE 0223.1",
+                description: "Fundamentals of Electronic Circuits (Laboratory)",
+                lec_hours: 0,
+                lab_hours: 3,
+                units: 1,
+                schedule_display: "2 - BSCpE 2-2 - W 02:00PM-05:00PM GV I&CLAB2B"
+            },
+            {
+                subject_code: "ETH 0008",
+                description: "Ethics",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "2 - BSCpE 2-2 - T 04:00PM-05:30PM GV 306/F 04:00PM-05:30PM MS TEAMS"
+            },
+            {
+                subject_code: "LWR 0009",
+                description: "Life and Works of Rizal",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "2 - BSCpE 2-2 - T 02:30PM-04:00PM GV 311/F 02:30PM-04:00PM MS TEAMS"
+            },
+            {
+                subject_code: "PPC 122",
+                description: "Philippine Popular Culture",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "2 - BSCpE 2-2 - M 04:00PM-05:30PM GV 208/TH 04:00PM-05:30PM MS TEAMS"
+            },
+            {
+                subject_code: "TCW 0005",
+                description: "The Contemporary World",
+                lec_hours: 3,
+                lab_hours: 0,
+                units: 3,
+                schedule_display: "2 - BSCpE 2-2 - T 05:30PM-07:00PM GV 310/F 05:30PM-07:00PM MS TEAMS"
+            },
+            {
+                subject_code: "PATHFIT 405",
+                description: "Larong Lahi",
+                lec_hours: 2,
+                lab_hours: 0,
+                units: 2,
+                schedule_display: "14 - PATHFIT 2-14 - TH 02:00PM-04:00PM FIELD"
+            }
+        ],
+        schedule_slots: [
+            // CPE 0223 - Tuesday/Friday 11:30-13:00 (1.5 hrs = 3 slots)
+            { subject_code: "CPE 0223", day: "Tuesday", start_time: "11:30", end_time: "13:00", room: "GV 208", section: "BSCpE 2-2" },
+            { subject_code: "CPE 0223", day: "Friday", start_time: "11:30", end_time: "13:00", room: "GV 208", section: "BSCpE 2-2" },
+            
+            // CPE 0223.1 - Wednesday 14:00-17:00 (3 hrs = 6 slots)
+            { subject_code: "CPE 0223.1", day: "Wednesday", start_time: "14:00", end_time: "17:00", room: "GV I&CLAB2B", section: "BSCpE 2-2" },
+            
+            // PATHFIT 405 - Thursday 14:00-16:00 (2 hrs = 4 slots)
+            { subject_code: "PATHFIT 405", day: "Thursday", start_time: "14:00", end_time: "16:00", room: "FIELD", section: "PATHFIT 2-14" },
+            
+            // LWR 0009 - Tuesday/Friday 14:30-16:00 (1.5 hrs = 3 slots)
+            { subject_code: "LWR 0009", day: "Tuesday", start_time: "14:30", end_time: "16:00", room: "GV 311", section: "BSCpE 2-2" },
+            { subject_code: "LWR 0009", day: "Friday", start_time: "14:30", end_time: "16:00", room: "MS TEAMS", section: "BSCpE 2-2" },
+            
+            // ETH 0008 - Tuesday/Friday 16:00-17:30 (1.5 hrs = 3 slots)
+            { subject_code: "ETH 0008", day: "Tuesday", start_time: "16:00", end_time: "17:30", room: "GV 306", section: "BSCpE 2-2" },
+            { subject_code: "ETH 0008", day: "Friday", start_time: "16:00", end_time: "17:30", room: "MS TEAMS", section: "BSCpE 2-2" },
+            
+            // TCW 0005 - Tuesday/Friday 17:30-19:00 (1.5 hrs = 3 slots)
+            { subject_code: "TCW 0005", day: "Tuesday", start_time: "17:30", end_time: "19:00", room: "GV 310", section: "BSCpE 2-2" },
+            { subject_code: "TCW 0005", day: "Friday", start_time: "17:30", end_time: "19:00", room: "MS TEAMS", section: "BSCpE 2-2" },
+            
+            // CPE 0222 - Wednesday 18:00-21:00 (3 hrs = 6 slots)
+            { subject_code: "CPE 0222", day: "Wednesday", start_time: "18:00", end_time: "21:00", room: "GV 208", section: "BSCpE 2-2" },
+            
+            // CPE 0222.1 - Thursday 18:00-21:00 (3 hrs = 6 slots)
+            { subject_code: "CPE 0222.1", day: "Thursday", start_time: "18:00", end_time: "21:00", room: "GV 311", section: "BSCpE 2-2" },
+            
+            // PPC 122 - Monday/Thursday 16:00-17:30 (1.5 hrs = 3 slots)
+            { subject_code: "PPC 122", day: "Monday", start_time: "16:00", end_time: "17:30", room: "GV 208", section: "BSCpE 2-2" },
+            { subject_code: "PPC 122", day: "Thursday", start_time: "16:00", end_time: "17:30", room: "MS TEAMS", section: "BSCpE 2-2" },
+            
+            // ENG_ECON - Saturday 17:30-20:30 (3 hrs = 6 slots)
+            { subject_code: "ENG_ECON", day: "Saturday", start_time: "17:30", end_time: "20:30", room: "GV 311", section: "BSCpE 1-1" }
+        ]
+    };
+
+    // Placeholder 1 
+    currentScheduleData = placeholder1;
+    
+    // To test other placeholders, comment out above and uncomment below:
+    // currentScheduleData = placeholder2;
+    // currentScheduleData = placeholder3;
+    
+    populateFilters(currentScheduleData.available_years, currentScheduleData.available_semesters);
+    renderSchedule(currentScheduleData);
+}
+
+// Placeholder attendance data for calendar
+function usePlaceholderAttendanceData(subjectCode) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    
+    // Generate sample attendance records
+    const attendanceDays = [];
+    
+    // Add some sample records with different statuses
+    const sampleDays = [6, 7, 10, 13, 14, 20, 21, 27];
+    const statuses = ['absent', 'leave', 'excused'];
+    
+    sampleDays.forEach((day, index) => {
+        const date = new Date(year, month, day);
+        // Skip weekends
+        if (date.getDay() === 0 || date.getDay() === 6) return;
+        
+        // Multiple statuses possible per day (absent + excused, etc.)
+        const numStatuses = Math.random() > 0.7 ? 2 : 1;
+        
+        for (let i = 0; i < numStatuses; i++) {
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            attendanceDays.push({
+                date: date.toISOString().split('T')[0],
+                status: status
+            });
+        }
+    });
+    
+    currentAttendanceCalendar.attendanceData = {
+        subject_code: subjectCode,
+        subject_name: getSubjectName(subjectCode),
+        attendance_days: attendanceDays
+    };
+}
+
+// Expose functions globally
+window.showSubjectDetailsView = showSubjectDetailsView;
+window.showMainScheduleView = showMainScheduleView;
+window.openSubjectAttendance = openSubjectAttendance;
+window.closeAttendanceModal = closeAttendanceModal;
+window.changeAttendanceMonth = changeAttendanceMonth;
