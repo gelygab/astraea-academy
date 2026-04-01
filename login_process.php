@@ -19,19 +19,22 @@ if ($stmt) {
         if (password_verify($user_password, $row['password'])) {
            $_SESSION['userId'] = $row['student_id'];
             $_SESSION['uid'] = $row['user_uid'];
-
-            if ($row['is_first_login'] == 1) {
-                echo "first_login";
-            } else {
-                echo "dashboard";
-            }
-            exit();
         } else {
-            echo "invalid";
+            // Valid UID invalid password
+            echo "invalid password";
             exit();
         }
+        if ($row['is_first_login'] == 1) {
+                // Moves to change password
+                echo "first_login";
+        } else {
+            // Moves to their student dashboard
+            echo "dashboard";
+        }
+        exit();
     } else {
-        echo "<script>alert('UID not found!'); window.location.href='studentlogin.php';</script>";
+        // Invalid UID and password
+        echo "invalid uid and password";
         exit();
     }
 
