@@ -1,7 +1,20 @@
-<!-- studentdashboardSCHED.html -->
+<?php 
+session_start();
+require_once 'db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: studentlogin.php');
+    exit();
+}
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - My Schedule</title>
@@ -25,10 +38,10 @@
             <div class="sidebar">
                 <h3>MAIN MENU</h3>
                 <a href="studentdashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="studentdashboardSCHED.html" class="active"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
-                <a href="studentdashboardLEAVE.html"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
-                <a href="studentdashboardEXCUSE.html"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                <a href="studentdashboardAPPEALS.html"><span class="material-symbols-outlined">star</span><h2>View Pending Appeals</h2></a>
+                <a href="studentdashboardSCHED.php" class="active"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
+                <a href="studentdashboardLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
+                <a href="studentdashboardEXCUSE.php"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
+                <a href="studentdashboardAPPEALS.php"><span class="material-symbols-outlined">star</span><h2>View Pending Appeals</h2></a>
 
                 <div class="below">
                     <h3>SETTINGS</h3>

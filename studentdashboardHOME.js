@@ -1,24 +1,45 @@
+const API_CONFIG = {
+    baseUrl: '',
+    
+    endpoints: {
+        getStudentData: 'get_student_attendance.php'
+    }
+};
+
+
 async function loadDashboard() {
     try {
-        const response = await fetch('student_data.json');
+        const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getStudentData}?uid=${CURRENT_USER_UID}`;
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
         if (!response.ok) throw new Error("Fetch failed");
         const data = await response.json();
+        console.log(data);
         const student = data.students[0];
 
         const now = new Date();
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
 
+        // PUT BACK AFTER TESTING
         const monthlyLogs = student.attendanceLogs.filter(log => {
-            const d = new Date(log.date);
+            const [year, month, day] = log.date.split('-').map(Number);
+            const d = new Date(year, month - 1, day);
             return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
         });
 
         updateProfile(student);
-        updateClassDays(monthlyLogs, now);
+        updateClassDays(student.monthlyCount);
         updateBarChart(monthlyLogs);
         updateAttendanceRate(monthlyLogs);
         updateSixMonthPie(student, now);
+        console.log(monthlyLogs);
         updatePeachBoxes(student.attendanceLogs, 'monthly', now); // Initial Load
 
         const dropdown = document.getElementById('customDropdown');
@@ -34,8 +55,46 @@ async function loadDashboard() {
             item.onclick = (e) => {
                 e.stopPropagation(); // Prevent document click from firing
                 const filterType = item.getAttribute('data-value');
-                displayValue.innerText = item.innerText;
+                const now = new Date();
+
+                let expected = 0;
+                
+                if (filterType === 'daily') {
+                    expected = Number(student.dailyCount || 0);
+                }
+                
+                if (filterType === 'weekly') {
+                    expected = Number(student.weeklyCount || 5);
+                }
+
+                if (filterType === 'monthly') {
+                    expected = Number(student.monthlyCount || 0);
+                }
+                
                 updatePeachBoxes(student.attendanceLogs, filterType, now);
+
+                const filteredLogs = student.attendanceLogs.filter(l => {
+                    const [year, month, day] = l.date.split('-').map(Number);
+                    const d = new Date(year, month - 1, day);
+                    if (filterType === 'daily') return d.toDateString() === now.toDateString();
+                    if (filterType === 'weekly') {
+                        const diff = (now - d) / (1000 * 60 * 60 * 24); return diff >= 0 && diff <= 7;
+                    }
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                });
+
+                const presentCount = Number(filteredLogs.filter(l => l.status !== "Absent").length);
+                const rate = expected > 0 ? Math.round((presentCount / expected) * 100) : 0;
+
+                const rateDisplay = document.getElementById('rateCardValue');
+                if (rateDisplay) {
+                    rateDisplay.innerHTML = `<h2>${rate}%</h2>`;
+                }
+                
+                updateBarChart(filteredLogs);
+                updateClassDays(expected);
+                
+                displayValue.innerText = item.innerText;
                 menu.classList.remove('show');
             };
         });
@@ -49,7 +108,9 @@ async function loadDashboard() {
 
 function updatePeachBoxes(logs, type, now) {
     const filtered = logs.filter(l => {
-        const d = new Date(l.date);
+        const [year, month, day] = l.date.split('-').map(Number);
+        const d = new Date(year, month - 1, day); // local time
+
         if (type === 'daily') return d.toDateString() === now.toDateString();
         if (type === 'weekly') {
             const diff = (now - d) / (1000 * 60 * 60 * 24);
@@ -68,7 +129,10 @@ function updatePeachBoxes(logs, type, now) {
     const grid = document.getElementById('attendanceGrid');
     if (grid) {
         grid.innerHTML = stats.map(s => {
-            const count = filtered.filter(l => l.status === s.status).length;
+            const count = filtered.filter(l => {
+                if (!l.status) return false;
+                return l.status.trim().toLowerCase() === s.status.toLowerCase();
+            }).length;
             const dayText = count === 1 ? 'Day' : 'Days';
 
             return `
@@ -81,10 +145,14 @@ function updatePeachBoxes(logs, type, now) {
                 </div>`;
         }).join('');
     }
+
+    console.log("Current Month being filtered:", now.getMonth());
+    console.log("Records found after filter:", filtered.length);
 }
 
 function updateAttendanceRate(logs) {
-    const rate = logs.length ? Math.round((logs.filter(l => l.status === "Present").length / logs.length) * 100) : 0;
+    const presentCount = logs.filter(l => l.status === "Present" || l.status === "Late" || l.status === "Undertime").length;
+    const rate = logs.length ? Math.round((presentCount / logs.length) * 100) : 0;
     const rateValue = document.getElementById('rateCardValue');
     if (rateValue) rateValue.innerHTML = `<h2>${rate}%</h2>`;
 }
@@ -100,9 +168,10 @@ function updateSixMonthPie(student, now) {
         const d = new Date();
         d.setMonth(now.getMonth() - i);
         const count = student.attendanceLogs.filter(l => {
-            const ld = new Date(l.date);
-            return ld.getMonth() === d.getMonth() && ld.getFullYear() === d.getFullYear() && l.status === "Present";
-        }).length;
+        const [year, month, day] = l.date.split('-').map(Number);
+        const ld = new Date(year, month - 1, day); // local time
+        return ld.getMonth() === d.getMonth() && ld.getFullYear() === d.getFullYear() && l.status === "Present";
+    }).length;
         
         data.push({ 
             label: d.toLocaleString('default', { month: 'short' }), 
@@ -215,8 +284,11 @@ function updateProfile(s) {
     document.getElementById('address-val').innerText = s.address;
 }
 
-function updateClassDays(logs, now) {
-    document.getElementById('classDaysText').innerHTML = `<h2>${logs.length}</h2><p>Days</p>`;
+function updateClassDays(count) {
+    const container = document.getElementById('classDaysText');
+    if (container) {
+        container.innerHTML = `<h2>${count}</h2><p>Days</p>`;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', loadDashboard);

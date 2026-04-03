@@ -205,7 +205,7 @@ function selectDate(year, month, day) {
 // Cancel form
 function cancelForm() {
     if (confirm('Are you sure you want to cancel?')) {
-        window.location.href = 'studentdashboardHOME.html';
+        window.location.href = 'studentdashboardHOME.php';
     }
 }
 
@@ -231,7 +231,7 @@ function submitForm() {
     document.getElementById('leaveForm').reset();
     
     // Redirect to home
-    window.location.href = 'studentdashboardHOME.html';
+    window.location.href = 'studentdashboardHOME.php';
 }
 
 // Handle file upload display

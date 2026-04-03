@@ -1,7 +1,7 @@
 // PRODUCTION VERSION - Placeholder data included for development
 
 const API_CONFIG = {
-    baseUrl: '/api/',
+    baseUrl: '',
     
     endpoints: {
         getSchedule: 'get_schedule.php',
@@ -41,22 +41,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// getSchedule API
 async function initializeScheduleDashboard() {
-    currentStudentId = getCurrentStudentId();
+    currentStudentId = CURRENT_USER_UID;
     
     if (!currentStudentId) {
-        // For development: use placeholder if no login
-        // REMOVE IN PRODUCTION: usePlaceholderData();
-        // REPLACE WITH: window.location.href = 'studentlogin.html';
-        usePlaceholderData();
+        window.location.href = 'studentlogin.php';
         return;
     }
     
     await loadScheduleData();
-}
-
-function getCurrentStudentId() {
-    return sessionStorage.getItem('student_id') || localStorage.getItem('student_id') || null;
 }
 
 function getAuthToken() {
@@ -71,7 +65,7 @@ async function loadScheduleData() {
         const semester = document.getElementById('semester').value;
         
         const params = new URLSearchParams({
-            student_id: currentStudentId,
+            uid: currentStudentId,
             ...(schoolYear && { school_year: schoolYear }),
             ...(semester && { semester: semester })
         });
@@ -82,8 +76,8 @@ async function loadScheduleData() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
+                'Accept': 'application/json'
+                // 'Authorization': `Bearer ${getAuthToken()}`
             },
             credentials: 'include'
         });
@@ -91,7 +85,8 @@ async function loadScheduleData() {
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         
         const result = await response.json();
-        
+        console.log(result);
+
         if (result.success) {
             currentScheduleData = result.data;
             populateFilters(result.data.available_years, result.data.available_semesters);
@@ -105,7 +100,8 @@ async function loadScheduleData() {
         // For development: show placeholder on error
         // REMOVE IN PRODUCTION: usePlaceholderData();
         // REPLACE WITH: showEmptyState(true);
-        usePlaceholderData();
+        showEmptyState(true);
+        // usePlaceholderData();
     } finally {
         showLoading(false);
     }
@@ -205,7 +201,6 @@ function renderWeeklyGrid(scheduleSlots) {
 function generateTimeSlots() {
     const slots = [];
     const { startHour, endHour, intervalMinutes } = SCHEDULE_CONFIG;
-    
     for (let hour = startHour; hour < endHour; hour++) {
         for (let minute = 0; minute < 60; minute += intervalMinutes) {
             const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
@@ -254,6 +249,8 @@ function placeClassBlock(grid, classData, timeSlots) {
     
     block.innerHTML = `
         <span class="subject-code">${escapeHtml(classData.subject_code)}</span>
+        <span class="subject-code">${escapeHtml(classData.description)}</span>
+        <span class="subject-room">${escapeHtml("Faculty:" + " " + classData.teacher)}</span>
         <span class="subject-room">${escapeHtml(classData.room || '')}</span>
     `;
     
@@ -273,7 +270,7 @@ function placeClassBlock(grid, classData, timeSlots) {
 }
 
 function formatSchedule(subject) {
-    return `${subject.section || ''} - ${subject.days || ''} ${subject.time || ''}`;
+    return `${subject.section || ''} - ${subject.days || ''} ${subject.time || ''} ${subject.room || ''}`;
 }
 
 function escapeHtml(text) {
@@ -306,7 +303,6 @@ function renderSubjectCards() {
             </div>
             <div class="subject-card-body">
                 <p><strong>${escapeHtml(subject.description)}</strong></p>
-                <p>Units: ${subject.units || 'N/A'}</p>
                 <p>${escapeHtml(subject.schedule_display || formatSchedule(subject))}</p>
                 <button class="view-record-btn" onclick="openSubjectAttendance('${subject.subject_code}')">
                     View Leave and Excuse Record
@@ -329,13 +325,14 @@ async function openSubjectAttendance(subjectCode) {
     renderAttendanceCalendar();
 }
 
+// getSubjectAttendance API
 async function loadAttendanceData(subjectCode) {
     try {
         const year = currentAttendanceCalendar.currentDate.getFullYear();
         const month = currentAttendanceCalendar.currentDate.getMonth() + 1;
         
         const params = new URLSearchParams({
-            student_id: currentStudentId,
+            uid: currentStudentId,
             subject_code: subjectCode,
             year: year,
             month: month
@@ -347,7 +344,6 @@ async function loadAttendanceData(subjectCode) {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
             },
             credentials: 'include'
         });
@@ -361,17 +357,15 @@ async function loadAttendanceData(subjectCode) {
         } else {
             throw new Error(result.message);
         }
+
+        console.log(currentAttendanceCalendar.attendanceData);
         
     } catch (error) {
-        // For development: use placeholder attendance data
-        // REMOVE IN PRODUCTION: usePlaceholderAttendanceData(subjectCode);
-        // REPLACE WITH:
         currentAttendanceCalendar.attendanceData = {
             subject_code: subjectCode,
             subject_name: getSubjectName(subjectCode),
             attendance_days: []
         };
-        usePlaceholderAttendanceData(subjectCode);
     }
 }
 
@@ -491,7 +485,7 @@ function buildAttendanceMap() {
         if (!map.has(record.date)) {
             map.set(record.date, []);
         }
-        map.get(record.date).push(record.status);
+        map.get(record.date).push(record.status.toLowerCase());
     });
     
     return map;
@@ -521,185 +515,6 @@ function showEmptyState(show) {
     if (show) {
         document.getElementById('mainScheduleView').classList.add('hidden');
     }
-}
-
-// ==========================================
-// PLACEHOLDER DATA - REMOVE IN PRODUCTION
-// ==========================================
-
-function usePlaceholderData() {
-    // PLACEHOLDER 1: 
-    const placeholder1 = {
-        school_year: "2025-2026",
-        semester: "First Semester",
-        available_years: ["2025-2026"],
-        available_semesters: ["First Semester"],
-        subjects: [
-            {
-                subject_code: "ENG_ECON",
-                description: "Engineering Economics",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "1 - BSCpE 1-1 - S 05:30PM-08:30PM GV 311"
-            },
-            {
-                subject_code: "CPE 0222",
-                description: "Software Design (Lecture)",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - W 06:00PM-09:00PM GV 208"
-            },
-            {
-                subject_code: "CPE 0222.1",
-                description: "Software Design (Laboratory)",
-                lec_hours: 0,
-                lab_hours: 3,
-                units: 1,
-                schedule_display: "2 - BSCpE 2-2 - TH 06:00PM-09:00PM GV 311"
-            },
-            {
-                subject_code: "CPE 0223",
-                description: "Fundamentals of Electronic Circuits (Lecture)",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - T 11:30AM-01:00PM GV 208/F 11:30AM-01:00PM GV 208"
-            },
-            {
-                subject_code: "CPE 0223.1",
-                description: "Fundamentals of Electronic Circuits (Laboratory)",
-                lec_hours: 0,
-                lab_hours: 3,
-                units: 1,
-                schedule_display: "2 - BSCpE 2-2 - W 02:00PM-05:00PM GV I&CLAB2B"
-            },
-            {
-                subject_code: "ETH 0008",
-                description: "Ethics",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - T 04:00PM-05:30PM GV 306/F 04:00PM-05:30PM MS TEAMS"
-            },
-            {
-                subject_code: "LWR 0009",
-                description: "Life and Works of Rizal",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - T 02:30PM-04:00PM GV 311/F 02:30PM-04:00PM MS TEAMS"
-            },
-            {
-                subject_code: "PPC 122",
-                description: "Philippine Popular Culture",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - M 04:00PM-05:30PM GV 208/TH 04:00PM-05:30PM MS TEAMS"
-            },
-            {
-                subject_code: "TCW 0005",
-                description: "The Contemporary World",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - T 05:30PM-07:00PM GV 310/F 05:30PM-07:00PM MS TEAMS"
-            },
-            {
-                subject_code: "PATHFIT 405",
-                description: "Larong Lahi",
-                lec_hours: 2,
-                lab_hours: 0,
-                units: 2,
-                schedule_display: "14 - PATHFIT 2-14 - TH 02:00PM-04:00PM FIELD"
-            }
-        ],
-        schedule_slots: [
-            // CPE 0223 - Tuesday/Friday 11:30-13:00 (1.5 hrs = 3 slots)
-            { subject_code: "CPE 0223", day: "Tuesday", start_time: "11:30", end_time: "13:00", room: "GV 208", section: "BSCpE 2-2" },
-            { subject_code: "CPE 0223", day: "Friday", start_time: "11:30", end_time: "13:00", room: "GV 208", section: "BSCpE 2-2" },
-            
-            // CPE 0223.1 - Wednesday 14:00-17:00 (3 hrs = 6 slots)
-            { subject_code: "CPE 0223.1", day: "Wednesday", start_time: "14:00", end_time: "17:00", room: "GV I&CLAB2B", section: "BSCpE 2-2" },
-            
-            // PATHFIT 405 - Thursday 14:00-16:00 (2 hrs = 4 slots)
-            { subject_code: "PATHFIT 405", day: "Thursday", start_time: "14:00", end_time: "16:00", room: "FIELD", section: "PATHFIT 2-14" },
-            
-            // LWR 0009 - Tuesday/Friday 14:30-16:00 (1.5 hrs = 3 slots)
-            { subject_code: "LWR 0009", day: "Tuesday", start_time: "14:30", end_time: "16:00", room: "GV 311", section: "BSCpE 2-2" },
-            { subject_code: "LWR 0009", day: "Friday", start_time: "14:30", end_time: "16:00", room: "MS TEAMS", section: "BSCpE 2-2" },
-            
-            // ETH 0008 - Tuesday/Friday 16:00-17:30 (1.5 hrs = 3 slots)
-            { subject_code: "ETH 0008", day: "Tuesday", start_time: "16:00", end_time: "17:30", room: "GV 306", section: "BSCpE 2-2" },
-            { subject_code: "ETH 0008", day: "Friday", start_time: "16:00", end_time: "17:30", room: "MS TEAMS", section: "BSCpE 2-2" },
-            
-            // TCW 0005 - Tuesday/Friday 17:30-19:00 (1.5 hrs = 3 slots)
-            { subject_code: "TCW 0005", day: "Tuesday", start_time: "17:30", end_time: "19:00", room: "GV 310", section: "BSCpE 2-2" },
-            { subject_code: "TCW 0005", day: "Friday", start_time: "17:30", end_time: "19:00", room: "MS TEAMS", section: "BSCpE 2-2" },
-            
-            // CPE 0222 - Wednesday 18:00-21:00 (3 hrs = 6 slots)
-            { subject_code: "CPE 0222", day: "Wednesday", start_time: "18:00", end_time: "21:00", room: "GV 208", section: "BSCpE 2-2" },
-            
-            // CPE 0222.1 - Thursday 18:00-21:00 (3 hrs = 6 slots)
-            { subject_code: "CPE 0222.1", day: "Thursday", start_time: "18:00", end_time: "21:00", room: "GV 311", section: "BSCpE 2-2" },
-            
-            // PPC 122 - Monday/Thursday 16:00-17:30 (1.5 hrs = 3 slots)
-            { subject_code: "PPC 122", day: "Monday", start_time: "16:00", end_time: "17:30", room: "GV 208", section: "BSCpE 2-2" },
-            { subject_code: "PPC 122", day: "Thursday", start_time: "16:00", end_time: "17:30", room: "MS TEAMS", section: "BSCpE 2-2" },
-            
-            // ENG_ECON - Saturday 17:30-20:30 (3 hrs = 6 slots)
-            { subject_code: "ENG_ECON", day: "Saturday", start_time: "17:30", end_time: "20:30", room: "GV 311", section: "BSCpE 1-1" }
-        ]
-    };
-
-    // Placeholder 1 
-    currentScheduleData = placeholder1;
-    
-    // To test other placeholders, comment out above and uncomment below:
-    // currentScheduleData = placeholder2;
-    // currentScheduleData = placeholder3;
-    
-    populateFilters(currentScheduleData.available_years, currentScheduleData.available_semesters);
-    renderSchedule(currentScheduleData);
-}
-
-// Placeholder attendance data for calendar
-function usePlaceholderAttendanceData(subjectCode) {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    
-    // Generate sample attendance records
-    const attendanceDays = [];
-    
-    // Add some sample records with different statuses
-    const sampleDays = [6, 7, 10, 13, 14, 20, 21, 27];
-    const statuses = ['absent', 'leave', 'excused'];
-    
-    sampleDays.forEach((day, index) => {
-        const date = new Date(year, month, day);
-        // Skip weekends
-        if (date.getDay() === 0 || date.getDay() === 6) return;
-        
-        // Multiple statuses possible per day (absent + excused, etc.)
-        const numStatuses = Math.random() > 0.7 ? 2 : 1;
-        
-        for (let i = 0; i < numStatuses; i++) {
-            const status = statuses[Math.floor(Math.random() * statuses.length)];
-            attendanceDays.push({
-                date: date.toISOString().split('T')[0],
-                status: status
-            });
-        }
-    });
-    
-    currentAttendanceCalendar.attendanceData = {
-        subject_code: subjectCode,
-        subject_name: getSubjectName(subjectCode),
-        attendance_days: attendanceDays
-    };
 }
 
 // Expose functions globally
