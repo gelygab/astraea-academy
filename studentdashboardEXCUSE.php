@@ -48,10 +48,10 @@
                         <label for="timeType">Time Type</label>
                         <div class="custom-select">
                             <select id="timeType" name="timeType">
-                                <option value="extracurricular">Extracurricular Activity</option>
-                                <option value="medical">Medical Appointment</option>
-                                <option value="personal">Personal Emergency</option>
-                                <option value="other">Other</option>
+                                <option value="extracurricular_activity">Extracurricular Activity</option>
+                                <option value="medical_appointment">Medical Appointment</option>
+                                <option value="personal_emergency">Personal Emergency</option>
+                                <option value="other_excuse">Other</option>
                             </select>
                             <span class="material-symbols-outlined select-arrow">expand_more</span>
                         </div>

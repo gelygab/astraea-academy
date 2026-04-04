@@ -10,7 +10,6 @@ if (!isset($user_id)) {
     exit;
 };
 
-
 // REMOVED: AND appeals.status = 'pending'
 // This query now fetches all records for the student regardless of status
 $sql = "SELECT appeals.*, teacher_id.first_name, teacher_id.last_name 
@@ -22,6 +21,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
+$data = [];
 
 $finalResponse = null;
 
@@ -33,30 +33,27 @@ if ($result->num_rows > 0) {
         } else {
             $teacher_name = 'System';
         }
-
-        $finalResponse = [
-            "success" => true,
-            "data" => [
-                [
-                   'id' => isset($row['id']) ? $row['id'] : (isset($row['appeal_id']) ? $row['appeal_id'] : uniqid()), 
-                    'appeal_type' => $row['time_type'],
-                    'date_filed' => $row['date_filed'],
-                    'start_date' => $row['start_date'],
-                    'end_date' => $row['end_date'],
-                    'num_days' => $row['number_of_days'],
-                    'return_date' => $row['return_on'],
-                    'comment' => $row['comment'],
-                    'attachment_url' => !empty($row['attachment']) ? $row['attachment'] : null,
-                    'attachment_name' => !empty($row['attachment']) ? $row['attachment'] : null,
-                    'status' => $row['status'], // Pass the status (pending/approved/rejected) to JS
-                    'updated_by' => $teacher_name 
-                ]
-                
-            ]
+        $data[] = [
+                'id' => isset($row['id']) ? $row['id'] : (isset($row['appeal_id']) ? $row['appeal_id'] : uniqid()), 
+                'appeal_type' => $row['time_type'],
+                'date_filed' => $row['date_filed'],
+                'start_date' => $row['start_date'],
+                'end_date' => $row['end_date'],
+                'num_days' => $row['number_of_days'],
+                'return_date' => $row['return_on'],
+                'comment' => $row['comment'],
+                'attachment_url' => !empty($row['attachment']) ? $row['attachment'] : null,
+                'attachment_name' => !empty($row['attachment']) ? $row['attachment'] : null,
+                'status' => $row['status'], // Pass the status (pending/approved/rejected) to JS
+                'updated_by' => $teacher_name 
         ];
     }
+    $finalResponse = [
+        "success" => true,
+        "data" => $data
+    ];
 } else {
-    $finalResponse = ['success' => false, 'message' => 'database_error'];
+    $finalResponse = ['success' => false, 'message' => 'no_appeals_found'];
 }
 echo json_encode($finalResponse);
 exit;

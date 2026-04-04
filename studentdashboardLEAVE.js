@@ -217,21 +217,54 @@ function submitForm() {
     const numDays = document.getElementById('numDays').value;
     const returnDate = document.getElementById('returnDate').value;
     const comment = document.getElementById('comment').value;
+    const attachmentInput = document.getElementById('attachment');
+
     
     // Validate
     if (!startDate || !endDate) {
         alert('Please select both start and end dates.');
         return;
     }
+
     
-    // Show success message (placeholder for backend integration)
-    alert(`Leave Application Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
-    
-    // Reset form
-    document.getElementById('leaveForm').reset();
-    
-    // Redirect to home
-    window.location.href = 'studentdashboardHOME.php';
+    // 1. Create a FormData object to bundle our data securely
+    const formData = new FormData();
+    formData.append('time_type', timeType);
+    formData.append('start_date', startDate);
+    formData.append('end_date', endDate);
+    formData.append('number_of_days', numDays);
+    formData.append('return_on', returnDate);
+    formData.append('comment', comment);
+
+    // 2. Check if a file was uploaded and add it to the bundle
+    if (attachmentInput && attachmentInput.files.length > 0) {
+        formData.append('attachment', attachmentInput.files[0]);
+    }
+
+    // 3. Send the bundled data to our PHP backend
+    fetch('process_leave.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Show the success message directly from the PHP file
+        alert(data);
+        
+        // Reset form and the upload text display
+        document.getElementById('leaveForm').reset();
+        document.querySelector('.upload-text').textContent = 'Upload';
+        
+        // Show success message (placeholder for backend integration)
+        alert(`Leave Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
+
+        // Redirect back to home
+        window.location.href = 'studentdashboardHOME.php';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting your leave request.');
+    });
 }
 
 // Handle file upload display
