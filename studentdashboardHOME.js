@@ -27,7 +27,6 @@ async function loadDashboard() {
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
 
-        // PUT BACK AFTER TESTING
         const monthlyLogs = student.attendanceLogs.filter(log => {
             const [year, month, day] = log.date.split('-').map(Number);
             const d = new Date(year, month - 1, day);

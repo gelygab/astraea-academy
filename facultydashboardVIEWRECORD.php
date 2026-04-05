@@ -1,6 +1,20 @@
+<?php
+session_start();
+require_once 'db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+}
+
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astraea Academy - View Student Record</title>
@@ -9,7 +23,7 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
@@ -23,16 +37,16 @@
 
             <div class="sidebar">
                 <h3>MAIN MENU</h3>
-                <a href="facultydashboardHOME.html"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="facultydashboardCLASSLIST.html" class="active"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
-                <a href="facultydashboardMANAGESCHED.html"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
-                <a href="facultydashboardEXCUSEANDLEAVE.html"><span class="material-symbols-outlined">star</span><h2>Excuse and Leave Request</h2></a>
-                <a href="facultydashboardREPORTS.html"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
+                <a href="facultydashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
+                <a href="facultydashboardCLASSLIST.php" class="active"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
+                <a href="facultydashboardMANAGESCHED.php"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
+                <a href="facultydashboardEXCUSEANDLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Excuse and Leave Request</h2></a>
+                <a href="facultydashboardREPORTS.php"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
             </div>
             
             <div class="below">
                 <h3>SETTINGS</h3>
-                <a href="facultylogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                <a href="facultylogout.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
             </div>
         </aside>
 
@@ -67,7 +81,7 @@
 
             <div class="card profile-card">
                 <div class="profile-header-actions">
-                    <button class="btn-back" onclick="window.location.href='facultydashboardCLASSLIST.html'">◀ Back</button>
+                    <button class="btn-back" onclick="window.location.href='facultydashboardCLASSLIST.php'">◀ Back</button>
                     <div class="right-actions">
                         <select class="select-monthly">
                             <option value="daily">Daily</option>

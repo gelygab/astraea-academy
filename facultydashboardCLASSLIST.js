@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const viewButtons = document.querySelectorAll(".btn-view");
     viewButtons.forEach(button => {
         button.addEventListener("click", () => {
-            window.location.href = 'facultydashboardVIEWRECORD.html';
+            window.location.href = 'facultydashboardVIEWRECORD.php';
         });
     });
 

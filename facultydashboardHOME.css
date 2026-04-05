@@ -418,12 +418,12 @@ aside:hover ~ .faculty-dashboard {
 .card.subjects-card:hover, 
 .card.feed-card:hover, 
 .card.rate-card:hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    transition: transform 0.3s ease; 
     transform: scale(1.3); 
     cursor: pointer;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4); 
+    border-radius: 13.33px; 
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.421); 
     z-index: 10;
-    position: relative; 
 }
 
 /* DROP DOWN */

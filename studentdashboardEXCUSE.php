@@ -31,7 +31,7 @@
 
                  <div class="below">
                 <h3>SETTINGS</h3>
-                <a href="studentlogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                <a href="studentlogin.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
             </div>
         </div>
         </aside>

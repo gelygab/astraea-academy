@@ -45,7 +45,7 @@ $user_uid = $_SESSION['uid'];?>
 
                 <div class="below">
                     <h3>SETTINGS</h3>
-                    <a href="studentlogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                    <a href="studentlogout.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
                 </div>
             </div>
         </aside>
@@ -57,7 +57,7 @@ $user_uid = $_SESSION['uid'];?>
                     <div class="header-controls">
                         <div class="dropdown-pill" id="customDropdown">
                             <div class="selected-wrapper">
-                                 <span class="selected-value" id="displayValue">Select</span>
+                                 <span class="selected-value" id="displayValue">Monthly</span>
                                  <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
                             </div>
                              <ul class="dropdown-menu" id="dropdownMenu">
