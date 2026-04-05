@@ -205,7 +205,7 @@ function selectDate(year, month, day) {
 // Cancel form
 function cancelForm() {
     if (confirm('Are you sure you want to cancel?')) {
-        window.location.href = 'studentdashboardHOME.html';
+        window.location.href = 'studentdashboardHOME.php';
     }
 }
 
@@ -241,8 +241,7 @@ function submitForm() {
         isSubmitting = false;
         return;
     }
-
-    // 5. Bundle it up
+    
     const formData = new FormData();
     formData.append('time_type', timeType);
     formData.append('start_date', startDate);
@@ -255,35 +254,30 @@ function submitForm() {
         formData.append('attachment', attachmentInput.files[0]);
     }
 
-    // 6. Send to the NEW process_excuse.php file
     fetch('process_excuse.php', {
         method: 'POST',
         body: formData
     })
     .then(response => response.text())
     .then(data => {
+        // Show the success message directly from the PHP file
         alert(data);
         
-        // Reset form
+        // Reset form and the upload text display
         document.getElementById('excuseForm').reset();
         document.querySelector('.upload-text').textContent = 'Upload';
         
-        // Unlock everything
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit';
-        isSubmitting = false; 
+        // Show success message (placeholder for backend integration)
+        alert(`Excuse Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
         
-        window.location.href = 'studentdashboardHOME.html';
+        // Redirect back to home
+        window.location.href = 'studentdashboardHOME.php';
     })
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred while submitting your excuse request.');
-        
-        // Unlock everything on error too
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit';
-        isSubmitting = false; 
     });
+
 }
 
 // Handle file upload display

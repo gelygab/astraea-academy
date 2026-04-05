@@ -205,7 +205,7 @@ function selectDate(year, month, day) {
 // Cancel form
 function cancelForm() {
     if (confirm('Are you sure you want to cancel?')) {
-        window.location.href = 'studentdashboardHOME.html';
+        window.location.href = 'studentdashboardHOME.php';
     }
 }
 
@@ -255,35 +255,11 @@ function submitForm() {
         document.getElementById('leaveForm').reset();
         document.querySelector('.upload-text').textContent = 'Upload';
         
+        // Show success message (placeholder for backend integration)
+        alert(`Leave Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
+
         // Redirect back to home
-        window.location.href = 'studentdashboardHOME.html';
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while submitting your leave request.');
-    });
-
-    // 2. Check if a file was uploaded and add it to the bundle
-    if (attachmentInput && attachmentInput.files.length > 0) {
-        formData.append('attachment', attachmentInput.files[0]);
-    }
-
-    // 3. Send the bundled data to our PHP backend
-    fetch('process_leave.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        // Show the success message from PHP
-        alert(data);
-        
-        // Reset form and the upload text display
-        document.getElementById('leaveForm').reset();
-        document.querySelector('.upload-text').textContent = 'Upload';
-        
-        // Redirect to home
-        window.location.href = 'studentdashboardHOME.html';
+        window.location.href = 'studentdashboardHOME.php';
     })
     .catch(error => {
         console.error('Error:', error);

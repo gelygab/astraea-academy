@@ -1,11 +1,31 @@
+const API_CONFIG = {
+    baseUrl: '',
+
+    endpoints: {
+        getFacultyData: 'get_faculty_dashboard.php'
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     let cachedData = null;
 
     async function fetchData() {
         try {
-            console.log("Fetching data for ID:", LOGGED_IN_TEACHER_ID);
-            const response = await fetch(`FacultyHOMEPAGE_BACKEND.php?teacher_id=${LOGGED_IN_TEACHER_ID}`);
+            const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyData}?uid=${CURRENT_USER_UID}`;
+            console.log("Fetching data for ID:", CURRENT_USER_UID);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error("Fetch failed");
+            
             cachedData = await response.json();
+            console.log(cachedData);
             
             const { common } = cachedData;
 

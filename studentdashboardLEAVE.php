@@ -1,6 +1,20 @@
+<?php 
+session_start();
+require_once 'db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: studentlogin.php');
+    exit();
+}
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Apply for Leave</title>
@@ -24,14 +38,14 @@
             <div class="sidebar">
                 <h3>MAIN MENU</h3>
                 <a href="studentdashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="studentdashboardSCHED.html"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
-                <a href="studentdashboardLEAVE.html"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
-                <a href="studentdashboardEXCUSE.html" class="active"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                <a href="studentdashboardAPPEALS.html"><span class="material-symbols-outlined">star</span><h2>View Appeal History</h2></a>
+                <a href="studentdashboardSCHED.php"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
+                <a href="studentdashboardLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
+                <a href="studentdashboardEXCUSE.php" class="active"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
+                <a href="studentdashboardAPPEALS.php"><span class="material-symbols-outlined">star</span><h2>View Appeal History</h2></a>
 
                 <div class="below">
                 <h3>SETTINGS</h3>
-                <a href="studentlogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                <a href="studentlogin.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
             </div>
         </div>
         </aside>
@@ -48,10 +62,10 @@
                         <label for="timeType">Time Type</label>
                         <div class="custom-select">
                             <select id="timeType" name="timeType">
-                                <option value="sick">Sick Leave</option>
-                                <option value="emergency">Emergency Leave</option>
-                                <option value="absence">Leave of Absence</option>
-                                <option value="other">Other</option>
+                                <option value="sick_leave">Sick Leave</option>
+                                <option value="emergency_leave">Emergency Leave</option>
+                                <option value="leave_of_absence">Leave of Absence</option>
+                                <option value="other_leave">Other</option>
                             </select>
                             <span class="material-symbols-outlined select-arrow">expand_more</span>
                         </div>

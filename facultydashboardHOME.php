@@ -1,18 +1,27 @@
 <?php
 session_start();
+require_once 'db.php';
 // Force login as Teacher 1 for this test
-$_SESSION['teacher_id'] = 1; 
-$current_teacher_id = $_SESSION['teacher_id'];
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+}
+
+$user_uid = $_SESSION['uid'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astraea Academy - Faculty Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="facultyhomepage.css">
+    <link rel="stylesheet" href="facultydashboardHOME.css">
 </head>
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
@@ -30,14 +39,14 @@ $current_teacher_id = $_SESSION['teacher_id'];
             </div>
             <div class="sidebar">
                 <h3>MAIN MENU</h3>
-                <a href="#" class="active"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="#"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
-                <a href="#"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
-                <a href="#"><span class="material-symbols-outlined">star</span><h2>Excuse and Leave Request</h2></a>
-                <a href="#"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
+                <a href="facultydashboardHOME.php" class="active"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
+                <a href="facultydashboardCLASSLIST.php"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
+                <a href="facultydashboardMANAGESCHED.php"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
+                <a href="facultydashboardEXCUSEANDLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Excuse and Leave Request</h2></a>
+                <a href="facultydashboardREPORTS.php"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
                 <div class="below">
                     <h3>SETTINGS</h3>
-                    <a href="#"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                    <a href="facultylogout.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
                 </div>
             </div>
         </aside>
@@ -53,12 +62,12 @@ $current_teacher_id = $_SESSION['teacher_id'];
                                 <span class="material-symbols-outlined">expand_more</span>
                             </div>
                             <ul class="dropdown-menu" id="dropdownMenu">
-                                 <li>Daily</li>
-                                <li>Weekly</li>
-                                <li>Monthly</li>
+                                <li data-value="daily">Daily</li>
+                                <li data-value="weekly">Weekly</li>
+                                <li data-value="monthly">Monthly</li>
                             </ul>
                         </div>
-                        <button class="download-btn">
+                        <button class="download-btn" onclick="downloadData()">
                             <span class="material-symbols-outlined">download</span> Download
                         </button>
                     </div>
@@ -67,8 +76,8 @@ $current_teacher_id = $_SESSION['teacher_id'];
                 <div class="faculty-info-flex">
                     <div class="pfp-circle"></div>
                     <div class="info-details">
-                        <h2 id="facultyName" class="stylized-name">Loading...</h2>
-                        <div class="details-grid">
+                        <h2 id="facultyName">Loading...</h2>
+                        <div id="facultyDetailsGrid" class="details-grid">
                             <p><strong>UID:</strong><br><span id="uid-val">...</span></p>
                             <p><strong>College:</strong><br><span id="college-val">...</span></p>
                             <p><strong>Department:</strong><br><span id="dept-val">...</span></p>
@@ -158,12 +167,6 @@ $current_teacher_id = $_SESSION['teacher_id'];
         </main>
     </div>
 
-   <script>
-
-        const LOGGED_IN_TEACHER_ID = <?php echo isset($_SESSION['teacher_id']) ? $_SESSION['teacher_id'] : 1; ?>;
-        console.log("Teacher ID loaded:", LOGGED_IN_TEACHER_ID);
-    </script>
-
-    <script src="facultyhomepage.js"></script>
+    <script src="facultydashboardHOME.js"></script>
 </body>
 </html>

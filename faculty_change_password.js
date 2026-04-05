@@ -1,5 +1,5 @@
 /*
- * Astraea Academy - Faculty Login Page
+ * Astraea Academy - Student Login Page
  */
 
 // ==========================================
@@ -48,7 +48,7 @@ function togglePassword() {
 class LoginForm {
     constructor() {
         this.form = document.getElementById('loginForm');
-        this.uidInput = document.getElementById('uid');
+        this.newpassInput = document.getElementById('new-password');
         this.passwordInput = document.getElementById('password');
         this.loginBtn = document.querySelector('.login-btn');
         this.init();
@@ -62,17 +62,17 @@ class LoginForm {
             this.handleSubmit();
         });
 
-        this.uidInput.addEventListener('blur', () => this.validateUID());
+        this.newpassInput.addEventListener('blur', () => this.validateNewPass());
         this.passwordInput.addEventListener('blur', () => this.validatePassword());
     }
 
-    validateUID() {
-        const uid = this.uidInput.value.trim();
-        if (!uid) {
-            this.showError(this.uidInput, 'Please enter your UID');
+    validateNewPass() {
+        const newpass = this.newpassInput.value.trim();
+        if (!newpass) {
+            this.showError(this.newpassInput, 'Please enter your new password.');
             return false;
         }
-        this.clearError(this.uidInput);
+        this.clearError(this.newpassInput);
         return true;
     }
 
@@ -116,42 +116,36 @@ class LoginForm {
     }
 
     handleSubmit() {
-        // const isUIDValid = this.validateUID();
-        // const isPasswordValid = this.validatePassword();
         const formData = new FormData(this.form);
+        this.setLoading(true);
 
-        // if (isUIDValid && isPasswordValid) {
-            this.setLoading(true);
+        fetch('facultyloginCHANGEP.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(status => {
+            const result = status.trim();
             
-            fetch('facultylogin_process.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(status => {
-                const result = status.trim();
+            if (result === 'dashboard' || result === 'success') {
+                this.showSuccessMessage();
 
-                if (result === 'first_login' || result === 'dashboard') {
-                    this.showSuccessMessage();
-                    setTimeout(() => {
-                        if (result === 'first_login') {
-                            window.location.href = 'faculty_change_password.php';
-                        } else if (result === 'dashboard') {
-                            window.location.href = 'facultydashboardHOME.php';
-                        }
-                    }, 2000);
-                } else {
-                    this.setLoading(false);
-                    alert('Login Failed: ' + result);
-                    this.passwordInput.value = '';
-                }
-            })
-            
-            .catch(error => {
+                setTimeout(() => {
+                    if (result === 'dashboard') {
+                        window.location.href = 'facultydashboardHOME.php';
+                    }
+                }, 1000);
+            }else {
+                this.setLoading(false);
+                alert('Confirm Password not a match!');
+                this.passwordInput.value = '';
+            } 
+        })
+        
+        .catch(error => {
             this.setLoading(false);
             console.error('Error:', error);
-            });
-        // }
+        });
     }
 
     setLoading(loading) {
@@ -190,11 +184,6 @@ class LoginForm {
         `;
         
         document.querySelector('.login-card').appendChild(overlay);
-        
-        setTimeout(() => {
-            alert('Welcome to the Faculty Portal!');
-            overlay.remove();
-        }, 1000);
     }
 }
 
