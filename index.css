@@ -152,11 +152,18 @@ body {
         transform: translateY(-30px) scale(1) rotate(180deg);
     }
 }
+<<<<<<< HEAD
 
 /* ID Badge */
 .id-badge-container {
     position: fixed;
     top: -300px;
+=======
+/* ID Badge */
+.id-badge-container {
+    position: fixed;
+    top: -300px; /* Adjusted for taller strap */
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     right: 15%;
     z-index: 10;
     animation: badgeDrop 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -171,7 +178,11 @@ body {
         opacity: 0;
     }
     60% {
+<<<<<<< HEAD
         top: 30px;
+=======
+        top: 0px;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
         transform: rotate(4deg);
         opacity: 1;
     }
@@ -179,13 +190,18 @@ body {
         transform: rotate(-2deg);
     }
     100% {
+<<<<<<< HEAD
         top: 60px;
+=======
+        top: 0px;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
         transform: rotate(0deg);
     }
 }
 
 .lanyard {
     position: relative;
+<<<<<<< HEAD
     width: 40px;
     margin: 0 auto;
 }
@@ -196,15 +212,36 @@ body {
     background: linear-gradient(90deg, #4a1c3d, #6b2c5c, #8b3d7c, #6b2c5c, #4a1c3d);
     margin: 0 auto;
     border-radius: 0 0 12px 12px;
+=======
+    width: 50px; 
+    margin: 0 auto;
+    z-index: 2;
+}
+
+.lanyard-strap {
+    width: 30px;
+    height: 300px; 
+    background: linear-gradient(90deg, #f36984, #ff869e, #fea3b2, #ffc3cc, #ee5472);
+    margin: 0 auto;
+    border-radius: 0 0 15px 15px; 
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     box-shadow: inset 2px 0 5px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .lanyard-clip {
+<<<<<<< HEAD
     width: 35px;
     height: 45px;
     background: linear-gradient(145deg, #d0d0d0, #a0a0a0, #d0d0d0);
     margin: -8px auto 0;
     border-radius: 8px;
+=======
+    width: 45px; 
+    height: 55px; 
+    background: linear-gradient(145deg, #d0d0d0, #a0a0a0, #d0d0d0);
+    margin: -10px auto 0; 
+    border-radius: 10px;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     position: relative;
     box-shadow: 0 3px 8px rgba(0,0,0,0.4);
 }
@@ -212,17 +249,26 @@ body {
 .lanyard-clip::before {
     content: '';
     position: absolute;
+<<<<<<< HEAD
     top: 8px;
     left: 50%;
     transform: translateX(-50%);
     width: 18px;
     height: 18px;
+=======
+    top: 10px; /* Adjusted for bigger clip */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px; /* Increased from 18px */
+    height: 22px; /* Increased from 18px */
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     background: linear-gradient(145deg, #808080, #606060);
     border-radius: 50%;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .badge-card {
+<<<<<<< HEAD
     width: 150px;
     height: 220px;
     background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
@@ -243,6 +289,24 @@ body {
     border-radius: 12px;
     border: 2px solid #e0e0e0;
     box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+=======
+    width: 220px; /* Increased from 150px */
+    height: 320px; /* Increased from 220px */
+    background: transparent; 
+    border-radius: 22px; /* Slightly larger radius */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    margin-top: -10px; /* Adjusted for bigger clip */
+    position: relative;
+    overflow: hidden; 
+}
+
+.id-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 22px;
+    display: block;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 }
 
 /* Swing animation after drop */
@@ -254,8 +318,13 @@ body {
 
 @keyframes badgeSwing {
     0%, 100% { transform: rotate(0deg) translateX(0); }
+<<<<<<< HEAD
     25% { transform: rotate(1.5deg) translateX(5px); }
     75% { transform: rotate(-1.5deg) translateX(-5px); }
+=======
+    25% { transform: rotate(1.5deg) translateX(8px); } 
+    75% { transform: rotate(-1.5deg) translateX(-8px); }
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 }
 
 /* Custom Cursor */

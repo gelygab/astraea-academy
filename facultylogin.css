@@ -7,11 +7,17 @@
 }
 
 :root {
+<<<<<<< HEAD
     --primary-pink: #ff69b4;
     --dark-pink: #d1478c;
     --light-pink: #ffb6c1;
     --hot-pink: #ff1493;
     --metallic-pink: #e8b4b8;
+=======
+    --primary-purple: #8b5a9f;
+    --dark-purple: #6b3d7c;
+    --light-purple: #d4b8e0;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     --white: #ffffff;
     --black: #000000;
     --text-dark: #4a1c3d;
@@ -42,14 +48,22 @@ body {
     object-fit: cover;
 }
 
+<<<<<<< HEAD
 /* Pink Top Bar */
+=======
+/* Purple Top Bar */
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 .pink-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 43px;
+<<<<<<< HEAD
     background-color: #b84c65;
+=======
+  background-color: #b98bccbd;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     z-index: 10;
 }
 
@@ -162,7 +176,11 @@ body {
     position: relative;
     top: 100px;
     width: 420px;
+<<<<<<< HEAD
     background: linear-gradient(180deg, #ffcdd8 0%, #ffb6c1 50%, #ff9eb5 100%);
+=======
+       background: linear-gradient(180deg, #e8d5f0 0%, #d4b8e0 50%, #c49bd4 100%);
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     border-radius: 20px;
     padding: 30px 35px 40px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.25);
@@ -320,6 +338,7 @@ body {
     margin-top: 5px;
 }
 
+<<<<<<< HEAD
 .remember-me {
     display: flex;
     align-items: center;
@@ -346,6 +365,8 @@ body {
     color: var(--hot-pink);
     text-decoration: underline;
 }
+=======
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 
 /* Login Button */
 .login-btn {
@@ -353,7 +374,11 @@ body {
     padding: 14px;
     border: none;
     border-radius: 25px;
+<<<<<<< HEAD
     background: linear-gradient(145deg, #e7859c, #ff7eb3);
+=======
+     background: linear-gradient(145deg, #c49bd4, #a87cb8);
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     color: var(--text-dark);
     font-family: 'Inter', sans-serif;
     font-size: 16px;
@@ -364,7 +389,11 @@ body {
     margin-top: 10px;
 }
 
+<<<<<<< HEAD
 .login-btn:hover {
+=======
+.login-btn:hover {  
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
 }
@@ -472,8 +501,13 @@ body {
 }
 
 /* Error message */
+<<<<<<< HEAD
 .error-message {
     color: #d1478c;
+=======
+error-message {
+    color: #8b5a9f;
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     font-size: 11px;
     margin-top: 4px;
     display: block;

@@ -116,6 +116,7 @@ class LoginForm {
     }
 
     handleSubmit() {
+<<<<<<< HEAD
         const isUIDValid = this.validateUID();
         const isPasswordValid = this.validatePassword();
         
@@ -127,6 +128,44 @@ class LoginForm {
                 this.showSuccessMessage();
             }, 1500);
         }
+=======
+        // const isUIDValid = this.validateUID();
+        // const isPasswordValid = this.validatePassword();
+        const formData = new FormData(this.form);
+
+        // if (isUIDValid && isPasswordValid) {
+            this.setLoading(true);
+            
+            fetch('facultylogin_process.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(status => {
+                const result = status.trim();
+
+                if (result === 'first_login' || result === 'dashboard') {
+                    this.showSuccessMessage();
+                    setTimeout(() => {
+                        if (result === 'first_login') {
+                            window.location.href = 'faculty_change_password.php';
+                        } else if (result === 'dashboard') {
+                            window.location.href = 'facultydashboardHOME.php';
+                        }
+                    }, 2000);
+                } else {
+                    this.setLoading(false);
+                    alert('Login Failed: ' + result);
+                    this.passwordInput.value = '';
+                }
+            })
+            
+            .catch(error => {
+            this.setLoading(false);
+            console.error('Error:', error);
+            });
+        // }
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     }
 
     setLoading(loading) {
@@ -167,7 +206,11 @@ class LoginForm {
         document.querySelector('.login-card').appendChild(overlay);
         
         setTimeout(() => {
+<<<<<<< HEAD
             alert('Welcome to the Student Portal!');
+=======
+            alert('Welcome to the Faculty Portal!');
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
             overlay.remove();
         }, 1000);
     }
@@ -194,7 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
+<<<<<<< HEAD
     console.log('✨ Student Login initialized');
+=======
+    console.log('✨ Faculty Login initialized');
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 });
 
 const style = document.createElement('style');

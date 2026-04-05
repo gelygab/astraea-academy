@@ -116,6 +116,7 @@ class LoginForm {
     }
 
     handleSubmit() {
+<<<<<<< HEAD
         const isUIDValid = this.validateUID();
         const isPasswordValid = this.validatePassword();
         
@@ -127,6 +128,39 @@ class LoginForm {
                 this.showSuccessMessage();
             }, 1500);
         }
+=======
+        const formData = new FormData(this.form);
+        this.setLoading(true);
+
+        fetch('login_process.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(status => {
+            const result = status.trim();
+            
+            if (result === 'first_login' || result === 'dashboard') {
+                this.showSuccessMessage();
+                setTimeout(() => {
+                    if (result === 'first_login') {
+                        window.location.href = 'change_password.php';
+                    } else if (result === 'dashboard') {
+                        window.location.href = 'studentdashboardHOME.php';
+                    }
+                }, 2000);
+            } else {
+                this.setLoading(false);
+                alert('Login Failed: ' + result);
+                this.passwordInput.value = '';
+            }
+        })
+        
+        .catch(error => {
+            this.setLoading(false);
+            console.error('Error:', error);
+        });
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     }
 
     setLoading(loading) {
@@ -165,6 +199,7 @@ class LoginForm {
         `;
         
         document.querySelector('.login-card').appendChild(overlay);
+<<<<<<< HEAD
         
         setTimeout(() => {
             alert('Welcome to the Student Portal!');
@@ -173,6 +208,15 @@ class LoginForm {
     }
 }
 
+=======
+    }
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevents the default form submission
+});
+
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 // ==========================================
 // NAVIGATION
 // ==========================================
