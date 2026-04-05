@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - Apply for Leave</title>
+    <title>Student Dashboard - Request an Excuse</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet" href="studentdashboardLEAVE.css">
+    <link rel="stylesheet" href="studentdashboardEXCUSE.css">
 </head>
 <body>
     <div class="background-container">
@@ -24,14 +24,14 @@
             <div class="sidebar">
                 <h3>MAIN MENU</h3>
                 <a href="studentdashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="studentdashboardSCHED.html"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
-                <a href="studentdashboardLEAVE.html"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
-                <a href="studentdashboardEXCUSE.html" class="active"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                <a href="studentdashboardAPPEALS.html"><span class="material-symbols-outlined">star</span><h2>View Appeal History</h2></a>
+                <a href="studentdashboardSCHED.php"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
+                <a href="studentdashboardLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
+                <a href="studentdashboardEXCUSE.php" class="active"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
+                <a href="studentdashboardAPPEALS.php"><span class="material-symbols-outlined">star</span><h2>View Appeal History</h2></a>
 
-                <div class="below">
+                 <div class="below">
                 <h3>SETTINGS</h3>
-                <a href="studentlogin.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                <a href="studentlogin.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
             </div>
         </div>
         </aside>
@@ -39,19 +39,19 @@
         <main class="student-dashboard">
             <section class="form-card">
                 <div class="form-header">
-                    <h2>Apply for Leave</h2>
+                    <h2>Request an Excuse</h2>
                 </div>
                 
-                <form id="leaveForm" class="leave-form">
+                <form id="excuseForm" class="excuse-form">
                     <!-- Time Type -->
                     <div class="form-group">
                         <label for="timeType">Time Type</label>
                         <div class="custom-select">
                             <select id="timeType" name="timeType">
-                                <option value="sick">Sick Leave</option>
-                                <option value="emergency">Emergency Leave</option>
-                                <option value="absence">Leave of Absence</option>
-                                <option value="other">Other</option>
+                                <option value="extracurricular_activity">Extracurricular Activity</option>
+                                <option value="medical_appointment">Medical Appointment</option>
+                                <option value="personal_emergency">Personal Emergency</option>
+                                <option value="other_excuse">Other</option>
                             </select>
                             <span class="material-symbols-outlined select-arrow">expand_more</span>
                         </div>
@@ -127,6 +127,6 @@
         </div>
     </div>
 
-    <script src="studentdashboardLEAVE.js"></script>
+    <script src="studentdashboardEXCUSE.js"></script>
 </body>
 </html>

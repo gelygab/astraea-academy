@@ -5,19 +5,19 @@ require_once 'db.php';
 $user_uid = $_POST['uid'];
 $user_password = $_POST['password'];
 
-$sql = "SELECT student_id, user_uid, password, is_first_login FROM student_id WHERE user_uid = ?";
-$stmt = $conn->prepare($sql);
+$user_query = "SELECT teacher_id, user_uid, password, is_first_login
+                FROM teacher_id
+                WHERE user_uid = ?";
+$stmt_user = $conn->prepare($user_query);
 
-if ($stmt) {
-    $stmt->bind_param("s", $user_uid);
+if ($stmt_user) {
+    $stmt_user->bind_param("s", $user_uid);
+    $stmt_user->execute();
+    $user_result = $stmt_user->get_result();
 
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
+    if ($row = $user_result->fetch_assoc()) {
         if (password_verify($user_password, $row['password'])) {
-           $_SESSION['userId'] = $row['student_id'];
+            $_SESSION['userId'] = $row['teacher_id'];
             $_SESSION['uid'] = $row['user_uid'];
         } else {
             // Valid UID invalid password
@@ -25,10 +25,10 @@ if ($stmt) {
             exit();
         }
         if ($row['is_first_login'] == 1) {
-                // Moves to change password
-                echo "first_login";
+            // Moves to change password
+            echo "first_login";
         } else {
-            // Moves to their student dashboard
+            // Moves to their faculty dashboard
             echo "dashboard";
         }
         exit();
@@ -37,10 +37,9 @@ if ($stmt) {
         echo "invalid uid and password";
         exit();
     }
-
     $stmt->close();
 } else {
     $error_message = "Database error: " . $conn->error;
 }
-
-$conn->close();?>
+$conn->close();
+?>

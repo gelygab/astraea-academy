@@ -116,17 +116,42 @@ class LoginForm {
     }
 
     handleSubmit() {
-        const isUIDValid = this.validateUID();
-        const isPasswordValid = this.validatePassword();
-        
-        if (isUIDValid && isPasswordValid) {
+        // const isUIDValid = this.validateUID();
+        // const isPasswordValid = this.validatePassword();
+        const formData = new FormData(this.form);
+
+        // if (isUIDValid && isPasswordValid) {
             this.setLoading(true);
             
-            setTimeout(() => {
-                this.setLoading(false);
-                this.showSuccessMessage();
-            }, 1500);
-        }
+            fetch('facultylogin_process.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(status => {
+                const result = status.trim();
+
+                if (result === 'first_login' || result === 'dashboard') {
+                    this.showSuccessMessage();
+                    setTimeout(() => {
+                        if (result === 'first_login') {
+                            window.location.href = 'faculty_change_password.php';
+                        } else if (result === 'dashboard') {
+                            window.location.href = 'facultydashboardHOME.php';
+                        }
+                    }, 2000);
+                } else {
+                    this.setLoading(false);
+                    alert('Login Failed: ' + result);
+                    this.passwordInput.value = '';
+                }
+            })
+            
+            .catch(error => {
+            this.setLoading(false);
+            console.error('Error:', error);
+            });
+        // }
     }
 
     setLoading(loading) {

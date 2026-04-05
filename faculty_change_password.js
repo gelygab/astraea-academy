@@ -48,7 +48,7 @@ function togglePassword() {
 class LoginForm {
     constructor() {
         this.form = document.getElementById('loginForm');
-        this.uidInput = document.getElementById('uid');
+        this.newpassInput = document.getElementById('new-password');
         this.passwordInput = document.getElementById('password');
         this.loginBtn = document.querySelector('.login-btn');
         this.init();
@@ -62,17 +62,17 @@ class LoginForm {
             this.handleSubmit();
         });
 
-        this.uidInput.addEventListener('blur', () => this.validateUID());
+        this.newpassInput.addEventListener('blur', () => this.validateNewPass());
         this.passwordInput.addEventListener('blur', () => this.validatePassword());
     }
 
-    validateUID() {
-        const uid = this.uidInput.value.trim();
-        if (!uid) {
-            this.showError(this.uidInput, 'Please enter your UID');
+    validateNewPass() {
+        const newpass = this.newpassInput.value.trim();
+        if (!newpass) {
+            this.showError(this.newpassInput, 'Please enter your new password.');
             return false;
         }
-        this.clearError(this.uidInput);
+        this.clearError(this.newpassInput);
         return true;
     }
 
@@ -119,7 +119,7 @@ class LoginForm {
         const formData = new FormData(this.form);
         this.setLoading(true);
 
-        fetch('login_process.php', {
+        fetch('facultyloginCHANGEP.php', {
             method: 'POST',
             body: formData
         })
@@ -127,20 +127,19 @@ class LoginForm {
         .then(status => {
             const result = status.trim();
             
-            if (result === 'first_login' || result === 'dashboard') {
+            if (result === 'dashboard' || result === 'success') {
                 this.showSuccessMessage();
+
                 setTimeout(() => {
-                    if (result === 'first_login') {
-                        window.location.href = 'change_password.php';
-                    } else if (result === 'dashboard') {
-                        window.location.href = 'studentdashboardHOME.php';
+                    if (result === 'dashboard') {
+                        window.location.href = 'facultydashboardHOME.php';
                     }
-                }, 2000);
-            } else {
+                }, 1000);
+            }else {
                 this.setLoading(false);
-                alert('Login Failed: ' + result);
+                alert('Confirm Password not a match!');
                 this.passwordInput.value = '';
-            }
+            } 
         })
         
         .catch(error => {
@@ -188,10 +187,6 @@ class LoginForm {
     }
 }
 
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevents the default form submission
-});
-
 // ==========================================
 // NAVIGATION
 // ==========================================
@@ -213,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
-    console.log('✨ Student Login initialized');
+    console.log('✨ Faculty Login initialized');
 });
 
 const style = document.createElement('style');

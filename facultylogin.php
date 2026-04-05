@@ -1,18 +1,19 @@
 <?php 
-include("db.php");?>
+require_once 'db.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astraea Academy - Student Login</title>
-    <link rel="stylesheet" href="studentlogin.css">
+    <title>Astraea Academy - Faculty Login</title>
+    <link rel="stylesheet" href="facultylogin.css">
 </head>
 <body>
     <!-- Background -->
     <div class="background-container">
-        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <!-- Pink Top Bar -->
@@ -44,15 +45,14 @@ include("db.php");?>
                 </div>
             </div>
             <div class="card-body">
-                <h2 class="greeting">Student Login</h2>
-                <p class="instruction">Welcome back, Stellar Student!</p>
+                <h2 class="greeting">Faculty Login</h2>
+                <p class="instruction">Welcome back, Esteemed Educator!</p>
                 
-                <!-- This is for first-time users -->
-                <form id="loginForm" class="login-form" action ="login_process.php" method="post">
+                <form id="loginForm" class="login-form" action = "facultylogin_process.php" method="post">
                     <div class="form-group">
-                        <label for="uid">Student UID</label>
-                        <input type="text" id="uid" name="uid" placeholder="Enter your Student UID" required>
-
+                        <label for="uid">Faculty UID</label>
+                        <input type="text" id="uid" name="uid" placeholder="Enter your Faculty UID" required>
+                    
                         <label for="password">Password</label>
                         <div class="password-wrapper">
                             <input type="password" id="password" name="password" placeholder="Enter your password" required>
@@ -61,6 +61,9 @@ include("db.php");?>
                             </button>
                         </div>
                     </div>
+                    
+    
+                    
                     <button type="submit" class="login-btn">Log In</button>
                 </form>
                 
@@ -72,6 +75,6 @@ include("db.php");?>
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="cursor"></div>
 
-    <script src="studentlogin.js"></script>
+    <script src="facultylogin.js"></script>
 </body>
 </html>

@@ -1,18 +1,15 @@
-<?php 
-include("db.php");?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astraea Academy - Student Login</title>
-    <link rel="stylesheet" href="studentlogin.css">
+    <title>Astraea Academy - Faculty Login</title>
+    <link rel="stylesheet" href="facultylogin.css">
 </head>
 <body>
     <!-- Background -->
     <div class="background-container">
-        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <!-- Pink Top Bar -->
@@ -29,11 +26,6 @@ include("db.php");?>
         </div>
     </div>
 
-    <!-- Back Button -->
-    <button class="back-btn" onclick="goBack()">
-        <span class="back-arrow">←</span> Back
-    </button>
-
     <!-- Main Login Container -->
     <div class="login-container">
         <!-- Login Card - Centered -->
@@ -44,18 +36,17 @@ include("db.php");?>
                 </div>
             </div>
             <div class="card-body">
-                <h2 class="greeting">Student Login</h2>
-                <p class="instruction">Welcome back, Stellar Student!</p>
-                
-                <!-- This is for first-time users -->
-                <form id="loginForm" class="login-form" action ="login_process.php" method="post">
+                <h2 class="greeting">Faculty Login</h2>
+                <p class="instruction">Welcome back, Esteemed Educator!</p>
+            
+                <form id="loginForm" autocomplete = "off" class="login-form" action ="facultyloginCHANGEP.php" method="post">
                     <div class="form-group">
-                        <label for="uid">Student UID</label>
-                        <input type="text" id="uid" name="uid" placeholder="Enter your Student UID" required>
+                        <label for="password">New Password</label>
+                        <input type="password" id="new-password" name="new_password" placeholder="Enter your new password" required>
 
-                        <label for="password">Password</label>
+                        <label for="password">Confirm Password</label>
                         <div class="password-wrapper">
-                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            <input type="password" id="password" name="confirm_password" placeholder="Confirm your password" required>
                             <button type="button" class="toggle-password" onclick="togglePassword()">
                                 <span id="eye-icon">👁</span>
                             </button>
@@ -72,6 +63,6 @@ include("db.php");?>
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="cursor"></div>
 
-    <script src="studentlogin.js"></script>
+    <script src="faculty_change_password.js"></script>
 </body>
 </html>
