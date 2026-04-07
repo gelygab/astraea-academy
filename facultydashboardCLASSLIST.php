@@ -128,29 +128,6 @@ $user_uid = $_SESSION['uid'];
         </main>
     </div> 
     <script src="facultydashboardCLASSLIST.js"></script>
-
-   // ---EDIT INFO MODAL---
-    <div id="editModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeEditModal()">&times;</span>
-            <h2>Edit Student Info</h2>
-            <form id="editStudentForm">
-                <input type="hidden" id="editUid" name="editUid">
-                
-                <div class="input-group">
-                    <label>Contact Number:</label>
-                    <input type="text" id="editContact" name="editContact" placeholder="e.g. 09123456789">
-                </div>
-
-                <div class="input-group">
-                    <label>Email Address:</label>
-                    <input type="email" id="editEmail" name="editEmail" placeholder="student@example.com">
-                </div>
-
-                <div class="input-group">
-                    <label>Address:</label>
-                    <input type="text" id="editAddress" name="editAddress" placeholder="e.g. 123 Main St, City">
-                </div>
                 
                 <button type="submit" class="btn-save">Save Changes</button>
             </form>

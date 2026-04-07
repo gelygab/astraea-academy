@@ -17,7 +17,7 @@ function getProgramName(id) {
 
 document.addEventListener("DOMContentLoaded", () => {
     
-    // 1. Load everything when the page starts
+    // 1. page starts
     loadSubjects();
 
     const subjectDropdown = document.getElementById('subjectDropdown');
@@ -238,9 +238,8 @@ function loadClassList(scheduleId) {
                     <td>${student.user_uid}</td>
                     <td>${student.last_name}, ${student.first_name}</td>
                     <td>${student.total_attendance}</td>
-                    <td class="action-cell">
+                    <td class="action-cell" style>
                         <button class="btn-action btn-view" onclick="viewFullRecord('${student.user_uid}')">View Full Record</button>
-                        <button class="btn-action btn-edit" onclick="openEditModal('${student.user_uid}')">Edit Info</button>
                     </td>
                 `;
                 tableBody.appendChild(tr);
@@ -252,61 +251,3 @@ function loadClassList(scheduleId) {
 function viewFullRecord(studentUid) {
     window.location.href = `facultydashboardVIEWRECORD.php?uid=${studentUid}`;
 }
-
-function openEditModal(studentUid) {
-    document.getElementById('editModal').style.display = 'flex';
-    document.getElementById('editUid').value = studentUid;
-    
-}
-
-function closeEditModal() {
-    document.getElementById('editModal').style.display = 'none';
-}
-
-// --- SAVE STUDENT INFO ---
-document.addEventListener("DOMContentLoaded", () => {
-    const editForm = document.getElementById('editStudentForm');
-    
-    if (editForm) {
-        editForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Stops the page from refreshing!
-
-            // Grab the data from the inputs
-            const uid = document.getElementById('editUid').value;
-            const contact = document.getElementById('editContact').value;
-            const email = document.getElementById('editEmail').value;
-            const address = document.getElementById('editAddress').value;
-
-            // Bundle the data up to send to PHP
-            const formData = new FormData();
-            formData.append('uid', uid);
-            formData.append('contact', contact);
-            formData.append('email', email);
-            formData.append('address', address);
-
-            // Send it to our new API
-            fetch('api_update_student_info.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    alert("Student info updated successfully!");
-                    closeEditModal();
-                    
-                    // Clear the inputs for next time
-                    document.getElementById('editContact').value = '';
-                    document.getElementById('editEmail').value = '';
-                    document.getElementById('editAddress').value = '';
-                } else {
-                    alert("Error: " + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred while saving.");
-            });
-        });
-    }
-});
