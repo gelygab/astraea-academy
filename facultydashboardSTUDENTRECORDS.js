@@ -267,4 +267,28 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSearch('.l-search', '#l-pending-view .request-card', '.student-name');
     setupSearch('.l-app-search', '#l-approved-view tbody tr', 'td:nth-child(2)');
     setupSearch('.l-dec-search', '#l-declined-view tbody tr', 'td:nth-child(2)');
+
+    // Leave Tab Search Event Listeners
+    setupSearch('.l-search', '#l-pending-view .request-card', '.student-name');
+    setupSearch('.l-app-search', '#l-approved-view tbody tr', 'td:nth-child(2)');
+    setupSearch('.l-dec-search', '#l-declined-view tbody tr', 'td:nth-child(2)');
+
+    // URL CHECKER FOR TAB REDIRECTION
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedTab = urlParams.get('tab');
+
+    if (requestedTab === 'leave') {
+        // Find the leave button 
+        const leaveBtn = document.getElementById('btn-leave');
+        if (leaveBtn) {
+            leaveBtn.click();
+        }
+    } else if (requestedTab === 'excuse') {
+        // Find the excuse button
+        const excuseBtn = document.getElementById('btn-excuse');
+        if (excuseBtn) {
+            excuseBtn.click();
+        }
+    }
+
 });
