@@ -53,31 +53,8 @@ $user_uid = $_SESSION['uid'];
         <main class="class-list-dashboard">
             
             <div class="card filter-card">
-                <h2>View Class List</h2>
-                <div class="filter-controls">
-                    <div class="input-group full-width">
-                        <label>Subject</label>
-                        <select required>
-                            <option value="software_design" selected>Software Design</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-row">
-                        <div class="input-group">
-                            <label>Program</label>
-                            <select required>
-                                <option value="bscpe" selected>BSCpE</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Block</label>
-                            <select required>
-                                <option value="block_2" selected>Block 2</option>
-                            </select>
-                        </div>
-                    </div>
+                <h2>View Student Record</h2>
                 </div>
-            </div>
 
             <div class="card profile-card">
                 <div class="profile-header-actions">
@@ -97,17 +74,17 @@ $user_uid = $_SESSION['uid'];
 
                 <div class="profile-main-info">
                     <div class="profile-circle" id="profileCircle" style="cursor: pointer;" title="Click to upload photo">
-                <img src="images/default-avatar.png" id="profileImg" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                <input type="file" id="imageUpload" accept="image/*" hidden>
-                </div>
+                        <img src="images/default-avatar.png" id="profileImg" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        <input type="file" id="imageUpload" accept="image/*" hidden>
+                    </div>
                     <div class="info-text">
-                        <h1>Tricia Mae Zamora</h1>
-                        <p class="subtitle">2nd Year - Computer Engineering</p>
+                        <h1 id="studentName">Loading Name...</h1>
+                        <p class="subtitle" id="studentProgram">Loading Program Info...</p>
                         <div class="contact-grid">
-                            <p><strong>UID:</strong> 09999999</p>
-                            <p><strong>Contact Number:</strong> 09568608426</p>
-                            <p><strong>Email:</strong> hehfjdshsa@email.com</p>
-                            <p><strong>Address:</strong> 123 Hotdog Kanto Street Caloocan</p>
+                            <p><strong>UID:</strong> <span id="studentUidDisplay">Loading...</span></p>
+                            <p><strong>Contact Number:</strong> <span id="studentContact">Loading...</span></p>
+                            <p><strong>Email:</strong> <span id="studentEmail">Loading...</span></p>
+                            <p><strong>Address:</strong> <span id="studentAddress">Loading...</span></p>
                         </div>
                     </div>
                 </div>
@@ -115,23 +92,24 @@ $user_uid = $_SESSION['uid'];
                 <div class="stats-container">
                     <div class="stat-box">
                         <span class="material-symbols-outlined">star</span>
-                        <div class="stat-text"><strong>20 Days</strong><br>Total Attendance</div>
+                        <div class="stat-text"><strong id="statTotal">0</strong><br>Total Attendance</div>
                     </div>
                     <div class="stat-box">
                         <span class="material-symbols-outlined">star</span>
-                        <div class="stat-text"><strong>20 Days</strong><br>Late Attendance</div>
+                        <div class="stat-text"><strong id="statLate">0</strong><br>Late Attendance</div>
                     </div>
                     <div class="stat-box">
                         <span class="material-symbols-outlined">star</span>
-                        <div class="stat-text"><strong>20 Days</strong><br>Undertime Attendance</div>
+                        <div class="stat-text"><strong id="statUndertime">0</strong><br>Undertime Attendance</div>
                     </div>
                     <div class="stat-box">
                         <span class="material-symbols-outlined">star</span>
-                        <div class="stat-text"><strong>20 Days</strong><br>Total Absent</div>
+                        <div class="stat-text"><strong id="statAbsent">0</strong><br>Total Absent</div>
                     </div>
                 </div>
             </div>
-<div class="card history-card">
+
+            <div class="card history-card">
                 <h2>Excuse History</h2>
                 <div class="white-wrapper">
                     <table class="history-table">
@@ -145,15 +123,15 @@ $user_uid = $_SESSION['uid'];
                         </thead>
                         <tbody id="excuseBody">
                             <tr>
-                                <td>March 15, 2026</td>
-                                <td>Medical (Fever)</td>
-                                <td><span class="status-pill status-approved">Approved</span></td>
-                                <td>Doctor's note submitted.</td>
+                                <td colspan="4" style="text-align:center;">No excuses found.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </main> </div> <script src="facultydashboardCLASSLIST.js"></script> 
+        </main> 
+    </div> 
+    
+    <script src="facultydashboardVIEWRECORD.js"></script> 
 </body>
 </html>
