@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 setEl('subject-count', common.subjects.length);
             }
 
-            // Load Current Class Stats (Icons)
-            if (cachedData.common.current_class) {
-                const cc = cachedData.common.current_class;
+            // Load Current Class Stats
+            if (common.current_class) {
+                const cc = common.current_class;
                 setEl('curr-class', cc.name);
                 setEl('curr-enrolled', `${cc.enrolled} STUDENTS`);
                 setEl('curr-present', `${cc.present} PRESENT`);
@@ -36,12 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setEl('curr-pending', pendingText);
             }
 
-            // Load Live Feed Table & Legend
+            // Load Live Feed Table
             const feedBody = document.getElementById('feed-body');
             const feedContainer = document.querySelector('.white-table-container');
 
             if (feedBody) {
-                // Generate Rows
                 feedBody.innerHTML = common.live_feed.map(f => `
                     <tr>
                         <td class="col-name">${f.name}</td>
@@ -72,40 +71,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Logic (Dropdown, Summary, Pie) ---
-    function updateDynamicSections(timeframe) {
-        if (!cachedData || !cachedData.timeframes[timeframe]) return;
-        const data = cachedData.timeframes[timeframe];
+        function updateDynamicSections(timeframe) {
+            if (!cachedData || !cachedData.timeframes[timeframe]) {
+                console.error("Data not ready or timeframe invalid:", timeframe);
+                return;
+            }
+    
+        // --- Summary Boxes ---
+            const tfData = cachedData.timeframes[timeframe];
+            const summaryContainer = document.getElementById('summaryBoxes');
 
-        // Summary Boxes
-        const summaryContainer = document.getElementById('summaryBoxes');
-        if (summaryContainer) {
-            summaryContainer.innerHTML = data.summary.map(item => `
-                <div class="pink-box">
-                    <span class="material-symbols-outlined">star</span>
-                    <div class="box-text">
-                        <strong>${item.value}</strong>
-                        <p>${item.label}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
+            if (summaryContainer) {
+                summaryContainer.innerHTML = tfData.summary.map(item => {
+                    const label = item.label.toLowerCase();
+                    let iconName = "star"; // Default backup
 
-        // Pie Chart & Percentage Labels
+                    // Logic to choose icon based on keywords
+                    if (label.includes("attendance")) {
+                        iconName = "groups";
+                    } else if (label.includes("late")) {
+                        iconName = "schedule";
+                    } else if (label.includes("undertime")) {
+                        iconName = "hourglass_bottom";
+                    } else if (label.includes("absent")) {
+                        iconName = "person_off";
+                    }
+
+                    return `
+                        <div class="pink-box">
+                            <div class="icon-wrapper">
+                                <span class="material-symbols-outlined">${iconName}</span>
+                            </div>
+        
+                            <div class="box-text">
+                                <strong style="color: #000; font-size: 1.2rem;">${item.value}</strong>
+                                <p style="color: rgba(8, 8, 8, 0.8); margin: 0;">${item.label}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+        // ---Pie Chart ---
         const pie = document.getElementById('attendancePie');
         if (pie) {
-            const present = data.rate; 
-            const absent = 100 - present;
+            const present = tfData.rate; 
             pie.style.background = `conic-gradient(#b0005d 0% ${present}%, #ffc4dd ${present}% 100%)`;
             
             const pLabel = document.querySelector('.pie-label-present');
             if (pLabel) pLabel.textContent = `${present}%`;
         }
 
-        // Attendance Text Description
+        // --- Attendance Text Description ---
         const desc = document.getElementById('attendanceDescription');
         if (desc) {
-            desc.innerHTML = `Attendance for this period is <strong>${data.rate}%</strong> compared to the previous period's <strong>${data.prev_rate}%</strong>.`;
+            desc.innerHTML = `Attendance for this period is <strong>${tfData.rate}%</strong> compared to the previous period's <strong>${tfData.prev_rate}%</strong>.`;
         }
     }
 
@@ -134,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (menu) menu.style.display = 'none';
     };
 
-    // Helper function to update text safely
     function setEl(id, val) {
         const el = document.getElementById(id);
         if (el) el.innerHTML = val;

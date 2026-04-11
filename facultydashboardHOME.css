@@ -48,8 +48,7 @@ body {
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-/*SIDEBAR */
-
+/* SIDEBAR */
 aside {
     width: 6rem;
     min-height: 100vh;
@@ -64,7 +63,9 @@ aside {
     flex-direction: column;
 }
 
-aside:hover { width: 22rem; }
+aside:hover { 
+    width: 22rem; 
+}
 
 aside h1, aside h2, aside h3 {
     opacity: 0;                
@@ -91,40 +92,54 @@ aside .logo {
 }
 
 aside .logo img {
-    width: 3.5rem;
+    width: 3rem;
     height: 2.5rem;
 }
 
-aside .sidebar {
-    margin-top: 2rem;
+aside .logo h3 {
+    font-size: 1.2rem; 
 }
 
-/* SETTINGS and MAIN MENU labels */
+/* SIDEBAR NAVIGATION LINKS */
+aside .sidebar {
+    margin-top: 2rem;
+    flex-grow: 1;
+}
+
 aside .sidebar h3, aside .below h3 {
     margin-left: 1.5rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.75rem;
-    color: #DB90BE;
+    margin-bottom: 1rem;
+    font-size: 0.75rem; 
+    color: #d8a4b8;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 600;
 }
 
 aside .sidebar a, aside .below a {
-    display: flex; align-items: center; gap: 1.5rem;
-    padding-left: 1.4rem; height: 3.7rem;
-    transition: all 300ms ease; color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-left: 1.8rem;
+    height: 3.5rem;
+    transition: all 300ms ease;
+}
+
+aside .sidebar a h2, aside .below a h2 {
+    font-size: 1.15rem; 
 }
 
 aside .sidebar a span, aside .below a span {
-    font-size: 2.2rem; min-width: 2.2rem;
-    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    min-width: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* INTERACTIVE STATES*/
-
-aside .sidebar a:hover, aside .below a:hover, aside .sidebar a.active {
+/* INTERACTIVE STATES */
+aside .sidebar a:hover, aside .below a:hover {
     background: #700549;
+    padding-left: 2.5rem;
     border-radius: 2rem 2rem 2rem 2rem;
 }
 
@@ -133,15 +148,53 @@ aside .sidebar a:hover h2 {
     color: #ffffff;
 }
 
+/* Active menu item */
 aside .sidebar a.active {
     background: #700549;
     border-radius: 2rem 2rem 2rem 2rem;
 }
 
+/* BELOW SECTION */
 aside .below {
-    padding-top: 1rem;
     padding-bottom: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+/* SUBMENU STYLES */
+
+aside .sidebar .submenu {
+    display: flex;
+    flex-direction: column;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+aside .sidebar .submenu a {
+    padding-left: 4.8rem; 
+    height: 2.8rem;      
+    gap: 1rem;
+}
+
+aside .sidebar .submenu a h2 {
+    font-size: 0.95rem; 
+}
+
+aside .sidebar .submenu a:hover {
+    padding-left: 5.5rem; 
+}
+
+aside .sidebar .submenu a span {
+    font-size: 1.6rem;
+    min-width: 1.6rem;
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+aside:hover .sidebar .submenu a span {
+    opacity: 1;
+    transition-delay: 150ms; 
 }
 
 /* MAIN DASHBOARD CONTENT */
@@ -150,14 +203,14 @@ aside .below {
     padding: 2rem; 
     display: flex; 
     flex-direction: column; 
-    gap: 2rem; 
+    gap: 1px; 
 }
 
 .faculty-info-flex {
     display: flex;
     align-items: flex-start; 
-    gap: 30px;               
-    margin-bottom: 20px;
+    gap: 2rem;               
+    margin-bottom: 0px;
 }
 
 .info-details {
@@ -167,51 +220,41 @@ aside .below {
     justify-content: center;
 }
 
-.stylized-name {
-    font-family: 'UnifrakturMaguntia', serif;
-    font-size: 6 rem;
-    margin-bottom: 15px;
-    margin-top: 0;          
-    color: white;
-}
-
 .details-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
-    gap: 20px;
     width: 100%;
+    margin-bottom: 0px;
+    gap: 1px;
 }
 
 .details-grid p {
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1;
 }
 
-.details-grid strong {
-    display: block;        
+.details-grid strong {       
     font-size: 0.8rem;
-    text-transform: uppercase;
     opacity: 0.9;
 }
-
 
 .card { 
     background: linear-gradient(to right, rgb(130, 61, 107), rgb(82, 4, 59)); 
     border-radius: 1.6rem; 
-    padding: 2rem; 
+    padding: 1.3rem; 
     color: white; 
     position: relative; 
 }
 
 .stylized-name { 
-    font-family: 'UnifrakturMaguntia', serif; 
-    font-size: 3.2rem; 
+    font-family: 'Inter', serif; 
+    font-size: 2.5rem; 
     margin-bottom: 0.5rem; 
 }
 
 .pfp-circle {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     border: 4px solid #ffc4dd;
     background-color: #48032f; 
@@ -237,31 +280,68 @@ aside .below {
 /* MAIN GRID */
 .main-grid-layout {
     display: grid;
-    grid-template-columns: 1.7fr 1fr;
+    grid-template-columns: 1.6fr 1.2fr;
     grid-template-rows: auto auto;
     gap: 25px;
     align-items: start;
 }
 
-.ongoing-class-card { 
+.ongoing-class-card, .feed-card, .rate-card { 
     grid-column: 1; grid-row: 1; 
 }
-.subjects-card     { 
+
+.subjects-card { 
     grid-column: 2; grid-row: 1; 
 }
-.feed-card         { 
+
+.feed-card { 
     grid-column: 1; grid-row: 2; 
 }
-.rate-card         { 
+
+.rate-card { 
     grid-column: 2; grid-row: 2; 
+}
+
+
+.pink-box { 
+    background: rgba(247, 246, 247, 0.44);    
+    backdrop-filter: blur(5px);           
+    -webkit-backdrop-filter: blur(10px);  
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+}
+
+.subjects-card h2, 
+.feed-card h2, 
+.rate-card h2 {
+    text-align: center; width: 100%; margin-bottom: 1rem;
+}
+
+.rate-card h2 {
+    color: #fff;
+}
+
+.icon-item strong, 
+.icon-item p, 
+.icon-item b {
+    color: #fff !important;
+}
+
+#attendanceDescription, 
+#attendanceDescription strong {
+    color: #fff !important;
+}
+
+.feed-card h2, 
+.white-table-container h2 {
+    color: #fff !important;
 }
 
 /* WHITE CONTAINERS & TABS */
 .white-box-container, .white-table-container {
     background: white; border-radius: 25px;
     position: relative;
-    padding: 25px; margin-top: 20px; color: #333; min-height: 100px;
-    justify-content: space-around;
+    padding: 25px; margin-top: 20px; color: #333; min-height: 175px;
+    justify-content: center; display: flex; flex-direction: column; align-items: center;
 }
 
 .subjects-tab {
@@ -393,21 +473,22 @@ aside .below {
     padding: 5px 15px;
 }
 
-.icon-bar-card {display: flex; justify-content: space-around; text-align: center;}
-.icon-item { text-align: center; }
-.icon-item span { font-size: 10rem !important; color: #ffc4dd;  margin-bottom: 5px; }
+.icon-bar-card {display: flex; justify-content: space-around; text-align: center; align-items: center; height: 17rem; }
 
-.icon-item p {
-    color: white; line-height: 1.2; margin-top: 10px; }
+.icon-item { text-align: center; }
 
 .icon-item strong {
-    font-size: 1.4rem; font-weight: 800;
+    font-size: 1.2rem; font-weight: 800;
     display: block; text-transform: uppercase;
+    justify-content: space-evenly;
 }
 
-.icon-item br + span, 
-.icon-item p { font-size: 0.85rem; opacity: 0.8; }
+.icon-item br { font-size: 1.2rem;}
 
+.icon-item p { font-size: 0.8rem; opacity: 0.8;color: #000; line-height: 0.75; margin-top: 3px;  }
+
+.icon-item .stat-icon {
+    width: 130px; height: 130px; object-fit: contain; margin: 0 auto 10px; display: block; }
 
 .details-grid, .attendance-grid { 
     display: grid; 
@@ -416,11 +497,55 @@ aside .below {
     margin-top: 1rem; 
 }
 
-.pink-box { 
-    background: #ffc4dd; color: #48032f; 
-    padding: 1rem; border-radius: 1rem; 
-    display: flex; align-items: center; gap: 10px; 
-    font-weight: bold; 
+.transparent-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin: 10px 0 20px 0; 
+}
+
+.pink-box {  
+    padding: 1.2rem; 
+    border-radius: 1.2rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    color: #000; 
+    transition: transform 0.3s ease;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+.pink-box:hover {
+    transform: translateY(-5px);
+    background: rgba(232, 117, 165, 0.25);
+}
+
+.pink-box strong {
+    font-size: 1.3rem;
+    color: #84276f; 
+}
+
+.pink-box p {
+    font-size: 0.85rem;
+    margin: 0;
+    opacity: 0.9;
+    color: #000 ;
+}
+
+.icon-wrapper {
+    background: #700549;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px; 
+    flex-shrink: 0; 
+}
+
+.icon-wrapper span {
+    color: #ffffff; 
+    font-size: 24px;
 }
 
 .selected-wrapper {
@@ -451,12 +576,12 @@ aside .below {
 .card.subjects-card:hover, 
 .card.feed-card:hover, 
 .card.rate-card:hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    transition: transform 0.3s ease; 
     transform: scale(1.3); 
     cursor: pointer;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4); 
+    border-radius: 13.33px; 
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.421); 
     z-index: 10;
-    position: relative; 
 }
 
 /* DROP DOWN */
