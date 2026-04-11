@@ -205,33 +205,79 @@ function selectDate(year, month, day) {
 // Cancel form
 function cancelForm() {
     if (confirm('Are you sure you want to cancel?')) {
-        window.location.href = 'studentdashboardHOME.html';
+        window.location.href = 'studentdashboardHOME.php';
     }
 }
 
 // Submit form
+let isSubmitting = false; // Our security lock against double-submits!
+
 function submitForm() {
+    // 1. The Security Lock
+    if (isSubmitting === true) {
+        return; // Stops the function if it's already running
+    }
+    isSubmitting = true; 
+
+    // 2. Disable the button visually
+    const submitBtn = document.querySelector('.submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    // 3. Grab all the values from the form
     const timeType = document.getElementById('timeType').value;
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
     const numDays = document.getElementById('numDays').value;
     const returnDate = document.getElementById('returnDate').value;
     const comment = document.getElementById('comment').value;
-    
-    // Validate
+    const attachmentInput = document.getElementById('attachment');
+
+    // 4. Validate (make sure dates are filled)
     if (!startDate || !endDate) {
         alert('Please select both start and end dates.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+        isSubmitting = false;
         return;
     }
     
-    // Show success message (placeholder for backend integration)
-    alert(`Excuse Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
-    
-    // Reset form
-    document.getElementById('excuseForm').reset();
-    
-    // Redirect to home
-    window.location.href = 'studentdashboardHOME.html';
+    const formData = new FormData();
+    formData.append('time_type', timeType);
+    formData.append('start_date', startDate);
+    formData.append('end_date', endDate);
+    formData.append('number_of_days', numDays);
+    formData.append('return_on', returnDate);
+    formData.append('comment', comment);
+
+    if (attachmentInput && attachmentInput.files.length > 0) {
+        formData.append('attachment', attachmentInput.files[0]);
+    }
+
+    fetch('process_excuse.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Show the success message directly from the PHP file
+        alert(data);
+        
+        // Reset form and the upload text display
+        document.getElementById('excuseForm').reset();
+        document.querySelector('.upload-text').textContent = 'Upload';
+        
+        // Show success message (placeholder for backend integration)
+        alert(`Excuse Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
+        
+        // Redirect back to home
+        window.location.href = 'studentdashboardHOME.php';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting your excuse request.');
+    });
+
 }
 
 // Handle file upload display

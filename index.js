@@ -362,10 +362,10 @@ function navigateTo(role) {
     }
     
     // Navigate after animation
-    setTimeout(() => {
-        window.location.href = `${role}login.html`;
-    }, 800);
-}
+        setTimeout(() => {
+            window.location.href = `${role}login.php`;
+        }, 800);
+}   
 
 // ==========================================
 // INITIALIZATION

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap');
 
 /* RESET & BASE */
+<<<<<<< HEAD
 
 * {
     margin: 0; padding: 0; outline: 0; border: 0;
@@ -83,6 +84,63 @@ aside .top {
     align-items: center;
     padding: 1.5rem;
     gap: 0.8rem;
+=======
+* { 
+    margin: 0; padding: 0; 
+    outline: 0; border: 0; 
+    text-decoration: none; 
+    box-sizing: border-box; 
+}
+
+body { 
+    width: 100vw; min-height: 100vh; 
+    font-family: 'Inter', sans-serif; 
+    background: #f0f2f5; overflow-x: 
+    hidden; color: #ffffff; 
+}
+
+html { font-size: 13px; }
+
+a { color: white; }
+
+/* BACKGROUND */
+.background-container { 
+    position: fixed; top: 0; 
+    left: 0; width: 100%; 
+    height: 100%; z-index: -10; 
+}
+
+.background-image { 
+    width: 100%; height: 100%; 
+    object-fit: cover; 
+}
+
+/* LAYOUT STRUCTURE */
+.container { 
+    display: flex; 
+    min-height: 100vh; 
+    width: 100%; 
+}
+
+aside {
+    width: 6rem; background: #48032f; 
+    border-radius: 0 1.6rem 1.6rem 0;
+    transition: width 400ms ease; 
+    z-index: 100; flex-shrink: 0;
+}
+
+aside:hover { width: 28rem; }
+
+aside .top { 
+    display: flex; align-items: center; 
+    padding: 1.5rem; gap: 0.8rem; 
+    overflow: hidden; 
+}
+
+aside .logo img { 
+    width: 3rem; height: 2.5rem; 
+    flex-shrink: 0; 
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 aside .logo {
@@ -91,6 +149,7 @@ aside .logo {
     gap: 0.8rem;
 }
 
+<<<<<<< HEAD
 aside .logo img {
     width: 3rem;
     height: 2.5rem;
@@ -99,6 +158,15 @@ aside .logo img {
 aside .logo h3 {
     font-size: 1.2rem; 
 }
+=======
+aside h1, aside h2, aside h3 { 
+    white-space: nowrap; 
+    opacity: 0; 
+    transition: 0.3s; 
+}
+
+aside:hover h1, aside:hover h2, aside:hover h3 { opacity: 1; }
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 
 /* SIDEBAR NAVIGATION LINKS */
 aside .sidebar {
@@ -106,6 +174,7 @@ aside .sidebar {
     flex-grow: 1;
 }
 
+<<<<<<< HEAD
 aside .sidebar h3, aside .below h3 {
     margin-left: 1.5rem;
     margin-bottom: 1rem;
@@ -195,6 +264,35 @@ aside .sidebar .submenu a span {
 aside:hover .sidebar .submenu a span {
     opacity: 1;
     transition-delay: 150ms; 
+=======
+aside .sidebar a { 
+    display: flex; 
+    align-items: center; 
+    gap: 1.5rem; 
+    padding-left: 1.5rem; 
+    height: 3.7rem; 
+    color: white; 
+    transition: 0.3s;
+}
+
+aside .sidebar a:hover {
+    background: #700549;
+    border-radius: 2rem;
+}
+
+aside .sidebar a.active { 
+    background: #700549; 
+    border-radius: 2rem; 
+}
+
+aside .sidebar h1, 
+aside .sidebar h2, 
+aside .sidebar h3,
+.sidebar-label { 
+    padding-left: 2rem; 
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 /* MAIN DASHBOARD CONTENT */
@@ -203,14 +301,24 @@ aside:hover .sidebar .submenu a span {
     padding: 2rem; 
     display: flex; 
     flex-direction: column; 
+<<<<<<< HEAD
     gap: 1px; 
+=======
+    gap: 2rem; 
+    width: calc(100% - 6rem); 
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 .faculty-info-flex {
     display: flex;
     align-items: flex-start; 
+<<<<<<< HEAD
     gap: 2rem;               
     margin-bottom: 0px;
+=======
+    gap: 30px;               
+    margin-bottom: 20px;
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 .info-details {
@@ -220,16 +328,33 @@ aside:hover .sidebar .submenu a span {
     justify-content: center;
 }
 
+<<<<<<< HEAD
 .details-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); 
     width: 100%;
     margin-bottom: 0px;
     gap: 1px;
+=======
+.stylized-name {
+    font-family: 'UnifrakturMaguntia', serif;
+    font-size: 6 rem;
+    margin-bottom: 15px;
+    margin-top: 0;          
+    color: white;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    width: 100%;
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 .details-grid p {
     font-size: 0.9rem;
+<<<<<<< HEAD
     line-height: 1;
 }
 
@@ -242,19 +367,49 @@ aside:hover .sidebar .submenu a span {
     background: linear-gradient(to right, rgb(130, 61, 107), rgb(82, 4, 59)); 
     border-radius: 1.6rem; 
     padding: 1.3rem; 
+=======
+    line-height: 1.4;
+}
+
+.details-grid strong {
+    display: block;        
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+aside:hover ~ .faculty-dashboard {
+    width: calc(100% - 28rem);
+}
+
+.card { 
+    background: linear-gradient(to right, rgb(130, 61, 107), rgb(82, 4, 59)); 
+    border-radius: 1.6rem; 
+    padding: 2rem; 
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
     color: white; 
     position: relative; 
 }
 
 .stylized-name { 
+<<<<<<< HEAD
     font-family: 'Inter', serif; 
     font-size: 2.5rem; 
+=======
+    font-family: 'UnifrakturMaguntia', serif; 
+    font-size: 3.2rem; 
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
     margin-bottom: 0.5rem; 
 }
 
 .pfp-circle {
+<<<<<<< HEAD
     width: 100px;
     height: 100px;
+=======
+    width: 120px;
+    height: 120px;
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
     border-radius: 50%;
     border: 4px solid #ffc4dd;
     background-color: #48032f; 
@@ -280,12 +435,17 @@ aside:hover .sidebar .submenu a span {
 /* MAIN GRID */
 .main-grid-layout {
     display: grid;
+<<<<<<< HEAD
     grid-template-columns: 1.6fr 1.2fr;
+=======
+    grid-template-columns: 1.7fr 1fr;
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
     grid-template-rows: auto auto;
     gap: 25px;
     align-items: start;
 }
 
+<<<<<<< HEAD
 .ongoing-class-card, .feed-card, .rate-card { 
     grid-column: 1; grid-row: 1; 
 }
@@ -336,12 +496,32 @@ aside:hover .sidebar .submenu a span {
     color: #fff !important;
 }
 
+=======
+.ongoing-class-card { 
+    grid-column: 1; grid-row: 1; 
+}
+.subjects-card     { 
+    grid-column: 2; grid-row: 1; 
+}
+.feed-card         { 
+    grid-column: 1; grid-row: 2; 
+}
+.rate-card         { 
+    grid-column: 2; grid-row: 2; 
+}
+
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 /* WHITE CONTAINERS & TABS */
 .white-box-container, .white-table-container {
     background: white; border-radius: 25px;
     position: relative;
+<<<<<<< HEAD
     padding: 25px; margin-top: 20px; color: #333; min-height: 175px;
     justify-content: center; display: flex; flex-direction: column; align-items: center;
+=======
+    padding: 25px; margin-top: 20px; color: #333; min-height: 100px;
+    justify-content: space-around;
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 .subjects-tab {
@@ -415,7 +595,11 @@ aside:hover .sidebar .submenu a span {
     margin: 0 auto; 
 }
 
+<<<<<<< HEAD
 .status-pill.Late { background: #7a3e5d; }
+=======
+.status-pill.Late { background: #723c58; }
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 .status-pill.On-Time { background: #700549; }
 
 /* LEGEND */
@@ -473,6 +657,7 @@ aside:hover .sidebar .submenu a span {
     padding: 5px 15px;
 }
 
+<<<<<<< HEAD
 .icon-bar-card {display: flex; justify-content: space-around; text-align: center; align-items: center; height: 17rem; }
 
 .icon-item { text-align: center; }
@@ -489,6 +674,23 @@ aside:hover .sidebar .submenu a span {
 
 .icon-item .stat-icon {
     width: 130px; height: 130px; object-fit: contain; margin: 0 auto 10px; display: block; }
+=======
+.icon-bar-card {display: flex; justify-content: space-around; text-align: center;}
+.icon-item { text-align: center; }
+.icon-item span { font-size: 10rem !important; color: #ffc4dd;  margin-bottom: 5px; }
+
+.icon-item p {
+    color: white; line-height: 1.2; margin-top: 10px; }
+
+.icon-item strong {
+    font-size: 1.4rem; font-weight: 800;
+    display: block; text-transform: uppercase;
+}
+
+.icon-item br + span, 
+.icon-item p { font-size: 0.85rem; opacity: 0.8; }
+
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 
 .details-grid, .attendance-grid { 
     display: grid; 
@@ -497,6 +699,7 @@ aside:hover .sidebar .submenu a span {
     margin-top: 1rem; 
 }
 
+<<<<<<< HEAD
 .transparent-summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -546,6 +749,13 @@ aside:hover .sidebar .submenu a span {
 .icon-wrapper span {
     color: #ffffff; 
     font-size: 24px;
+=======
+.pink-box { 
+    background: #ffc4dd; color: #48032f; 
+    padding: 1rem; border-radius: 1rem; 
+    display: flex; align-items: center; gap: 10px; 
+    font-weight: bold; 
+>>>>>>> d3ff2428b92856f108ec1c089886e9e8fa535d26
 }
 
 .selected-wrapper {

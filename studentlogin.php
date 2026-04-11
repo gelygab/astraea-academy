@@ -50,8 +50,8 @@ include("db.php");?>
                 <!-- This is for first-time users -->
                 <form id="loginForm" class="login-form" action ="login_process.php" method="post">
                     <div class="form-group">
-                        <label for="uid">UID</label>
-                        <input type="text" id="uid" name="uid" placeholder="Enter your UID" required>
+                        <label for="uid">Student UID</label>
+                        <input type="text" id="uid" name="uid" placeholder="Enter your Student UID" required>
 
                         <label for="password">Password</label>
                         <div class="password-wrapper">
