@@ -20,7 +20,7 @@
             <span class="material-symbols-outlined">star</span><h2>View Class List</h2>
         </a>
 
-        <a href="facultydashboardMANAGESCHED.php" class="<?= ($current_page == 'facultydashboardMANAGESCHED.php') ? 'active' : '' ?>">
+        <a href="facultydashboardSCHED.php" class="<?= ($current_page == 'facultydashboardSCHED.php') ? 'active' : '' ?>">
             <span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2>
         </a>
 
