@@ -24,7 +24,7 @@
             <span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2>
         </a>
 
-        <a href="facultydashboardELEAVE.php" class="<?= ($current_page == 'facultydashboardELEAVE.php') ? 'active' : '' ?>">
+        <a href="facultydashboardLEAVE.php" class="<?= ($current_page == 'facultydashboardELEAVE.php') ? 'active' : '' ?>">
             <span class="material-symbols-outlined">star</span><h2>File for Leave</h2>
         </a>
 

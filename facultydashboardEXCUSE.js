@@ -77,19 +77,69 @@ function calculateDates() {
   }
 
   // SUBMIT
+  // SUBMIT
   submitBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
+    // 1. Grab values using your HTML IDs
     const excuseType = document.getElementById("time-type").value;
     const startDate = document.getElementById("start-date").value;
+    const endDate = document.getElementById("end-date").value;
+    const numDays = document.getElementById("num-days").value;
+    const returnOn = document.getElementById("return-on").value;
+    const comment = document.getElementById("comment").value;
 
-    if (!excuseType || !startDate) {
-      alert("Please select an Excuse Type and Start Date before submitting.");
+    // Validation check
+    if (!excuseType || !startDate || !endDate) {
+      alert("Please select an Excuse Type, Start Date, and End Date before submitting.");
       return;
     }
 
-    alert("Success! Your excuse request has been submitted.");
-    window.location.href = "facultydashboardHOME.php"; 
+    // 2. Package data for PHP
+    const formData = new FormData();
+    formData.append('excuseType', excuseType);
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('numDays', numDays);
+    formData.append('returnOn', returnOn);
+    formData.append('comment', comment);
+    
+    // Add file if uploaded
+    if (fileInput.files.length > 0) {
+        formData.append('attachment', fileInput.files[0]);
+    }
+
+    // Update button text to show activity
+    submitBtn.textContent = "Submitting...";
+    submitBtn.disabled = true;
+
+    // 3. Send to PHP
+    fetch('api_submit_excuse.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.textContent = "Submit";
+        submitBtn.disabled = false;
+
+        if (data.success) {
+            alert("Success! Your excuse request has been submitted to the Admin.");
+            if (confirm("Would you like to file another excuse request?")) {
+                resetForm(); 
+            } else {
+                window.location.href = "facultydashboardHOME.php"; 
+            }
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("A network error occurred. Please try again.");
+        submitBtn.textContent = "Submit";
+        submitBtn.disabled = false;
+    });
   });
 
   // CANCEL
