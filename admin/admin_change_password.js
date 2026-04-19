@@ -115,7 +115,7 @@ class LoginForm {
         const formData = new FormData(this.form);
         this.setLoading(true);
 
-        fetch('facultyloginCHANGEP.php', {
+        fetch('adminloginCHANGEP.php', {
             method: 'POST',
             body: formData
         })
@@ -128,7 +128,7 @@ class LoginForm {
 
                 setTimeout(() => {
                     if (result === 'dashboard') {
-                        window.location.href = 'facultydashboardHOME.php';
+                        window.location.href = 'admindashboardHOME.php';
                     }
                 }, 1000);
             }else {
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
-    console.log('✨ Faculty Login initialized');
+    console.log('✨ Admin Login initialized');
 });
 
 const style = document.createElement('style');

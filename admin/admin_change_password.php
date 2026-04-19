@@ -1,5 +1,5 @@
 <?php 
-require_once 'db.php';
+require_once '../db.php';
 ?>
 
 <!DOCTYPE html>
@@ -7,13 +7,13 @@ require_once 'db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astraea Academy - Faculty Login</title>
-    <link rel="stylesheet" href="facultylogin.css">
+    <title>Astraea Academy - Admin Login</title>
+    <link rel="stylesheet" href="adminlogin.css">
 </head>
 <body>
     <!-- Background -->
     <div class="background-container">
-        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Alogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <!-- Pink Top Bar -->
@@ -21,7 +21,7 @@ require_once 'db.php';
 
     <!-- Floating Logo -->
     <div class="floating-logo-container">
-        <img src="images/AA_Font.png" alt="Astraea Academy" class="floating-logo">
+        <img src="../images/AA_Font.png" alt="Astraea Academy" class="floating-logo">
         <div class="floating-sparkles">
             <div class="f-spark f-spark-1">✦</div>
             <div class="f-spark f-spark-2">✧</div>
@@ -36,14 +36,14 @@ require_once 'db.php';
         <div class="login-card" id="login-card">
             <div class="card-header">
                 <div class="logo-circle">
-                    <img src="images/AA_Logo.png" alt="Astraea Academy Logo" class="card-logo">
+                    <img src="../images/AA_Logo.png" alt="Astraea Academy Logo" class="card-logo">
                 </div>
             </div>
             <div class="card-body">
-                <h2 class="greeting">Faculty Login</h2>
-                <p class="instruction">Welcome back, Esteemed Educator!</p>
+                <h2 class="greeting">Admin Login</h2>
+                <p class="instruction">Authorized Personnel Only</p>
             
-                <form id="loginForm" autocomplete = "off" class="login-form" action ="facultyloginCHANGEP.php" method="post">
+                <form id="loginForm" autocomplete = "off" class="login-form" action ="adminloginCHANGEP.php" method="post">
                     <div class="form-group">
                         <label for="password">New Password</label>
                         <input type="password" id="new-password" name="new_password" placeholder="Enter your new password" required>
@@ -67,6 +67,6 @@ require_once 'db.php';
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="cursor"></div>
 
-    <script src="faculty_change_password.js"></script>
+    <script src="admin_change_password.js"></script>
 </body>
 </html>
