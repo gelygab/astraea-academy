@@ -167,7 +167,11 @@ class LoginForm {
         document.querySelector('.login-card').appendChild(overlay);
         
         setTimeout(() => {
+<<<<<<< HEAD
+            alert('Welcome to the Student Portal!');
+=======
             alert('Welcome to the Admin Portal!');
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
             overlay.remove();
         }, 1000);
     }
@@ -194,7 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
+<<<<<<< HEAD
+    console.log('✨ Student Login initialized');
+=======
     console.log('✨ Admin Login initialized');
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 });
 
 const style = document.createElement('style');
