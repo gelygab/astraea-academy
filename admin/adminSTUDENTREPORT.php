@@ -1,6 +1,20 @@
+<?php
+session_start();
+require_once '../db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: adminlogin.php');
+}
+
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astraea Academy - Student Report</title>

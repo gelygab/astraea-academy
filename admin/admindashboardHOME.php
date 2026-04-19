@@ -57,14 +57,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminSTUDENTREPORT.html" class="nav-subitem">
+                        <a href="adminSTUDENTREPORT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminFACULTYREPORT.html" class="nav-subitem">
+                        <a href="adminFACULTYREPORT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -86,14 +86,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminAPPEALSTUDENT.html" class="nav-subitem">
+                        <a href="adminAPPEALSTUDENT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminAPPEALFACULTY.html" class="nav-subitem">
+                        <a href="adminAPPEALFACULTY.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
