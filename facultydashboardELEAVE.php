@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <link rel="stylesheet" href="facultydashboardLEAVE.css">
+    <link rel="stylesheet" href="facultydashboardELEAVE.css">
 </head>
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
@@ -85,7 +85,7 @@
   </div>
 </div>
 
-<script src="facultydashboardLEAVE.js"></script>
+<script src="facultydashboardELEAVE.js"></script>
 
 </body>
 </html>

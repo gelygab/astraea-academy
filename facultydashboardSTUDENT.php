@@ -6,7 +6,7 @@
     <title>Faculty Dashboard - Student Records</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="facultydashboardSTUDENTRECORDS.css">
+    <link rel="stylesheet" href="facultydashboardSTUDENT.css">
 </head>
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
@@ -640,6 +640,6 @@
       </div>
     </div>
 
-    <script src="facultydashboardSTUDENTRECORDS.js"></script>
+    <script src="facultydashboardSTUDENT.js"></script>
 </body>
 </html>
