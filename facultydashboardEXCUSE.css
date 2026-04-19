@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* RESET & BASE */
 * {
@@ -198,17 +198,6 @@ aside:hover .sidebar .submenu a span {
     transition-delay: 150ms; 
 }
 
-
-aside .sidebar .nav-dropdown .submenu {
-    display: none !important; 
-}
-
-aside .sidebar .nav-dropdown:hover .submenu {
-    display: flex !important; 
-    flex-direction: column;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
 /* main*/
 .main-content {
   flex: 1;
@@ -218,11 +207,11 @@ aside .sidebar .nav-dropdown:hover .submenu {
   box-sizing: border-box;
   min-height: 100vh; 
   margin: 0;
-  font-family: 'Hammersmith One', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .form-container {
-  font-family: 'Hammersmith One', sans-serif;
+  font-family: 'Inter', sans-serif;
   width: 100%;
   max-width: 1000px;
   background-color: #ffffff;
@@ -379,7 +368,7 @@ textarea.form-control {
   align-items: center !important;
   padding-top: 5px !important;
   color: #ffffff !important;
-  font-family: 'Hammersmith One', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 16px !important;
 }
 
@@ -435,7 +424,7 @@ span.flatpickr-weekday {
   border-radius: 15px !important;
   border: none !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
-  font-family: 'Hammersmith One', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 .flatpickr-calendar .flatpickr-current-month .numInputWrapper {
