@@ -226,7 +226,7 @@ body {
 
 /* Top Filter Bar - Gold bordered */
 .top-filter-bar {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--brown);
     border: 2px solid var(--primary-gold);
     border-radius: var(--border-radius);
     padding: 16px 20px;
@@ -245,10 +245,10 @@ body {
     min-width: 200px;
 }
 
-.filter-item label {
+.filter-item label {  
     font-size: 12px;
     font-weight: 600;
-    color: var(--brown);
+    color: var(--white);
     white-space: nowrap;
 }
 
