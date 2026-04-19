@@ -57,32 +57,31 @@ $user_uid = $_SESSION['uid'];
                 <div class="filter-controls">
                     <div class="input-group full-width">
                         <label>Subject</label>
-                        <select required>
+                        <select id="subjectDropdown" required> 
                             <option value="" disabled selected hidden>Select a subject</option>
-                            <option value="software_design">Software Design</option>
-                            <option value="engineering_management">Engineering Management</option>
-                            <option value="electronic_circuits">Fundamentals of Electronic Circuits</option>
-                        </select>
+                            </select>
                     </div>
                     
                     <div class="filter-row">
                         <div class="input-group">
                             <label>Program</label>
-                            <select required>
-                                <option value="" disabled selected hidden>Select program</option>
-                                <option value="bscpe">BSCpE</option>
-                            </select>
+                            <select id="programDropdown" required>
+                                <option value="" disabled selected hidden>Select a program</option>
+                                </select>
                         </div>
                         <div class="input-group">
                             <label>Block</label>
-                            <select required>
-                                <option value="" disabled selected hidden>Select block</option>
-                                <option value="block_1">Block 1</option>
-                                <option value="block_2">Block 2</option>
-                            </select>
+                            <select id="blockDropdown" required>
+                                <option value="" disabled selected hidden>Select a block</option>
+                                </select>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px; padding: 15px; background-color: #5a102b; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <p style="font-size: 14px; margin: 0 0 5px 0; text-align: left; font-weight: bold; color: white;">Displaying:</p>
+                <h3 id="displayText" style="margin: 0; color: white; font-size: 24px; text-align: center;">Awaiting Selection...</h3>
             </div>
 
             <div class="card table-card">
@@ -118,49 +117,21 @@ $user_uid = $_SESSION['uid'];
                         </thead>
                         <tbody>
                             <tr>
-                                <td>2024-00101</td>
-                                <td>Amores, Princess Jasmine</td>
-                                <td>34</td>
-                                <td class="action-cell">
-                                    <button class="btn-action btn-view">View Full Record</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2024-00102</td>
-                                <td>Batumbakal, Heeseung</td>
-                                <td>24</td>
-                                <td class="action-cell">
-                                    <button class="btn-action btn-view">View Full Record</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2024-00103</td>
-                                <td>Catacutan, Sheena</td>
-                                <td>32</td>
-                                <td class="action-cell">
-                                    <button class="btn-action btn-view">View Full Record</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2024-00104</td>
-                                <td>Dela Cruz, Juan</td>
-                                <td>40</td>
-                                <td class="action-cell">
-                                    <button class="btn-action btn-view">View Full Record</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2024-00105</td>
-                                <td>Luna, Antonio V.</td>
-                                <td>38</td>
-                                <td class="action-cell">
-                                    <button class="btn-action btn-view">View Full Record</button>
+                                <td colspan="4" style="text-align:center; padding: 20px; font-style: italic; color: #555;">
+                                    Please select a subject from the dropdown above to view the class list.
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div> </main>
-    </div> <script src="facultydashboardCLASSLIST.js"></script>
+            </div> 
+        </main>
+    </div> 
+    <script src="facultydashboardCLASSLIST.js"></script>
+                
+                <button type="submit" class="btn-save">Save Changes</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

@@ -116,6 +116,19 @@ class LoginForm {
     }
 
     handleSubmit() {
+<<<<<<< HEAD
+        const isUIDValid = this.validateUID();
+        const isPasswordValid = this.validatePassword();
+        
+        if (isUIDValid && isPasswordValid) {
+            this.setLoading(true);
+            
+            setTimeout(() => {
+                this.setLoading(false);
+                this.showSuccessMessage();
+            }, 1500);
+        }
+=======
         const formData = new FormData(this.form);
         this.setLoading(true);
 
@@ -147,6 +160,7 @@ class LoginForm {
             this.setLoading(false);
             console.error('Error:', error);
         });
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     }
 
     setLoading(loading) {
@@ -185,6 +199,16 @@ class LoginForm {
         `;
         
         document.querySelector('.login-card').appendChild(overlay);
+<<<<<<< HEAD
+        
+        setTimeout(() => {
+            alert('Welcome to the Student Portal!');
+            overlay.remove();
+        }, 1000);
+    }
+}
+
+=======
     }
 }
 
@@ -192,6 +216,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevents the default form submission
 });
 
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 // ==========================================
 // NAVIGATION
 // ==========================================

@@ -7,13 +7,13 @@ require_once '../db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astraea Academy - Admin Login</title>
-    <link rel="stylesheet" href="adminlogin.css">
+    <title>Astraea Academy - Faculty Login</title>
+    <link rel="stylesheet" href="facultylogin.css">
 </head>
 <body>
     <!-- Background -->
     <div class="background-container">
-        <img src="../images/Alogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <!-- Pink Top Bar -->
@@ -40,15 +40,17 @@ require_once '../db.php';
                 </div>
             </div>
             <div class="card-body">
-                <h2 class="greeting">Admin Login</h2>
-                <p class="instruction">Authorized Personnel Only</p>
-            
-                <form id="loginForm" autocomplete = "off" class="login-form" action ="adminloginCHANGEP.php" method="post">
+                <h2 class="greeting">Faculty Login</h2>
+                <p class="instruction">Welcome back, Esteemed Educator!</p>
+                
+                <form id="loginForm" class="login-form">
                     <div class="form-group">
-                        <label for="password">New Password</label>
-                        <input type="password" id="new-password" name="new_password" placeholder="Enter your new password" required>
-
-                        <label for="password">Confirm Password</label>
+                        <label for="uid">Faculty ID</label>
+                        <input type="text" id="uid" name="uid" placeholder="Enter your Faculty ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
                         <div class="password-wrapper">
                             <input type="password" id="password" name="confirm_password" placeholder="Confirm your password" required>
                             <button type="button" class="toggle-password" onclick="togglePassword()">
@@ -67,6 +69,6 @@ require_once '../db.php';
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="cursor"></div>
 
-    <script src="admin_change_password.js"></script>
+    <script src="facultylogin.js"></script>
 </body>
 </html>
