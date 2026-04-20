@@ -18,6 +18,15 @@
         <main class="appeals-dashboard">
 
             <div class="header-card">
+
+                <div class="floating-stars">
+                    <span class="material-symbols-outlined star-1">auto_awesome</span>
+                    <span class="material-symbols-outlined star-2">star</span>
+                    <span class="material-symbols-outlined star-3">auto_awesome</span>
+                    <span class="material-symbols-outlined star-4">star_border</span>
+                    <span class="material-symbols-outlined star-5">star</span>
+                </div>
+
                 <div class="header-content">
                     <img src="images/Facultyicon_record.png" alt="Records Icon" class="header-icon">
                     <div class="title-container">

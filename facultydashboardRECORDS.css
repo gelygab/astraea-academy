@@ -205,6 +205,17 @@ aside:hover .sidebar .submenu a span {
     transition-delay: 150ms; 
 }
 
+aside .sidebar .nav-dropdown .submenu {
+    display: none !important; 
+}
+
+aside .sidebar .nav-dropdown:hover .submenu {
+    display: flex !important; 
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+
 /* MAIN DASHBOARD */
 .appeals-dashboard {
     padding: 2rem;
@@ -217,25 +228,24 @@ aside:hover .sidebar .submenu a span {
 
 /* HEADER CARD BASE */
 .header-card {
-    background-color: #48032f; 
-    border: 2px solid #ffffff; 
-    border-radius: 2.5rem;
-    padding: 1.5rem 2rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative; 
+    background: radial-gradient(circle at 20% -20%, rgba(219, 144, 190, 0.2) 0%, transparent 50%), linear-gradient(135deg, #5c143a 0%, #3b0824 100%);
+    border: 3px solid rgba(255, 255, 255, 0.3); 
+    border-radius: 18px; 
+    box-shadow: 0 12px 35px rgba(0,0,0,0.25); 
+    padding: 1.5rem 2rem; 
+    overflow: hidden;
+    z-index: 10; 
 }
 
 .header-content {
     display: flex;
     align-items: center;
-    gap: 1.5rem; 
+    gap: 1rem; 
 }
 
 .header-icon {
-    width: 220px; 
+    width: 120px; 
     height: auto;
     filter: brightness(0) invert(1); 
 }
@@ -247,20 +257,12 @@ aside:hover .sidebar .submenu a span {
 }
 
 .header-card h1 {
-    font-size: 6.5em; 
+    font-size: 4rem; 
     color: #ffffff;
     margin: 0;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1;
     letter-spacing: 1px;
-}
-
-.header-underline {
-    width: 100%; 
-    height: 8px; 
-    background-color: #ffffff;
-    margin-top: 8px;
-    border-radius: 5px;
 }
 
 /* APPEALS GRID */
@@ -615,5 +617,51 @@ aside:hover .sidebar .submenu a span {
     
     .modal-header h2 {
         font-size: 1.5rem;
+    }
+}
+
+/* TWINKLING STARS */
+.appeals-dashboard {
+    position: relative; 
+    z-index: 1;
+}
+
+.header-content {
+    position: relative;
+    z-index: 2; 
+}
+
+.floating-stars {
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    pointer-events: none; 
+    z-index: 1; 
+}
+
+/* Base style for all stars */
+.floating-stars span {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+    animation: twinkle 4s infinite ease-in-out alternate;
+}
+
+.star-1 { top: 15%; right: 16%; font-size: 6rem; animation-delay: 2s; }
+.star-2 { top: 50%; right: 28%; font-size: 4rem; animation-delay: 1.5s; }
+.star-3 { top: 25%; right: 40%; font-size: 5rem; animation-delay: 0.7s; }
+.star-4 { top: 60%; right: 5%;  font-size: 3.2rem; animation-delay: 2.2s; }
+.star-5 { top: 45%; right: 55%; font-size: 3.4rem; animation-delay: 3s; opacity: 0.4; }
+
+@keyframes twinkle {
+    0% { 
+        opacity: 0.1; 
+        transform: scale(0.8) rotate(0deg); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1.15) rotate(15deg); 
     }
 }
