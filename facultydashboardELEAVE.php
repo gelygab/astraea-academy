@@ -28,7 +28,6 @@ $user_uid = $_SESSION['uid'];
     </div>
 
     <div class="container">
-
               <?php include 'faculty_sidebar.php'; ?>
 
         <div class="main-content">
