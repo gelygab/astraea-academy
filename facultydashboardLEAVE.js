@@ -9,11 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // FLATPICKR CALENDAR
   flatpickr("#start-date", {
     dateFormat: "F j, Y",
+    minDate: "today",
     onChange: calculateDates
   });
 
   flatpickr("#end-date", {
     dateFormat: "F j, Y",
+    minDate: "today",
     onChange: calculateDates 
   });
 
@@ -76,7 +78,6 @@ function calculateDates() {
     uploadBtn.querySelector(".upload-text").textContent = "Upload";
   }
 
-  // SUBMIT
  // SUBMIT
   submitBtn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -96,6 +97,14 @@ function calculateDates() {
     }
 
     // 2. Package it up for PHP
+    const startConvert = new Date(startDate);
+    const endConvert = new Date(endDate);
+
+    if (startConvert > endConvert) {
+      alert("Hold up! The End Date cannot be before the Start Date.");
+      return; 
+    }
+
     const formData = new FormData();
     formData.append('leaveType', leaveType);
     formData.append('startDate', startDate);
@@ -103,10 +112,9 @@ function calculateDates() {
     formData.append('numDays', numDays);
     formData.append('returnOn', returnOn);
     formData.append('comment', comment);
-    
-    // Add the file to the package if one exists
+
     if (fileInput.files.length > 0) {
-        formData.append('attachment', fileInput.files[0]);
+      formData.append('attachment', fileInput.files[0]);
     }
 
     // Button loading state
@@ -114,7 +122,7 @@ function calculateDates() {
     submitBtn.disabled = true;
 
     // 3. Send it!
-    fetch('api_submit_leave.php', {
+    fetch('faculty/faculty_api/api_submit_leave.php', {
         method: 'POST',
         body: formData
     })

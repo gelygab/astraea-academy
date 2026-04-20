@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (studentUid) {
         // 2. Fetch the specific student's data
-        fetch(`api_get_student_record.php?uid=${studentUid}`)
+        fetch(`faculty/faculty_api/api_get_student_record.php?uid=${studentUid}`)
             .then(response => response.json())
             .then(student => {
                 if (student.error) {

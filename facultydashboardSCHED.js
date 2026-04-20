@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    baseUrl: '', 
+    baseUrl: 'faculty_api/', 
     
     endpoints: {
         getSchedule: 'api_get_schedule.php',
@@ -311,7 +311,7 @@ async function loadAttendanceData(subjectCode) {
             month: month
         });
         
-        const url = `api_get_subject_attendance.php?${params}`;
+        const url = `faculty/faculty_api/api_get_subject_attendance.php?${params}`;
         
         const response = await fetch(url);
         

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchData() {
         try {
-            const response = await fetch('api_get_faculty_details.php');
+            const response = await fetch('faculty/faculty_api/api_get_faculty_details.php');
             if (!response.ok) throw new Error("JSON file missing or server not running");
             cachedData = await response.json();
 

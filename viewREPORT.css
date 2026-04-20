@@ -219,8 +219,13 @@
 }
 
 .calendar-months { 
-    display: flex; gap: 30px; 
-    justify-content: center; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+.month-box {
+    width: 45%
 }
 
 .month-box h5 { 
@@ -326,4 +331,24 @@
     .footer-btn-container {
         display: none !important;
     }
+}
+
+/* --- DYNAMIC CALENDAR GRID FIX --- */
+.calendar-section {
+    height: auto !important; /* Forces the white box to stretch infinitely downwards */
+    padding-bottom: 40px !important;
+}
+
+.calendar-months {
+    display: flex !important;
+    flex-wrap: wrap !important; /* Forces them to drop to the next row! */
+    justify-content: space-evenly !important;
+    gap: 20px;
+    width: 100%;
+}
+
+.month-box {
+    flex: 0 0 45% !important; /* Forces exactly 2 calendars per row */
+    box-sizing: border-box;
+    margin-bottom: 20px;
 }

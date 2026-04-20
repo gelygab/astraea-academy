@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php';
+require_once '../../db.php';
 header('Content-Type: application/json');
 
 // 1. Verify user is logged in
@@ -13,15 +13,14 @@ $user_uid = $_SESSION['uid'];
 $user_type = 'Teacher'; // Explicitly defining the user_type for the database
 
 // 2. Map Frontend values to Database ENUM values
-$frontend_type = $_POST['excuseType'] ?? '';
+$frontend_type = $_POST['leaveType'] ?? '';
 $type_mapping = [
-    'absence'   => 'extracurricular_activity',
-    'sick'      => 'medical_appointment',
-    'emergency' => 'personal_emergency',
-    'other'     => 'other_excuse'
+    'sick'      => 'sick_leave',
+    'emergency' => 'emergency_leave',
+    'absence'   => 'leave_of_absence',
+    'other'     => 'other_leave'
 ];
-$time_type = $type_mapping[$frontend_type] ?? 'other_excuse';
-
+$time_type = $type_mapping[$frontend_type] ?? 'other_leave';
 
 // 3. Format inputs
 $start_date = date('Y-m-d', strtotime($_POST['startDate']));
@@ -34,7 +33,7 @@ $comment = $_POST['comment'] ?? '';
 // 4. Handle File Upload
 $attachment = null;
 if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = 'uploads/appeals/';
+    $uploadDir = '../../uploads/appeals/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
@@ -44,7 +43,7 @@ if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ER
     }
 }
 
-// 5. Insert into Database
+// 5. Insert into Database (Now including user_type!)
 $sql = "INSERT INTO appeals (user_uid, user_type, time_type, date_filed, start_date, end_date, number_of_days, return_on, comment, attachment, status) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
         
@@ -54,6 +53,7 @@ if ($stmt === false) {
     exit;
 }
 
+// Bind the parameters (s = string, i = integer)
 $stmt->bind_param("ssssssisss", $user_uid, $user_type, $time_type, $date_filed, $start_date, $end_date, $number_of_days, $return_on, $comment, $attachment);
 
 if ($stmt->execute()) {

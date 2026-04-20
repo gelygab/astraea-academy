@@ -9,11 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // FLATPICKR CALENDAR
   flatpickr("#start-date", {
     dateFormat: "F j, Y",
+    minDate: "today",
     onChange: calculateDates
   });
 
   flatpickr("#end-date", {
     dateFormat: "F j, Y",
+    minDate: "today",
     onChange: calculateDates 
   });
 
@@ -77,7 +79,6 @@ function calculateDates() {
   }
 
   // SUBMIT
-  // SUBMIT
   submitBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
@@ -93,6 +94,15 @@ function calculateDates() {
     if (!excuseType || !startDate || !endDate) {
       alert("Please select an Excuse Type, Start Date, and End Date before submitting.");
       return;
+    }
+
+    // --- NEW: Block Time Travel! ---
+    const startConvert = new Date(startDate);
+    const endConvert = new Date(endDate);
+
+    if (startConvert > endConvert) {
+      alert("Hold up! The End Date cannot be before the Start Date.");
+      return; // This immediately kills the function so the fetch() never runs!
     }
 
     // 2. Package data for PHP
@@ -114,7 +124,7 @@ function calculateDates() {
     submitBtn.disabled = true;
 
     // 3. Send to PHP
-    fetch('api_submit_excuse.php', {
+    fetch('faculty/faculty_api/api_submit_excuse.php', {
         method: 'POST',
         body: formData
     })

@@ -1,14 +1,18 @@
 <?php
-require_once 'db.php';
+require_once '../../db.php';
 header('Content-Type: application/json');
 
-$user_uid = isset($_GET['user_uid']) ? $_GET['user_uid'] : '11111'; // Defaulting to Tricia Mae for testing
-
+$user_uid = $_GET['uid'] ?? $_GET['user_uid'] ?? '11111';
 $response = [];
 
 // 1. Get Student Profile Details
-$sql_profile = "SELECT first_name, last_name, student_contact, student_email, student_address FROM student_id WHERE user_uid = ?";
+$sql_profile = "SELECT first_name, last_name, student_contact, student_email, student_address, department_id, student_year, student_block FROM student_id WHERE user_uid = ?";
 $stmt = $conn->prepare($sql_profile);
+
+if (!$stmt) {
+    die(json_encode(["error" => "SQL Error: " . $conn->error])); 
+}
+
 $stmt->bind_param("s", $user_uid);
 $stmt->execute();
 $response['profile'] = $stmt->get_result()->fetch_assoc();
@@ -39,6 +43,22 @@ while($row = $result->fetch_assoc()) {
 }
 $response['excuse_history'] = $history;
 $stmt->close();
+
+// 4. Get Daily Attendance for the Calendar
+// (Assuming your table has a column named 'date' or something similar. We will find out!)
+$sql_daily = "SELECT date, attendance_status FROM attendance_id WHERE user_uid = ?";
+$stmt = $conn->prepare($sql_daily);
+if ($stmt !== false) {
+    $stmt->bind_param("s", $user_uid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $daily_records = [];
+    while($row = $result->fetch_assoc()) {
+        $daily_records[$row['date']] = strtolower($row['attendance_status']); 
+    }
+    $response['daily_attendance'] = $daily_records;
+    $stmt->close();
+}
 
 echo json_encode($response);
 $conn->close();

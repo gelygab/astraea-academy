@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php';
+require_once '../../db.php';
 header('Content-Type: application/json');
 
 // 1. Check if user is logged in

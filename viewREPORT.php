@@ -4,8 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Summary Report</title>
+    
     <link rel="stylesheet" href="viewREPORT.css">
+    
+    <style>
+        <style>
+        /* 1. Force the page to allow scrolling */
+        html, body.report-body {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-y: auto !important;
+        }
+
+        /* 2. Force the white paper to stretch downwards with the content */
+        .report-paper.document {
+            height: auto !important;
+            min-height: 100% !important;
+            overflow: visible !important;
+            padding-bottom: 60px !important; /* Gives room at the bottom */
+            margin-bottom: 80px !important; /* Pushes the Download button down */
+        }
+
+        /* 3. Center and perfectly align the calendars */
+        .calendar-section {
+            height: auto !important;
+            padding-bottom: 40px !important;
+        }
+        
+        .calendar-months {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important; /* Centers the columns perfectly */
+            gap: 40px !important; /* Nice wide gap between calendars */
+            width: 100%;
+        }
+        
+        .month-box {
+            flex: 0 0 42% !important; /* Snug fit for 2 columns */
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important; /* Centers the calendar grid inside the box */
+        }
+    </style>
+       
 </head>
+
 <body class="report-body">
 
     <div class="report-paper document">
@@ -71,28 +116,13 @@
         </div>
 
         <div class="calendar-section">
-            <div class="calendar-months">
-                <div class="month-box">
-                    <h5 id="leftMonthName">Month</h5>
-                    <div class="calendar-header-days">
-                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                    </div>
-                    <div id="month1Grid" class="cal-grid"></div>
-                </div>
-                <div class="month-box">
-                    <h5 id="rightMonthName">Month</h5>
-                    <div class="calendar-header-days">
-                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                    </div>
-                    <div id="month2Grid" class="cal-grid"></div>
-                </div>
-            </div>
+            <div class="calendar-months" id="calendarContainer">
+</div>
 
             <div class="calendar-legend">
                 <div class="leg-item"><div class="dot out-range"></div> Out of Range</div>
                 <div class="leg-item"><div class="dot present"></div> Present</div>
                 <div class="leg-item"><div class="dot late"></div> Late</div>
-                <div class="leg-item"><div class="dot holiday"></div> Holiday</div>
                 <div class="leg-item"><div class="dot absent"></div> Absent</div>
                 <div class="leg-item"><div class="dot excused"></div> Excused</div>
             </div>
