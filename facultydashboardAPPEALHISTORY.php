@@ -15,38 +15,7 @@
     </div>
 
     <div class="container">
-      <aside>
-            <div class="top">
-                <div class="logo">
-                    <img src="images/AA_Logo.png" alt="Logo">
-                    <h3>Astraea Academy</h3>
-                </div>
-            </div>
-            <div class="sidebar">
-               <h3>MAIN MENU</h3>
-                <a href="facultydashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="facultydashboardCLASSLIST.php"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
-                <a href="facultydashboardMANAGESCHED.php"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
-                <a href="facultydashboardELEAVE.html"><span class="material-symbols-outlined">star</span><h2>File for Leave</h2></a>
-                <a href="facultydashboardEXCUSE.html"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                
-            <div class="nav-dropdown">
-                  <a href="facultydashboardAPPEALHISTORY.html" class="active"><span class="material-symbols-outlined">star</span><h2>View Appeal History</h2></a>
-                  
-                  <div class="submenu">
-                      <a href="#"><span class="material-symbols-outlined">star_border</span><h2>Student Records</h2></a>
-                      <a href="facultydashboardRECORDS.html"><span class="material-symbols-outlined">star_border</span><h2>My Records</h2></a>
-                  </div>
-            </div>
-
-                <a href="facultydashboardREPORTS.php"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
-                
-                <div class="below">
-                    <h3>SETTINGS</h3>
-                    <a href="facultylogout.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
-                </div>
-            </div>
-        </aside>
+      <?php include 'faculty_sidebar.php'; ?>
 
        <main class="appeal-history-main">
         <div class="page-banner">

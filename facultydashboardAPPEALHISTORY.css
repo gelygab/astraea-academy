@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* RESET & BASE */
 * {
@@ -198,18 +198,6 @@ aside:hover .sidebar .submenu a span {
     transition-delay: 150ms; 
 }
 
-
-aside .sidebar .nav-dropdown .submenu {
-    display: none !important; 
-}
-
-aside .sidebar .nav-dropdown:hover .submenu {
-    display: flex !important; 
-    flex-direction: column;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-
 /* VIEW APPEAL HISTORY MAIN */
 .appeal-history-main {
     flex: 1;
@@ -218,7 +206,7 @@ aside .sidebar .nav-dropdown:hover .submenu {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    font-family: 'Hammersmith One', sans-serif;
+    font-family: 'Inter', sans-serif;
     position: relative;
     z-index: 1;
     height: 100vh;
@@ -381,7 +369,7 @@ aside .sidebar .nav-dropdown:hover .submenu {
 }
 
 .card-input-group select {
-    font-family: 'Hammersmith One', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
     padding: 10px;
@@ -390,7 +378,7 @@ aside .sidebar .nav-dropdown:hover .submenu {
 }
 
 .card-input-group select option {
-    font-family: 'Hammersmith One', sans-serif; 
+    font-family: 'Inter', sans-serif; 
     font-size: 14px;
 }
 

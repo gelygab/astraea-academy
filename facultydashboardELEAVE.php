@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Dashboard - Request an Excuse</title>
+    <title>Faculty Dashboard - File for Leave</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <link rel="stylesheet" href="facultydashboardEXCUSE.css">
+    <link rel="stylesheet" href="facultydashboardELEAVE.css">
 </head>
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
@@ -17,44 +17,13 @@
     </div>
 
     <div class="container">
-      <aside>
-            <div class="top">
-                <div class="logo">
-                    <img src="images/AA_Logo.png" alt="Logo">
-                    <h3>Astraea Academy</h3>
-                </div>
-            </div>
-            <div class="sidebar">
-               <h3>MAIN MENU</h3>
-                <a href="facultydashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="facultydashboardCLASSLIST.php"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
-                <a href="facultydashboardMANAGESCHED.php"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
-                <a href="facultydashboardLEAVE.html"><span class="material-symbols-outlined">star</span><h2>File for Leave</h2></a>
-                <a href="facultydashboardEXCUSE.html" class="active"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                
-            <div class="nav-dropdown">
-                  <a href="facultydashboardAPPEALHISTORY.html"><span class="material-symbols-outlined">star</span><h2>View Appeal History</h2></a>
-                  
-                  <div class="submenu">
-                      <a href="#"><span class="material-symbols-outlined">star_border</span><h2>Student Records</h2></a>
-                      <a href="facultydashboardRECORDS.html"><span class="material-symbols-outlined">star_border</span><h2>My Records</h2></a>
-                  </div>
-            </div>
-
-                <a href="facultydashboardREPORTS.html"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
-                
-                <div class="below">
-                    <h3>SETTINGS</h3>
-                    <a href="facultylogout.html"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
-                </div>
-            </div>
-        </aside>
+              <?php include 'faculty_sidebar.php'; ?>
 
         <div class="main-content">
   <div class="form-container">
     
     <div class="form-header">
-      <h2>Request an Excuse</h2>
+      <h2>File for Leave</h2>
     </div>
 
     <div class="form-body">
@@ -62,11 +31,11 @@
       <div class="form-group full-width">
         <label for="time-type">Time Type</label>
         <select id="time-type" class="form-control" required>
-          <option value="" disabled selected hidden> Select Excuse Type</option>
+          <option value="" disabled selected hidden> Select Leave Type</option>
 
-          <option value="sick">Medical Appointment</option>
-          <option value="emergency">Personal Emergency</option>
-          <option value="absence">Extracurricular Activity</option>
+          <option value="sick">Sick Leave</option>
+          <option value="emergency">Emergency Leave</option>
+          <option value="absence">Leave of Absence</option>
           <option value="other">Other</option>
         </select>
       </div>
@@ -116,7 +85,7 @@
   </div>
 </div>
 
-<script src="facultydashboardEXCUSE.js"></script>
+<script src="facultydashboardELEAVE.js"></script>
 
 </body>
 </html>
