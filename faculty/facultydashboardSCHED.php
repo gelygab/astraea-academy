@@ -1,59 +1,27 @@
-<?php 
-session_start();
-require_once '../db.php';
-
-if (!isset($_SESSION['uid'])) {
-    header('Location: studentlogin.php');
-    exit();
-}
-$user_uid = $_SESSION['uid'];
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - My Schedule</title>
+    <title>Faculty Dashboard - Manage Schedule</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet" href="studentdashboardSCHED.css">
+    <link rel="stylesheet" href="facultydashboardSCHED.css">
 </head>
 <body>
     <div class="background-container">
-        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
-        <aside>
-            <div class="top">
-                <div class="logo">
-                    <img src="images/AA_Logo.png" alt="Logo">
-                    <h1>Astraea Academy</h1>
-                </div>
-            </div>
-
-            <div class="sidebar">
-                <h3>MAIN MENU</h3>
-                <a href="studentdashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="studentdashboardSCHED.php" class="active"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
-                <a href="studentdashboardLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
-                <a href="studentdashboardEXCUSE.php"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                <a href="studentdashboardAPPEALS.php"><span class="material-symbols-outlined">star</span><h2>View Pending Appeals</h2></a>
-
-                <div class="below">
-                    <h3>SETTINGS</h3>
-                    <a href="studentlogin.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
-                </div>
-            </div>
-        </aside>
+        <?php include 'faculty_sidebar.php'; ?>
 
         <main class="schedule-dashboard">
             <!-- Header Section with Filters -->
             <section class="schedule-header-card">
-                <h2 class="page-title">My Schedule</h2>
+                <div class="header-banner">
+                    <h2 class="page-title">My Schedule</h2>
+                </div>
+                
                 
                 <div class="filters-row">
                     <div class="filter-group">
@@ -140,7 +108,7 @@ $user_uid = $_SESSION['uid'];
                     <div class="attendance-calendar-container">
                         <div class="calendar-header-row">
                             <span class="material-symbols-outlined nav-arrow" onclick="changeAttendanceMonth(-1)">chevron_left</span>
-                            <h3 id="attendanceMonthYear" class="calendar-title">March 2026</h3>
+                            <h3 id="attendanceMonthYear" class="calendar-title">April 2026</h3>
                             <span class="material-symbols-outlined nav-arrow" onclick="changeAttendanceMonth(1)">chevron_right</span>
                         </div>
                         
@@ -164,6 +132,6 @@ $user_uid = $_SESSION['uid'];
         </main>
     </div>
 
-    <script src="studentdashboardSCHED.js"></script>
+    <script src="facultydashboardSCHED.js"></script>
 </body>
 </html>
