@@ -32,20 +32,26 @@
             <span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2>
         </a>
         
-        <div class="nav-dropdown">
-            <a href="facultydashboardAPPEALHISTORY.php" class="<?= ($current_page == 'facultydashboardAPPEALHISTORY.php') ? 'active' : '' ?>">
-                <span class="material-symbols-outlined">star</span><h2>View Appeal History</h2>
-            </a>
-            <div class="submenu">
-                <a href="facultydashboardSTUDENT.php" class="<?= ($current_page == 'facultydashboardSTUDENT.php') ? 'active' : '' ?>">
-                    <span class="material-symbols-outlined">star_border</span><h2>Student Records</h2>
-                </a>
-                <a href="facultydashboardRECORDS.php" class="<?= ($current_page == 'facultydashboardRECORDS.php') ? 'active' : '' ?>">
-                    <span class="material-symbols-outlined">star_border</span><h2>My Records</h2>
-                </a>
-            </div>
-        </div>
+   <div class="nav-dropdown">
+    <?php 
+        $is_appeal_section = ($current_page == 'facultydashboardSTUDENT.php' || 
+                              $current_page == 'facultydashboardRECORDS.php' || 
+                              $current_page == 'facultydashboardAPPEALHISTORY.php');
+    ?>
 
+    <a href="#" onclick="toggleSubmenu(event)" class="<?= $is_appeal_section ? 'active' : '' ?>" style="cursor: pointer;">
+        <span class="material-symbols-outlined">star</span><h2>View Appeal History</h2>
+    </a>
+    
+    <div id="appealSubmenu" class="submenu" style="display: none; flex-direction: column;">
+        <a href="facultydashboardSTUDENT.php">
+            <span class="material-symbols-outlined">star_border</span><h2>Student Records</h2>
+        </a>
+        <a href="facultydashboardRECORDS.php">
+            <span class="material-symbols-outlined">star_border</span><h2>My Records</h2>
+        </a>
+    </div>
+</div>
         <a href="facultydashboardREPORTS.php" class="<?= ($current_page == 'facultydashboardREPORTS.php') ? 'active' : '' ?>">
             <span class="material-symbols-outlined">star</span><h2>Generate Reports</h2>
         </a>
@@ -56,3 +62,18 @@
         </div>
     </div>
 </aside>
+
+<script>
+    function toggleSubmenu(event) {
+        event.preventDefault(); 
+        
+        var menu = document.getElementById('appealSubmenu');
+        
+        // Toggles the dropdown up and down
+        if (menu.style.display === 'none' || menu.style.display === '') {
+            menu.style.setProperty('display', 'flex', 'important');
+        } else {
+            menu.style.setProperty('display', 'none', 'important');
+        }
+    }
+</script>

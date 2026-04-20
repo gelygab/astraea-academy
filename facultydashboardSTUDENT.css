@@ -1043,9 +1043,3 @@ td .attachment-link {
 aside .sidebar .nav-dropdown .submenu {
     display: none !important; 
 }
-
-aside .sidebar .nav-dropdown:hover .submenu {
-    display: flex !important; 
-    flex-direction: column;
-    animation: fadeIn 0.3s ease-in-out;
-}
