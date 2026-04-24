@@ -116,19 +116,6 @@ class LoginForm {
     }
 
     handleSubmit() {
-<<<<<<< HEAD
-        const isUIDValid = this.validateUID();
-        const isPasswordValid = this.validatePassword();
-        
-        if (isUIDValid && isPasswordValid) {
-            this.setLoading(true);
-            
-            setTimeout(() => {
-                this.setLoading(false);
-                this.showSuccessMessage();
-            }, 1500);
-        }
-=======
         // const isUIDValid = this.validateUID();
         // const isPasswordValid = this.validatePassword();
         const formData = new FormData(this.form);
@@ -165,7 +152,6 @@ class LoginForm {
             console.error('Error:', error);
             });
         // }
->>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     }
 
     setLoading(loading) {
@@ -206,11 +192,7 @@ class LoginForm {
         document.querySelector('.login-card').appendChild(overlay);
         
         setTimeout(() => {
-<<<<<<< HEAD
-            alert('Welcome to the Student Portal!');
-=======
             alert('Welcome to the Faculty Portal!');
->>>>>>> 61fa391ed86d853022c510978d504960baf9947c
             overlay.remove();
         }, 1000);
     }
@@ -237,11 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
-<<<<<<< HEAD
-    console.log('✨ Student Login initialized');
-=======
     console.log('✨ Faculty Login initialized');
->>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 });
 
 const style = document.createElement('style');

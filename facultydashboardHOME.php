@@ -1,3 +1,16 @@
+
+<?php
+session_start();
+require_once 'db.php';
+// Force login as Teacher 1 for this test
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+}
+
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
