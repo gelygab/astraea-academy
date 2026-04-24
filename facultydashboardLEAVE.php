@@ -1,3 +1,14 @@
+<?php
+session_start();
+require_once 'db.php';
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+    exit;
+}
+$user_uid = $_SESSION['uid'];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +28,11 @@
     </div>
 
     <div class="container">
+<<<<<<<< HEAD:facultydashboardLEAVE.php
+      <?php include 'faculty_sidebar.php'; ?>
+========
               <?php include 'faculty_sidebar.php'; ?>
+>>>>>>>> d97b8ad759516b0a78e7eb03aaca2de800ddd7dc:facultydashboardELEAVE.php
 
         <div class="main-content">
   <div class="form-container">

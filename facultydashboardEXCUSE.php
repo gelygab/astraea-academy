@@ -1,3 +1,14 @@
+<?php
+session_start();
+require_once 'db.php';
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+    exit;
+}
+$user_uid = $_SESSION['uid'];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +28,8 @@
     </div>
 
     <div class="container">
+      <?php include 'faculty_sidebar.php'; ?>
+      
               <?php include 'faculty_sidebar.php'; ?>
 
         <div class="main-content">
