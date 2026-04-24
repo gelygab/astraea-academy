@@ -39,20 +39,20 @@
                 </div>
 
                 <div class="faculty-info-flex">
-                    <div class="pfp-circle"></div>
+                    <div class="pfp-circle loading"></div>
                     <div class="info-details">
-                        <h2 id="facultyName" class="stylized-name">Loading...</h2>
+                        <h2 id="facultyName" class="stylized-name loading">Loading Faculty...</h2>
                         <div class="details-grid">
-                            <p><strong>UID:</strong><br><span id="uid-val">...</span></p>
-                            <p><strong>College:</strong><br><span id="college-val">...</span></p>
-                            <p><strong>Department:</strong><br><span id="dept-val">...</span></p>
-                            <p><strong>Email:</strong><br><span id="email-val">...</span></p>
+                            <p><strong>UID:</strong><br><span id="uid-val" class="loading">---------</span></p>
+                            <p><strong>College:</strong><br><span id="college-val" class="loading">------------------</span></p>
+                            <p><strong>Department:</strong><br><span id="dept-val" class="loading">------------------</span></p>
+                            <p><strong>Email:</strong><br><span id="email-val" class="loading">--------------------------</span></p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <div id="summaryBoxes" class="attendance-grid external-summary-transparent">
+            <div id="summaryBoxes" class="attendance-grid external-summary-transparent loading" style="min-height: 100px;">
                 </div> 
 
             <div class="main-grid-layout">
@@ -72,14 +72,31 @@
                     <div class="icon-item">
                         <img src="../images/Facultyicon_pending.png" alt="Pending" class="stat-icon">
                         <p><strong id="curr-pending">--</strong><br>Pending Excuses</p>
+                        <img src="images/Facultyicon_class.png" alt="Class" class="stat-icon">
+                        <p><strong id="curr-class" class="loading">--</strong><br>On-Going Class</p>
+                    </div>
+                    <div class="icon-item">
+                        <img src="images/Facultyicon_enrolled.png" alt="Enrolled" class="stat-icon">
+                        <p><strong id="curr-enrolled" class="loading">--</strong><br>Total Enrolled</p>
+                    </div>
+                    <div class="icon-item">
+                        <img src="images/Facultyicon_present.png" alt="Present" class="stat-icon">
+                        <p><strong id="curr-present" class="loading">--</strong><br>Present Now</p>
+                    </div>
+                    <div class="icon-item">
+                        <img src="images/Facultyicon_pending.png" alt="Pending" class="stat-icon">
+                        <p><strong id="curr-pending" class="loading">--</strong><br>Pending Excuses</p>
                     </div>
                 </div>
 
                 <div class="card subjects-card">
                     <h2>Handled Subjects</h2>
                     <div class="white-box-container">
-                        <ul id="subject-list"></ul>
-                        <p class="subjects-tab">Total Subjects: <span id="subject-count">0</span></p>
+                        <ul id="subject-list" class="loading">
+                            <li>Loading...</li>
+                            <li>Loading...</li>
+                        </ul>
+                        <p class="subjects-tab">Total Subjects: <span id="subject-count" class="loading">0</span></p>
                     </div>
                 </div> 
                 
@@ -87,7 +104,6 @@
                     <h2>Live Attendance Feed</h2>
                     <div class="white-table-container">
                         <div class="table-tab centered-tab">SOFTDES022</div>
-        
                         <table id="feed-table">
                             <thead>
                                 <tr>
@@ -96,7 +112,8 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="feed-body"></tbody>
+                            <tbody id="feed-body" class="loading">
+                                </tbody>
                         </table>
 
                         <div class="feed-legend">
@@ -108,18 +125,35 @@
                 </div>
 
                 <div class="card rate-card">
-                    <h2>Attendance Rate</h2>
-                    <div class="rate-content">
-                        <div class="pie-chart" id="attendancePie">
-                            <span class="pie-label-present">--%</span>
+                    <h2 class="card-title">Attendance Rate</h2>
+                    <div class="rate-layout">
+                        <div class="rate-stats">
+                            <h3 id="periodLabel" class="period-subtitle loading">Loading...</h3>
+                            <div class="stats-divider"></div>
+                            <div class="stats-text">
+                                <p>Present Days: <strong id="present-val" class="loading">--</strong></p>
+                                <p>Total Days: <strong id="total-val" class="loading">--</strong></p>
+                            </div>
+                            <div class="rate-pills">
+                                <span class="pill-outline">Present</span>
+                                <span class="pill-solid">Absent</span>
+                            </div>
                         </div>
-                        <p id="attendanceDescription">Loading attendance analytics...</p>
-                    </div> 
-                    <div class="pie-legend">
-                        <div class="legend-present">Present</div>
-                        <div class="legend-absent">Absent</div>
-                    </div>  
-                </div> 
+
+                        <div class="pie-container">
+                            <div class="pie-chart loading" id="attendancePie" style="background: #ccc;">
+                                <span class="pie-label-absent" id="absentPercent">--</span>
+                                <span class="pie-label-present" id="presentPercent">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="attendance-feedback loading">
+                        <h3 id="feedbackTitle">Analyzing Records...</h3>
+                        <p id="attendanceDescription">Please wait while we fetch your attendance data.</p>
+                    </div>
+                </div>
+
             </div> 
         </main>
     </div>

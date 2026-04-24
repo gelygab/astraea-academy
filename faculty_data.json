@@ -1,0 +1,68 @@
+{
+  "common": {
+        "faculty_details": {
+            "name": "Ryan Justine Mondero",
+            "uid": "2024-0999-123",
+            "college": "College of Engineering",
+            "department": "Computer Engineering",
+            "email": "rj.mondero@university.edu.ph"
+        },
+        "subjects": [
+            { "code": "ENGMAN", "name": "Engineering Management" },
+            { "code": "SOFTDES", "name": "Software Design" },
+            { "code": "FECLEC", "name": "Fundamentals of Electronic Circuits" },
+            { "code": "BEEE", "name": "Basic Electrical and Electronics Engineering" },
+            { "code": "CPENPROG", "name": "Computer Programming 2" }
+        ],
+        "current_class": {
+            "name": "SOFTDES",
+            "enrolled": 45,
+            "present": 42,
+            "pending": 3
+        },
+        "live_feed": [
+            { "name": "Jobert D. Makalaya", "time": "08:00 AM", "status": "On-Time" },
+            { "name": "Gelygab Motus", "time": "08:12 AM", "status": "Late" },
+            { "name": "Jazmeyn Quero", "time": "07:55 AM", "status": "On-Time" },
+            { "name": "Tricia Mae Zamora", "time": "08:25 AM", "status": "Late" },
+            { "name": "Rola Ola", "time": "08:01 AM", "status": "On-Time" },
+            { "name": "Yanina Diaz", "time": "08:45 AM", "status": "Late" },
+            { "name": "Cel Patris", "time": "07:59 AM", "status": "On-Time" }
+        ]
+    },
+    "timeframes": {
+        "daily": {
+            "period_label": "Today",
+            "summary": [
+                { "label": "Total Attendance", "value": "42 / 45" },
+                { "label": "Late Today", "value": "3" },
+                { "label": "Undertime Today", "value": "1" },
+                { "label": "Absent Today", "value": "2" }
+            ],
+            "rate": 93,
+            "prev_rate": 88
+        },
+        "weekly": {
+            "period_label": "This Week",
+            "summary": [
+                { "label": "Avg. Daily Attendance", "value": "4 / 6" },
+                { "label": "Weekly Lates", "value": "14" },
+                { "label": "Weekly Undertime", "value": "4" },
+                { "label": "Weekly Absents", "value": "8" }
+            ],
+            "rate": 89,
+            "prev_rate": 91
+        },
+        "monthly": {
+            "period_label": "This Month",
+            "summary": [
+                { "label": "Monthly Attendance", "value": "20 / 25" },
+                { "label": "Monthly Lates", "value": "22" },
+                { "label": "Monthly Undertime", "value": "12" },
+                { "label": "Monthly Absents", "value": "18" }
+            ],
+            "rate": 95,
+            "prev_rate": 85
+        }
+    }
+}
