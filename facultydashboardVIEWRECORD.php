@@ -27,28 +27,7 @@ $user_uid = $_SESSION['uid'];
     </div>
 
     <div class="container">
-        <aside>
-            <div class="top">
-                <div class="logo">
-                    <img src="images/AA_Logo.png" alt="Logo">
-                    <h1>Astraea Academy</h1>
-                </div>
-            </div>
-
-            <div class="sidebar">
-                <h3>MAIN MENU</h3>
-                <a href="facultydashboardHOME.php"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="facultydashboardCLASSLIST.php" class="active"><span class="material-symbols-outlined">star</span><h2>View Class List</h2></a>
-                <a href="facultydashboardMANAGESCHED.php"><span class="material-symbols-outlined">star</span><h2>Manage Schedule</h2></a>
-                <a href="facultydashboardEXCUSEANDLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Excuse and Leave Request</h2></a>
-                <a href="facultydashboardREPORTS.php"><span class="material-symbols-outlined">star</span><h2>Generate Reports</h2></a>
-            </div>
-            
-            <div class="below">
-                <h3>SETTINGS</h3>
-                <a href="facultylogout.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
-            </div>
-        </aside>
+        <?php include 'faculty_sidebar.php'; ?>
 
         <main class="class-list-dashboard">
             

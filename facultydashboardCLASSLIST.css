@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Hammersmith+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 * {
     margin: 0; padding: 0; outline: 0; border: 0;
@@ -15,7 +15,7 @@ html { font-size: 15px; color: #ffffff; }
 
 body {
     width: 100vw; min-height: 100vh;
-    font-family: 'Hammersmith One', sans-serif;
+    font-family: 'Inter', sans-serif;
     overflow-x: hidden;
 }
 
@@ -46,15 +46,14 @@ body {
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-/*SIDEBAR */
-
+/* SIDEBAR */
 aside {
     width: 6rem;
     min-height: 100vh;
-    background: #3F0A29;
+    background: #48032f;
     border-top-right-radius: 1.6rem;
     border-bottom-right-radius: 1.6rem;
-     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
     transition: width 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);  
     overflow: hidden;
     z-index: 10;
@@ -62,7 +61,9 @@ aside {
     flex-direction: column;
 }
 
-aside:hover { width: 22rem; }
+aside:hover { 
+    width: 22rem; 
+}
 
 aside h1, aside h2, aside h3 {
     opacity: 0;                
@@ -89,42 +90,54 @@ aside .logo {
 }
 
 aside .logo img {
-    width: 3.5rem;
+    width: 3rem;
     height: 2.5rem;
 }
 
-aside .sidebar {
-    margin-top: 2rem;
+aside .logo h3 {
+    font-size: 1.2rem; 
 }
 
-/* SETTINGS and MAIN MENU labels */
+/* SIDEBAR NAVIGATION LINKS */
+aside .sidebar {
+    margin-top: 2rem;
+    flex-grow: 1;
+}
+
 aside .sidebar h3, aside .below h3 {
     margin-left: 1.5rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.75rem;
-    color: #DB90BE;
+    margin-bottom: 1rem;
+    font-size: 0.75rem; 
+    color: #d8a4b8;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 600;
 }
 
 aside .sidebar a, aside .below a {
-    display: flex; align-items: center; gap: 1.5rem;
-    padding-left: 1.4rem; height: 3.7rem;
-    transition: all 300ms ease; color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-left: 1.8rem;
+    height: 3.5rem;
+    transition: all 300ms ease;
+}
+
+aside .sidebar a h2, aside .below a h2 {
+    font-size: 1.15rem; 
 }
 
 aside .sidebar a span, aside .below a span {
-    font-size: 2.2rem; min-width: 2.2rem;
-    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    min-width: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* INTERACTIVE STATES*/
-
-aside .sidebar a:hover, aside .below a:hover, aside .sidebar a.active {
-    background: #620e2c;
-    border: 1px solid #DB90BE;
-     padding-left: 2rem;
+/* INTERACTIVE STATES */
+aside .sidebar a:hover, aside .below a:hover {
+    background: #700549;
+    padding-left: 2.5rem;
     border-radius: 2rem 2rem 2rem 2rem;
 }
 
@@ -133,15 +146,53 @@ aside .sidebar a:hover h2 {
     color: #ffffff;
 }
 
+/* Active menu item */
 aside .sidebar a.active {
-    background: #620e2c;
+    background: #700549;
     border-radius: 2rem 2rem 2rem 2rem;
 }
 
+/* BELOW SECTION */
 aside .below {
-    padding-top: 1rem;
     padding-bottom: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+/* SUBMENU STYLES */
+
+aside .sidebar .submenu {
+    display: flex;
+    flex-direction: column;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+aside .sidebar .submenu a {
+    padding-left: 4.8rem; 
+    height: 2.8rem;      
+    gap: 1rem;
+}
+
+aside .sidebar .submenu a h2 {
+    font-size: 0.95rem; 
+}
+
+aside .sidebar .submenu a:hover {
+    padding-left: 5.5rem; 
+}
+
+aside .sidebar .submenu a span {
+    font-size: 1.6rem;
+    min-width: 1.6rem;
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+aside:hover .sidebar .submenu a span {
+    opacity: 1;
+    transition-delay: 150ms; 
 }
 
 /* --- MAIN CONTENT & CARDS --- */

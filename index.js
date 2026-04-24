@@ -362,10 +362,17 @@ function navigateTo(role) {
     }
     
     // Navigate after animation
+<<<<<<< HEAD
+    setTimeout(() => {
+        window.location.href = `${role}login.html`;
+    }, 800);
+}
+=======
         setTimeout(() => {
             window.location.href = `${role}login.php`;
         }, 800);
 }   
+>>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 
 // ==========================================
 // INITIALIZATION

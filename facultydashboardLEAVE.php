@@ -19,7 +19,7 @@ $user_uid = $_SESSION['uid'];
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <link rel="stylesheet" href="facultydashboardLEAVE.css">
+    <link rel="stylesheet" href="facultydashboardELEAVE.css">
 </head>
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
@@ -28,7 +28,11 @@ $user_uid = $_SESSION['uid'];
     </div>
 
     <div class="container">
+<<<<<<<< HEAD:facultydashboardLEAVE.php
       <?php include 'faculty_sidebar.php'; ?>
+========
+              <?php include 'faculty_sidebar.php'; ?>
+>>>>>>>> d97b8ad759516b0a78e7eb03aaca2de800ddd7dc:facultydashboardELEAVE.php
 
         <div class="main-content">
   <div class="form-container">
@@ -96,7 +100,7 @@ $user_uid = $_SESSION['uid'];
   </div>
 </div>
 
-<script src="facultydashboardLEAVE.js"></script>
+<script src="facultydashboardELEAVE.js"></script>
 
 </body>
 </html>

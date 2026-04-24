@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* RESET & BASE */
 * {
@@ -338,7 +338,7 @@ aside:hover .sidebar .submenu a span {
     height: 100vh; 
     overflow-y: auto; 
     width: 100%; 
-    font-family: 'Hammersmith One', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .card { 
@@ -411,7 +411,7 @@ aside:hover .sidebar .submenu a span {
     width: 100%;
     max-width: 2000px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    font-family: 'Hammersmith One', sans-serif; 
+    font-family: 'Inter', sans-serif; 
 }
 
 .tabs-header { 
@@ -463,7 +463,7 @@ aside:hover .sidebar .submenu a span {
     width: 250px;
     outline: none; 
     font-size: 14px; 
-    font-family: 'Hammersmith One', sans-serif;
+    font-family: 'Inter', sans-serif;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); 
     transition: box-shadow 0.3s ease; 
 }
@@ -479,7 +479,7 @@ aside:hover .sidebar .submenu a span {
     background-color: #ffffff;
     cursor: pointer; 
     font-weight: bold; 
-    font-family: 'Hammersmith One', sans-serif; 
+    font-family: 'Inter', sans-serif; 
     font-size: 14px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); 
     display: flex; 
@@ -794,7 +794,7 @@ aside:hover .sidebar .submenu a span {
     resize: none; 
     margin-bottom: 5px !important; 
     padding: 10px; 
-    font-family: 'Hammersmith One', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 textarea[readonly] { 
@@ -894,7 +894,7 @@ td .attachment-link {
     resize: none; 
     margin-bottom: 15px; 
     padding: 10px; 
-    font-family: 'Hammersmith One', sans-serif; 
+    font-family: 'Inter', sans-serif; 
     font-size: 14px;
 }
 
@@ -1042,10 +1042,4 @@ td .attachment-link {
 
 aside .sidebar .nav-dropdown .submenu {
     display: none !important; 
-}
-
-aside .sidebar .nav-dropdown:hover .submenu {
-    display: flex !important; 
-    flex-direction: column;
-    animation: fadeIn 0.3s ease-in-out;
 }
