@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once 'db.php';
+require_once '../db.php';
 
 $user_uid = $_POST['uid'];
 $user_password = $_POST['password'];
