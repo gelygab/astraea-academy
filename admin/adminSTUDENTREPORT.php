@@ -26,17 +26,16 @@ $user_uid = $_SESSION['uid'];
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="images/AA_Logo.png" alt="Astraea Academy Logo" class="logo">
+                <img src="../images/AA_Logo.png" alt="Astraea Academy Logo" class="logo">
                 <div class="logo-text">
-                    <h2>Astraea</h2>
-                    <span>Academy</span>
+                    <h2>Astraea Academy</h2>
                 </div>
             </div>
 
             <nav class="sidebar-nav">
                 <p class="nav-label">MAIN MENU</p>
 
-                <a href="admindashboardHOME.html" class="nav-item">
+                <a href="admindashboardHOME.php" class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -58,14 +57,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminSTUDENTREPORT.html" class="nav-subitem active">
+                        <a href="adminSTUDENTREPORT.php" class="nav-subitem active">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span>Student</span>
                         </a>
-                        <a href="adminFACULTYREPORT.html" class="nav-subitem">
+                        <a href="adminFACULTYREPORT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -87,14 +86,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminAPPEALSTUDENT.html" class="nav-subitem">
+                        <a href="adminAPPEALSTUDENT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span>Student</span>
                         </a>
-                        <a href="adminAPPEALFACULTY.html" class="nav-subitem">
+                        <a href="adminAPPEALFACULTY.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -140,21 +139,21 @@ $user_uid = $_SESSION['uid'];
                         <label>Department</label>
                         <select id="department">
                             <option value="">All Departments</option>
-                            <option value="civil">Civil Engineering</option>
-                            <option value="chemical">Chemical Engineering</option>
-                            <option value="computer">Computer Engineering</option>
-                            <option value="electrical">Electrical Engineering</option>
-                            <option value="electronics">Electronics Engineering</option>
-                            <option value="mechanical">Mechanical Engineering</option>
-                            <option value="manufacturing">Manufacturing Engineering</option>
-                            <option value="early childhood">Early Childhood Education</option>
-                            <option value="elementary education">Elementary Education</option>
-                            <option value="secondary education">Secondary Education</option>
-                            <option value="special needs">Special Needs Education</option>
-                            <option value="physical education">Physical Education</option>
-                            <option value="social work">Social Work</option>
-                            <option value="mass communication">Mass Communication</option>
-                            <option value="psychology">Psychology</option>
+                            <option value="Civil">Civil Engineering</option>
+                            <option value="Chemical">Chemical Engineering</option>
+                            <option value="Computer">Computer Engineering</option>
+                            <option value="Electrical">Electrical Engineering</option>
+                            <option value="Electronics">Electronics Engineering</option>
+                            <option value="Mechanical">Mechanical Engineering</option>
+                            <option value="Manufacturing">Manufacturing Engineering</option>
+                            <option value="Early Childhood">Early Childhood Education</option>
+                            <option value="Elementary Education">Elementary Education</option>
+                            <option value="Secondary Education">Secondary Education</option>
+                            <option value="Special Needs">Special Needs Education</option>
+                            <option value="Physical Education">Physical Education</option>
+                            <option value="Social Work">Social Work</option>
+                            <option value="Mass Communication">Mass Communication</option>
+                            <option value="Psychology">Psychology</option>
                         </select>
                     </div>
                     <div class="filter-group-dark">

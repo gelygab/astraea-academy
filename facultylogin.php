@@ -60,10 +60,7 @@ require_once 'db.php';
                                 <span id="eye-icon">👁</span>
                             </button>
                         </div>
-                    </div>
-                    
-    
-                    
+                    </div>                
                     <button type="submit" class="login-btn">Log In</button>
                 </form>
                 

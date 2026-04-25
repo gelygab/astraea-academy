@@ -7,11 +7,7 @@ require_once '../db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>Astraea Academy - Student Login</title>
-=======
     <title>Astraea Academy - Admin Login</title>
->>>>>>> 61fa391ed86d853022c510978d504960baf9947c
     <link rel="stylesheet" href="adminlogin.css">
 </head>
 <body>
@@ -50,11 +46,7 @@ require_once '../db.php';
             </div>
             <div class="card-body">
                 <h2 class="greeting">Admin Login</h2>
-<<<<<<< HEAD
                 <p class="instruction">Welcome back, Admin!</p>
-=======
-                <p class="instruction">Authorized Personnel Only</p>
->>>>>>> 61fa391ed86d853022c510978d504960baf9947c
                 
                 <form id="loginForm" class="login-form" action = "adminlogin_process.php" method="post">
                     <div class="form-group">
