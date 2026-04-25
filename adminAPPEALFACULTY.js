@@ -271,6 +271,11 @@ function renderAppeals(appeals) {
                         Edit Status
                     </button>
                 ` : ''}
+                ${appeal.status === 'rejected' ? `
+                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
+                        Edit Status
+                    </button>
+                ` : ''}
             </div>
         </div>
     `).join('');
