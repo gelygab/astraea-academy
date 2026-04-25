@@ -40,7 +40,7 @@ $user_uid = $_SESSION['uid'];
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
-                    <span>Home</span>
+                    <span class="nav-text">Home</span>
                 </a>
 
                 <div class="nav-group open">
@@ -51,7 +51,7 @@ $user_uid = $_SESSION['uid'];
                             <line x1="16" y1="13" x2="8" y2="13"></line>
                             <line x1="16" y1="17" x2="8" y2="17"></line>
                         </svg>
-                        <span>View Team Reports</span>
+                        <span class="nav-text">View Team Reports</span>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
@@ -62,14 +62,14 @@ $user_uid = $_SESSION['uid'];
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>Student</span>
+                            <span class="nav-text">Student</span>
                         </a>
                         <a href="adminFACULTYREPORT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>Faculty</span>
+                            <span class="nav-text">Faculty</span>
                         </a>
                     </div>
                 </div>
@@ -80,7 +80,7 @@ $user_uid = $_SESSION['uid'];
                             <circle cx="12" cy="12" r="10"></circle>
                             <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        <span>View Appeal History</span>
+                        <span class="nav-text">View Appeal History</span>
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
@@ -91,14 +91,14 @@ $user_uid = $_SESSION['uid'];
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>Student</span>
+                            <span class="nav-text">Student</span>
                         </a>
                         <a href="adminAPPEALFACULTY.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
-                            <span>Faculty</span>
+                            <span class="nav-text">Faculty</span>
                         </a>
                     </div>
                 </div>
@@ -111,13 +111,18 @@ $user_uid = $_SESSION['uid'];
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
                     </svg>
-                    <span>Log Out</span>
+                    <span class="nav-text">Log Out</span>
                 </a>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
+                 <!-- Page Header -->
+            <div class="page-header">
+                <h1>View Team Reports</h1>
+                <p>Student Reports</p>
+            </div>
 
             <!-- VIEW 1: Main Student Report List -->
             <div id="mainReportView" class="view-container active main-report-container">
