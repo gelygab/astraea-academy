@@ -145,29 +145,13 @@ document.addEventListener("DOMContentLoaded", () => {
             rowsToSort.forEach(row => tableBody.appendChild(row));
         });
     });
-
-    // --- OTHER UI LOGIC ---
-    const profileCircle = document.getElementById('profileCircle');
-    const imageUpload = document.getElementById('imageUpload');
-    const profileImg = document.getElementById('profileImg');
-
-    if (profileCircle && imageUpload && profileImg) {
-        profileCircle.addEventListener('click', () => imageUpload.click());
-        imageUpload.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => profileImg.src = e.target.result;
-                reader.readAsDataURL(file);
-            }
-        });
-    }
+   
 });
 
 // --- SMART FUNCTIONS ---
 
 function loadSubjects() {
-    fetch('api/api_get_subjects.php')
+    fetch('api_get_subjects.php')
         .then(response => response.json())
         .then(data => {
             allSchedules = data; 
@@ -219,7 +203,7 @@ function loadSubjects() {
 }
 
 function loadClassList(scheduleId) {
-    fetch(`api/api_get_class_list.php?schedule_id=${scheduleId}`)
+    fetch(`api_get_class_list.php?schedule_id=${scheduleId}`)
         .then(response => response.json())
         .then(students => {
             const tableBody = document.querySelector("#studentTable tbody");

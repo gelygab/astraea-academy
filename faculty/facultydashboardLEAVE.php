@@ -1,14 +1,3 @@
-<?php
-session_start();
-require_once '../db.php';
-if (!isset($_SESSION['uid'])) {
-    header('Location: facultylogin.php');
-    exit;
-}
-$user_uid = $_SESSION['uid'];
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,11 +13,10 @@ $user_uid = $_SESSION['uid'];
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
     <div class="background-container">
-        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
-
               <?php include 'faculty_sidebar.php'; ?>
 
         <div class="main-content">

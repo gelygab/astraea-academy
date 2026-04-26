@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap');
 
 /* RESET & BASE */
 
@@ -7,238 +7,334 @@
     text-decoration: none; box-sizing: border-box;
 }
 
-a { color: #ffffff; }
+a { color: var(--white); }
 img { display: block; width: 100%; }
 h1 { font-size: 0.98rem; }
 h2 { font-size: 1.2rem; }
 h3 { font-size: 0.67rem; }
 
-html { font-size: 15px; color: #ffffff; }
+html { font-size: 15px; color: var(--white); }
 
 body {
-    width: 100vw; min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
+    background-size: cover;
+    margin: 0;
 }
 
 .background-container {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    min-height: 100vh;
+    min-width: 100vw;
     z-index: -10;
+    overflow: hidden;
 }
 
 .background-image {
-    width: 100%;
     height: 100%;
+    width: 100%;
     object-fit: cover;
 }
 
 /* LAYOUT CONTAINER */
 .container {
-    display: grid;
-    width: 100%;
+    display: block;
+    width: 100vw;
     margin: 0 auto;
-    gap: 1.8rem;
     grid-template-columns: max-content 1fr;
     min-height: 100vh;
     border-radius: 0 2rem 2rem 0;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
-/* SIDEBAR */
+:root {
+--white: #ffffff;
+--black: #000000;
+--deep-midnight: #1a012c;      
+--midnight-vortex: #1e0231;    
+--very-darkpurple: #2a0345;   
+--purple: #691b9a;
+--darkpurple: #450070;         
+--neon-purple: #9e05c0;        
+--electric-violet: #8a2be2;  
+--lightpurple: #682a98;  
+--lightpink: #f7c7ff;   
+--softpink:  #fdf1ff;    
+--purple-glass: rgba(186, 106, 215, 0.8);      
+--lightpurple-glass: rgba(180, 91, 200, 0.7); 
+--pinkishpurple-glass: rgba(144, 30, 148, 0.65);
+--lightpink-glass: rgba(247, 199, 255, 0.8); 
+--soft-glow: rgba(247, 199, 255, 0.3);
+--stats-divider: rgba(255, 255, 255, 0.5);
+--pinkbox-bg: rgba(247, 246, 247, 0.44); 
+--glass-border: rgba(255, 255, 255, 0.15);    
+--hover-overlay: rgba(255, 255, 255, 0.08);   
+--shadow-color: rgba(0, 0, 0, 0.2);            
+--box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05);
+--border-radius: 1rem;
+--sidebar-collapsed: 76px;
+--sidebar-expanded: 260px;
+}
+
+/* ==========================================
+   SIDEBAR LAYOUT
+   ========================================== */
 aside {
-    width: 6rem;
-    min-height: 100vh;
-    background: #48032f;
-    border-top-right-radius: 1.6rem;
-    border-bottom-right-radius: 1.6rem;
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-    transition: width 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);  
-    overflow: hidden;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
+    width: var(--sidebar-collapsed);
+    height: 100vh;           
+    position: fixed;
+    background: var(--darkpurple);
+    top: 0;
+    left: 0;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    display: flex;          
+    flex-direction: column; 
 }
 
-aside:hover { 
-    width: 22rem; 
+aside:hover {
+    width: var(--sidebar-expanded);
 }
 
-aside h1, aside h2, aside h3 {
-    opacity: 0;                
-    white-space: nowrap;      
-    transition: opacity 200ms ease;
-}
-
-aside:hover h1, aside:hover h2, aside:hover h3 {
-    opacity: 1;                
-    transition-delay: 150ms;   
-}
-
+/*TOP SECTION (LOGO)*/
 aside .top {
     display: flex;
     align-items: center;
-    padding: 1.5rem;
-    gap: 0.8rem;
+    padding: 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    height: 80px;
+    min-height: 80px;
+    overflow: hidden;
 }
 
 aside .logo {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    width: 100%;
 }
 
 aside .logo img {
-    width: 3rem;
-    height: 2.5rem;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+    margin: 0 auto; 
+    transition: margin 0.35s ease;
 }
 
-aside .logo h3 {
-    font-size: 1.2rem; 
+aside:hover .logo img {
+    margin: 0; 
 }
 
-/* SIDEBAR NAVIGATION LINKS */
+aside h1 {
+    opacity: 0;
+    visibility: hidden;
+    white-space: nowrap;
+    font-size: 1.2rem;
+    color: var(--white);
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+aside:hover h1 {
+    opacity: 1;
+    visibility: visible;
+}
+
 aside .sidebar {
-    margin-top: 2rem;
-    flex-grow: 1;
-}
-
-aside .sidebar h3, aside .below h3 {
-    margin-left: 1.5rem;
-    margin-bottom: 1rem;
-    font-size: 0.75rem; 
-    color: #d8a4b8;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-aside .sidebar a, aside .below a {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding-left: 1.8rem;
-    height: 3.5rem;
-    transition: all 300ms ease;
-}
-
-aside .sidebar a h2, aside .below a h2 {
-    font-size: 1.15rem; 
-}
-
-aside .sidebar a span, aside .below a span {
-    font-size: 2.2rem;
-    min-width: 2.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* INTERACTIVE STATES */
-aside .sidebar a:hover, aside .below a:hover {
-    background: #700549;
-    padding-left: 2.5rem;
-    border-radius: 2rem 2rem 2rem 2rem;
-}
-
-aside .sidebar a:hover span, 
-aside .sidebar a:hover h2 {
-    color: #ffffff;
-}
-
-/* Active menu item */
-aside .sidebar a.active {
-    background: #700549;
-    border-radius: 2rem 2rem 2rem 2rem;
-}
-
-/* BELOW SECTION */
-aside .below {
-    padding-bottom: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    margin-top: 1rem;
-    padding-top: 1rem;
-}
-
-/* SUBMENU STYLES */
-
-aside .sidebar .submenu {
+    flex: 1;               
+    overflow-y: auto;       
+    overflow-x: hidden;
+    padding: 18px 0;
     display: flex;
     flex-direction: column;
-    margin-top: -0.5rem;
-    margin-bottom: 0.5rem;
 }
 
-aside .sidebar .submenu a {
-    padding-left: 4.8rem; 
-    height: 2.8rem;      
-    gap: 1rem;
+/* Hide scrollbar for a cleaner look */
+aside .sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+aside .sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-aside .sidebar .submenu a h2 {
-    font-size: 0.95rem; 
-}
-
-aside .sidebar .submenu a:hover {
-    padding-left: 5.5rem; 
-}
-
-aside .sidebar .submenu a span {
-    font-size: 1.6rem;
-    min-width: 1.6rem;
+/* Labels (MAIN MENU) */
+aside .sidebar h3 {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 16px 10px;
+    margin: 0;
     opacity: 0;
-    transition: opacity 200ms ease;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.25s ease;
 }
 
-aside:hover .sidebar .submenu a span {
+aside:hover .sidebar h3 {
     opacity: 1;
-    transition-delay: 150ms; 
+    visibility: visible;
+    height: auto;
+}
+
+/* Navigation Links */
+aside .sidebar a, 
+.sidebar-footer a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1.5rem;
+    height: 3.5rem;
+    text-decoration: none;
+    color: var(--white);
+    transition: all 300ms ease;
+    position: relative;
+    white-space: nowrap;
+}
+
+aside .sidebar a:hover, 
+.sidebar-footer a:hover {
+    background: var(--purple-glass);
+}
+
+aside .sidebar a.active {
+    background: #ddb8e3b8;
+    border-left: 3px solid var(--white);
+}
+
+/* Text visibility toggle */
+.nav-text {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-8px);
+    transition: all 0.25s ease;
+}
+
+aside:hover .nav-text {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/*ICONS & CHEVRON*/
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin: 0 auto;
+    transition: margin 0.35s ease;
+}
+
+aside:hover .nav-icon {
+    margin: 0;
+}
+
+.chevron {
+    width: 1.2rem;
+    height: 1.2rem;
+    stroke: var(--white);
+    margin-left: auto;
+    margin-right: 1.5rem;
+    transition: transform 300ms ease;
+    opacity: 0;
+}
+
+aside:hover .chevron {
+    opacity: 1;
+}
+
+.nav-group.open .chevron {
+    transform: rotate(180deg);
+}
+
+/*SUBMENU */
+aside .submenu {
+    display: none;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 6px 0;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+/* Show only when sidebar expanded AND group open */
+aside:hover .nav-group.open .submenu {
+    display: block;
+    animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 200px; }
+}
+
+aside .submenu a {
+    padding-left: 4.8rem;
+    height: 2.8rem;
+    font-size: 0.9rem;
+}
+
+aside .submenu a:hover {
+    padding-left: 5.2rem;
+}
+
+.nav-icon, .sub-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    display: block;
+}
+
+/*FOOTER SECTION*/
+.sidebar-footer {
+    margin-top: auto;    
+    flex-shrink: 0;       
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 0;
+    background: var(--darkpurple);
+}
+
+.logout {
+    color: var(--white) !important;
+}
+
+.logout:hover {
+    background: var(--pinkishpurple-glass);
 }
 
 /* MAIN DASHBOARD */
 .schedule-dashboard {
-    padding: 1rem 2rem;
+    flex: 1;
+    padding: 20px 24px;
     display: flex;
+    margin-left:var(--sidebar-collapsed);
+    min-height: 100vh;
     flex-direction: column;
     gap: 1rem;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
+    transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+aside:hover + .schedule-dashboard { 
+    margin-left: var(--sidebar-expanded); 
+}
+aside:hover ~ .schedule-dashboard {
+    margin-left: var(--sidebar-expanded);
 }
 
 /* Header Card */
 .schedule-header-card {
-    background: #ffffff;
+    background: var(--softpink);
     border-radius: 1.6rem;
     padding: 1rem 1.5rem;
-    color: #000000;
+    color:var(--darkpurple);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.header-banner {
-    background:#8b0a5c;
-    border-radius: 0.5rem;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    height: 25px;
-    padding-left: 1.5rem;
-    box-sizing: border-box;
-}
-
-.header-banner h2 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.header-content {
-    padding: 1rem 0rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
 }
 
 .filters-row {
@@ -258,7 +354,7 @@ aside:hover .sidebar .submenu a span {
 .filter-group label {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #555;
+    color: var(--purple);
 }
 
 .custom-select {
@@ -270,12 +366,12 @@ aside:hover .sidebar .submenu a span {
 .custom-select select {
     width: 100%;
     padding: 10px 40px 10px 16px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--white);
     border-radius: 8px;
-    background: white;
+    background: var(--white);
     font-family: inherit;
     font-size: 0.95rem;
-    color: #454444;
+    color: var(--very-darkpurple);
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
@@ -286,7 +382,7 @@ aside:hover .sidebar .submenu a span {
     position: absolute;
     right: 12px;
     pointer-events: none;
-    color: #666;
+    color: var(--lightpink);
     font-size: 1.2rem;
 }
 
@@ -299,8 +395,8 @@ aside:hover .sidebar .submenu a span {
 
 .view-details-btn, .back-btn {
     padding: 10px 24px;
-    background: #8b0a5c;
-    color: white;
+    background: var(--lightpurple);
+    color: var(--white);
     border: none;
     border-radius: 20px;
     font-family: inherit;
@@ -314,12 +410,12 @@ aside:hover .sidebar .submenu a span {
 }
 
 .view-details-btn:hover, .back-btn:hover {
-    background: #8b0a5c;
+    background: var(--purple);
     transform: translateY(-2px);
 }
 
 .back-btn {
-    background: #8b0a5c;
+    background: var(--darkpurple);
 }
 
 /* Schedule Content */
@@ -331,7 +427,7 @@ aside:hover .sidebar .submenu a span {
 
 /* Subjects Table */
 .table-container {
-    background: #ffffff;
+    background: var(--softpink);
     border-radius: 1.6rem;
     padding: 1.5rem;
     overflow-x: auto;
@@ -341,12 +437,12 @@ aside:hover .sidebar .submenu a span {
 .subjects-table {
     width: 100%;
     border-collapse: collapse;
-    color: #333;
+    color: var(--very-darkpurple);
 }
 
 .subjects-table thead {
-    background: #8b0a5c;
-    color: white;
+    background: var(--lightpurple);
+    color: var(--white);
 }
 
 .subjects-table th {
@@ -371,7 +467,7 @@ aside:hover .sidebar .submenu a span {
 }
 
 .subjects-table tbody tr:hover {
-    background: rgba(245, 113, 144, 0.1);
+    background: rgba(219, 113, 245, 0.1);
 }
 
 .subjects-table tbody tr:last-child td {
@@ -380,7 +476,7 @@ aside:hover .sidebar .submenu a span {
 
 /* Weekly Schedule Grid - FIXED VERSION */
 .schedule-grid-container {
-    background: #8b0a5c;
+    background: var(--purple);
     border-radius: 1.6rem;
     padding: 1.5rem;
     overflow-x: auto;
@@ -395,7 +491,7 @@ aside:hover .sidebar .submenu a span {
     display: grid;
     grid-template-columns: 100px repeat(7, 1fr);
     gap: 2px;
-    background: #ffffff;
+    background: var(--lightpink);
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -403,8 +499,8 @@ aside:hover .sidebar .submenu a span {
 
 /* Grid Headers */
 .grid-header {
-    background: #8b0a5c;
-    color: white;
+    background: var(--purple);
+    color: var(--white);
     padding: 0.75rem 0.5rem;
     text-align: center;
     font-weight: 600;
@@ -412,13 +508,13 @@ aside:hover .sidebar .submenu a span {
 }
 
 .grid-time-header {
-    background: #f8f8f8;
+    background: var(--white);
     padding: 0.5rem;
     text-align: right;
     font-size: 0.8rem;
-    color: #666;
+    color: var(--very-darkpurple);
     font-weight: 500;
-    border-right: 2px solid #e0e0e0;
+    border-right: 2px solid var(--white);
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -427,15 +523,15 @@ aside:hover .sidebar .submenu a span {
 
 /* Grid Cells - These are the drop zones for classes */
 .grid-cell {
-    background: white;
+    background: var(--white);
     min-height: 50px;
     position: relative;
-    border-right: 1px solid #f0f0f0;
-    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid var(--softpink);
+    border-bottom: 1px solid var(--softpink);
 }
 
 .grid-cell:hover {
-    background: #fafafa;
+    background: var(--lightpink);
 }
 
 /* Class Block - Spans multiple rows */
@@ -447,7 +543,7 @@ aside:hover .sidebar .submenu a span {
     border-radius: 6px;
     padding: 8px;
     font-size: 0.8rem;
-    color: #7d2e65;
+    color: var(--lightpink);
     overflow: hidden;
     cursor: pointer;
     transition: all 0.2s;
@@ -456,8 +552,8 @@ aside:hover .sidebar .submenu a span {
     gap: 4px;
     z-index: 5;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    background: #f192c3;  /* Light green */
-    border: 1px solid #ef6bb0;
+    background: var(--lightpurple);  
+    border: 1px solid var(--deep-midnight);
 }
 
 .class-block:hover {
@@ -469,12 +565,12 @@ aside:hover .sidebar .submenu a span {
 .class-block .subject-code {
     font-weight: 700;
     font-size: 0.9rem;
-    color: #971367;
+    color: var(--lightpink);
 }
 
 .class-block .subject-room {
     font-size: 0.75rem;
-    color: #ae1676;
+    color: var(--softpink);
     font-weight: 500;
 }
 
@@ -492,12 +588,12 @@ aside:hover .sidebar .submenu a span {
 }
 
 .subject-card {
-    background: #ffffff;
+    background: var(--white);
     border-radius: 1.5rem;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-    border: 2px solid rgba(226, 109, 179, 0.3);
+    border: 2px solid rgba(206, 109, 226, 0.3);
 }
 
 .subject-card:hover {
@@ -505,8 +601,8 @@ aside:hover .sidebar .submenu a span {
 }
 
 .subject-card-header {
-    background: #8b0a5c;
-    color: white;
+    background: var(--purple);
+    color: var(--white);
     padding: 1.2rem;
     font-weight: 600;
     font-size: 1.1rem;
@@ -515,17 +611,17 @@ aside:hover .sidebar .submenu a span {
 .subject-card-body {
     padding: 1.5rem;
     display: flex;
-    color:#333;
+    color: var(--very-darkpurple);
     flex-direction: column;
     gap: 1rem;
 }
 
 .view-record-btn {
     padding: 0.7rem 1.5rem;
-    background: #ffffff;
-    border: 2px solid #ae1676;
+    background: var(--white);
+    border: 2px solid var(--neon-purple);
     border-radius: 1.5rem;
-    color: #333;
+    color: var(--very-darkpurple);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -536,8 +632,8 @@ aside:hover .sidebar .submenu a span {
 }
 
 .view-record-btn:hover {
-    background: #971367;
-    color: white;
+    background: var(--electric-violet);
+    color: var(--white);
 }
 
 /* Attendance Calendar Modal - UPDATED TO MATCH REFERENCE */
@@ -560,7 +656,7 @@ aside:hover .sidebar .submenu a span {
 }
 
 .attendance-modal-content {
-    background: #fff5f0;
+    background: var(--white);
     border-radius: 1.5rem;
     width: 100%;
     max-width: 400px;
@@ -569,12 +665,12 @@ aside:hover .sidebar .submenu a span {
 }
 
 .attendance-modal-header {
-    background: #971367;
+    background: var(--lightpurple);
     padding: 1rem 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: white;
+    color: var(--white);
 }
 
 .legend-row {
@@ -598,14 +694,14 @@ aside:hover .sidebar .submenu a span {
     display: inline-block;
 }
 
-.dot.absent { background: #ff6b6b; }
-.dot.leave { background: #4dabf7; }
-.dot.excused { background: #ffd43b; }
+.dot.absent { background: var(--neon-purple); }
+.dot.leave { background: var(--darkpurple); }
+.dot.excused { background: var(--lightpink); }
 
 .close-modal-btn {
     background: none;
     border: none;
-    color: white;
+    color: var(--white);
     cursor: pointer;
     padding: 0.25rem;
     display: flex;
@@ -632,7 +728,7 @@ aside:hover .sidebar .submenu a span {
 }
 
 .calendar-title {
-    color: #333;
+    color: var(--very-darkpurple);
     font-size: 1.1rem;
     font-weight: 600;
 }
@@ -663,7 +759,7 @@ aside:hover .sidebar .submenu a span {
     text-align: center;
     padding: 0.75rem 0.25rem;
     font-size: 0.75rem;
-    color: #999;
+    color: rgba(210, 158, 229, 0.8);
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -690,7 +786,7 @@ aside:hover .sidebar .submenu a span {
 /* Day number styling */
 .calendar-day-number {
     font-size: 0.95rem;
-    color: #333;
+    color: var(--very-darkpurple);
     font-weight: 500;
     width: 32px;
     height: 32px;
@@ -703,20 +799,20 @@ aside:hover .sidebar .submenu a span {
 
 /* Other month dates (gray) - THIS IS THE KEY FIX */
 .calendar-day-cell.other-month .calendar-day-number {
-    color: #ccc;
+    color: var(--white);
     font-weight: 400;
 }
 
 /* Today styling (subtle) */
 .calendar-day-cell.today .calendar-day-number {
-    border: 2px solid #971367;
-    color: #971367;
+    border: 2px solid var(--darkpurple);
+    color: var(--purple);
 }
 
-/* Selected date styling (blue circle like reference) */
+/* Selected date styling */
 .calendar-day-cell.selected .calendar-day-number {
-    background: #4dabf7;
-    color: white;
+    background: var(--electric-violet);
+    color: var(--white);
     font-weight: 600;
 }
 
@@ -737,9 +833,10 @@ aside:hover .sidebar .submenu a span {
     border-radius: 50%;
 }
 
-.day-indicator.absent { background: #ff6b6b; }
-.day-indicator.leave { background: #4dabf7; }
-.day-indicator.excused { background: #ffd43b; }
+.day-indicator.absent { background: var(--neon-purple); }
+.day-indicator.leave { background: var(--darkpurple); }
+.day-indicator.excused { background: var(--lightpink); }
+
 
 /* Loading & Empty States */
 .loading-state,
@@ -749,7 +846,7 @@ aside:hover .sidebar .submenu a span {
     align-items: center;
     justify-content: center;
     padding: 4rem;
-    color: white;
+    color: var(--white);
     gap: 1rem;
 }
 
