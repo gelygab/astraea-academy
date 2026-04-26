@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../db.php';
+require_once 'db.php';
 
 if (!isset($_SESSION['uid'])) {
     header('Location: facultylogin.php');
@@ -23,7 +23,7 @@ $user_uid = $_SESSION['uid'];
 </head>
 <body>
     <div class="background-container">
-        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
@@ -58,7 +58,7 @@ $user_uid = $_SESSION['uid'];
                 </div>
             </div>
 
-            <div class="card" style="margin-bottom: 20px; padding: 15px; background-color: #5a102b; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <div class="card" style="margin-bottom: 20px; padding: 15px; background-color: var(--darkpurple); border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <p style="font-size: 14px; margin: 0 0 5px 0; text-align: left; font-weight: bold; color: white;">Displaying:</p>
                 <h3 id="displayText" style="margin: 0; color: white; font-size: 24px; text-align: center;">Awaiting Selection...</h3>
             </div>

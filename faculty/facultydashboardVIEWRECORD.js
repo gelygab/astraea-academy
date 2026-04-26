@@ -6,23 +6,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (studentUid) {
         // 2. Fetch the specific student's data
-       // 🚨 MAKE SURE THIS URL SAYS api_get_full_record.php 🚨
-        fetch(`api/api_get_full_record.php?uid=${studentUid}`)
+        fetch(`api_get_student_record.php?uid=${studentUid}`)
             .then(response => response.json())
             .then(student => {
-                
-                console.log("API DATA RECEIVED:", student); 
-
                 if (student.error) {
                     alert("Student not found!");
                     return;
                 }
 
-                // 1. Target the profile section of the new API
-                const profile = student.profile;
-
-                // Translate Department ID to text 
-                let programName = profile.department_id;
+                // Translate Department ID to text (e.g., 3 -> BSCpE)
+                let programName = student.department_id;
                 if (programName == 1) programName = 'BSCE';
                 if (programName == 2) programName = 'BSChE';
                 if (programName == 3) programName = 'BSCpE';
@@ -31,30 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (programName == 6) programName = 'BSME';
                 if (programName == 7) programName = 'BSMFGE';
                
+                // --- NEW: Add the correct suffix to the Year ---
                 let yearSuffix = "th";
-                if (profile.student_year == '1' || profile.student_year == 1) yearSuffix = "st";
-                if (profile.student_year == '2' || profile.student_year == 2) yearSuffix = "nd";
-                if (profile.student_year == '3' || profile.student_year == 3) yearSuffix = "rd";
+                if (student.student_year == '1' || student.student_year == 1) yearSuffix = "st";
+                if (student.student_year == '2' || student.student_year == 2) yearSuffix = "nd";
+                if (student.student_year == '3' || student.student_year == 3) yearSuffix = "rd";
                 
-                let formattedYear = `${profile.student_year}${yearSuffix}`;
+                let formattedYear = `${student.student_year}${yearSuffix}`;
+                // ----------------------------------------------
 
-                // 2. Inject the Profile Data (using profile.first_name, etc.)
-                document.getElementById('studentName').textContent = `${profile.first_name} ${profile.last_name}`;
+                // 3. Inject the data into the HTML!
+                document.getElementById('studentName').textContent = `${student.first_name} ${student.last_name}`;
+                
+                // Use our new formattedYear here!
                 document.getElementById('studentProgram').textContent = `${formattedYear} Year - ${programName}`;
-                document.getElementById('studentUidDisplay').textContent = studentUid; 
-                document.getElementById('studentContact').textContent = profile.student_contact || 'N/A';
-                document.getElementById('studentEmail').textContent = profile.student_email || 'N/A';
-                document.getElementById('studentAddress').textContent = profile.student_address || 'N/A';
-
-                // 3. Inject the Stats (using student.attendance_summary)
-                if (student.attendance_summary) {
-                    document.getElementById('statTotal').textContent = student.attendance_summary.Present || 0;
-                    document.getElementById('statLate').textContent = student.attendance_summary.Late || 0;
-                    document.getElementById('statAbsent').textContent = student.attendance_summary.Absent || 0;
-                    document.getElementById('statUndertime').textContent = student.attendance_summary.Excused || 0; 
-                }
+                
+                document.getElementById('studentUidDisplay').textContent = student.user_uid;
+                document.getElementById('studentContact').textContent = student.student_contact || 'N/A';
+                document.getElementById('studentEmail').textContent = student.student_email || 'N/A';
+                document.getElementById('studentAddress').textContent = student.student_address || 'N/A';
             })
-            .catch(error => console.error('Error fetching student record:', error)); 
+            .catch(error => console.error('Error fetching student record:', error));
     } else {
         document.getElementById('studentName').textContent = "Error: No Student Selected";
     }

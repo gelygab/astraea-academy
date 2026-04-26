@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../db.php';
+require_once 'db.php';
 
 if (!isset($_SESSION['uid'])) {
     header('Location: facultylogin.php');
@@ -23,7 +23,7 @@ $user_uid = $_SESSION['uid'];
 </head>
 <body>
     <div class="background-container">
-        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
@@ -52,9 +52,11 @@ $user_uid = $_SESSION['uid'];
                 </div>
 
                 <div class="profile-main-info">
-                    <div class="profile-circle" id="profileCircle" style="cursor: pointer;" title="Click to upload photo">
-                        <img src="../images/default-avatar.png" id="profileImg" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                        <input type="file" id="imageUpload" accept="image/*" hidden>
+                    <div class="profile-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.0">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
                     </div>
                     <div class="info-text">
                         <h1 id="studentName">Loading Name...</h1>
@@ -111,6 +113,6 @@ $user_uid = $_SESSION['uid'];
         </main> 
     </div> 
     
-    <script src="facultydashboardVIEWRECORD.js?v=999"></script> 
+    <script src="facultydashboardVIEWRECORD.js"></script> 
 </body>
 </html>
