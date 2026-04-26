@@ -21,7 +21,7 @@ $user_uid = $_SESSION['uid'];
 </head>
 <body>
     <div class="background-container">
-        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
@@ -50,7 +50,7 @@ $user_uid = $_SESSION['uid'];
 
                 <div class="faculty-info-flex">
                     <div class="pfp-circle loading">
-                        <svg viewBox="0 0 24 24" fill ="none" stroke="currentColor" stroke-width="1.5">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
@@ -73,21 +73,7 @@ $user_uid = $_SESSION['uid'];
             <div class="main-grid-layout">
               <div class="card icon-bar-card"> 
                     <div class="icon-item">
-                        <img src="../images/Facultyicon_class.png" alt="Class" class="stat-icon">
-                        <p><strong id="curr-class">--</strong><br>On-Going Class</p>
-                    </div>
-                    <div class="icon-item">
-                        <img src="../images/Facultyicon_enrolled.png" alt="Enrolled" class="stat-icon">
-                        <p><strong id="curr-enrolled">--</strong><br>Total Enrolled</p>
-                    </div>
-                    <div class="icon-item">
-                        <img src="../images/Facultyicon_present.png" alt="Present" class="stat-icon">
-                        <p><strong id="curr-present">--</strong><br>Present Now</p>
-                    </div>
-                    <div class="icon-item">
-                        <img src="../images/Facultyicon_pending.png" alt="Pending" class="stat-icon">
-                        <p><strong id="curr-pending">--</strong><br>Pending Excuses</p>
-                        <svg class="stat-icon" viewBox="0 0 513 513" fill ="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="stat-icon" viewBox="0 0 513 513" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <style type="text/css">
                                 .st0 { fill: currentColor; }
                             </style>
@@ -112,8 +98,9 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                         <p><strong id="curr-class" class="loading">--</strong><br>On-Going Class</p>
                     </div>
+
                     <div class="icon-item">
-                        <svg class="stat-icon" viewBox="0 0 347 347"fill ="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="stat-icon" viewBox="0 0 347 347" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M254.557,221.867l-43.444-9.656v-6.656h61.111V77.778c0-19.672-14.683-35.978-33.661-38.539
                             c-2.106-16.656-14.194-30.539-30.833-34.7C195.679,1.522,183.268,0,170.857,0h-4.889c-7.15,0-14.389,0.517-21.506,1.522
                             c-41.183,5.889-72.239,41.7-72.239,83.306v120.728h61.111v6.656l-43.444,9.65c-33.3,7.406-56.556,36.389-56.556,70.506v52.078
@@ -136,8 +123,9 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                         <p><strong id="curr-enrolled" class="loading">--</strong><br>Total Enrolled</p>
                     </div>
+
                     <div class="icon-item">
-                        <svg class="stat-icon" viewBox="0 0 32 32"fill ="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="stat-icon" viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M28 5.25h-24c-1.518 0.002-2.748 1.232-2.75 2.75v16c0.002 1.518 1.232 2.748 2.75 2.75h24c1.518-0.002 2.748-1.232 
                             2.75-2.75v-16c-0.002-1.518-1.232-2.748-2.75-2.75h-0zM4 6.75h24c0.69 0.001 1.249 0.56 1.25 1.25v1.25h-26.5v-1.25c0.001-0.69 
                             0.56-1.249 1.25-1.25h0zM28 25.25h-24c-0.69-0.001-1.249-0.56-1.25-1.25v-13.25h26.5v13.25c-0.001 0.69-0.56 1.249-1.25 1.25h-0zM9.645 
@@ -152,12 +140,15 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                         <p><strong id="curr-present" class="loading">--</strong><br>Present Now</p>
                     </div>
+
                     <div class="icon-item">
-                        <svg class="stat-icon" viewBox="0 0 1024 1024"fill ="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M182.99 146.2h585.14v402.29h73.14V73.06H109.84v877.71H512v-73.14H182.99z" fill="#fff" /><path d="M256.13 219.34h438.86v73.14H256.13zM256.13 
+                        <svg class="stat-icon" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M182.99 146.2h585.14v402.29h73.14V73.06H109.84v877.71H512v-73.14H182.99z" fill="#fff" />
+                            <path d="M256.13 219.34h438.86v73.14H256.13zM256.13 
                             365.63h365.71v73.14H256.13zM256.13 511.91h219.43v73.14H256.13zM731.55 585.06c-100.99 0-182.86 81.87-182.86 182.86s81.87 182.86 182.86 182.86c100.99 0 182.86-81.87 
                             182.86-182.86s-81.86-182.86-182.86-182.86z m0 292.57c-60.5 0-109.71-49.22-109.71-109.71 0-60.5 49.22-109.71 109.71-109.71 60.5 0 109.71 49.22 109.71 109.71 0.01 
-                            60.49-49.21 109.71-109.71 109.71z" fill ="#fff" /><path d="M758.99 692.08h-54.86v87.27l69.39 68.76 38.61-38.96-53.14-52.66z" fill ="#fff" />
+                            60.49-49.21 109.71-109.71 109.71z" fill="#fff" />
+                            <path d="M758.99 692.08h-54.86v87.27l69.39 68.76 38.61-38.96-53.14-52.66z" fill="#fff" />
                         </svg>
                         <p><strong id="curr-pending" class="loading">--</strong><br>Pending Excuses</p>
                     </div>
