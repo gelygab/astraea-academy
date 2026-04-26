@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
@@ -18,11 +18,7 @@
         <main class="schedule-dashboard">
             <!-- Header Section with Filters -->
             <section class="schedule-header-card">
-                <div class="header-banner">
-                    <h2 class="page-title">My Schedule</h2>
-                </div>
-                
-                
+                <h2 class="page-title">My Schedule</h2>
                 <div class="filters-row">
                     <div class="filter-group">
                         <label for="schoolYear">School Year</label>

@@ -9,13 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // FLATPICKR CALENDAR
   flatpickr("#start-date", {
     dateFormat: "F j, Y",
-    minDate: "today",
     onChange: calculateDates
   });
 
   flatpickr("#end-date", {
     dateFormat: "F j, Y",
-    minDate: "today",
     onChange: calculateDates 
   });
 
@@ -78,77 +76,29 @@ function calculateDates() {
     uploadBtn.querySelector(".upload-text").textContent = "Upload";
   }
 
- // SUBMIT
+  // SUBMIT
   submitBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
-    // 1. Grab the values from your frontend IDs
+    // Basic check to make sure they filled out the important stuff
     const leaveType = document.getElementById("time-type").value;
     const startDate = document.getElementById("start-date").value;
-    const endDate = document.getElementById("end-date").value;
-    const numDays = document.getElementById("num-days").value;
-    const returnOn = document.getElementById("return-on").value;
-    const comment = document.getElementById("comment").value;
 
-    // Validation
-    if (!leaveType || !startDate || !endDate) {
-      alert("Please select a Leave Type, Start Date, and End Date before submitting.");
+    if (!leaveType || !startDate) {
+      alert("Please select a Leave Type and Start Date before submitting.");
       return;
     }
 
-    // 2. Package it up for PHP
-    const startConvert = new Date(startDate);
-    const endConvert = new Date(endDate);
+    alert("Success! Your leave request has been submitted.");
+    
+    if (confirm("Would you like to file another leave request?")) {
+      resetForm(); 
 
-    if (startConvert > endConvert) {
-      alert("Hold up! The End Date cannot be before the Start Date.");
-      return; 
+    } else {
+
+      window.location.href = "facultydashboardHOME.php"; //clicking the cancel button will redirect you to the homepage
     }
-
-    const formData = new FormData();
-    formData.append('leaveType', leaveType);
-    formData.append('startDate', startDate);
-    formData.append('endDate', endDate);
-    formData.append('numDays', numDays);
-    formData.append('returnOn', returnOn);
-    formData.append('comment', comment);
-
-    if (fileInput.files.length > 0) {
-      formData.append('attachment', fileInput.files[0]);
-    }
-
-    // Button loading state
-    submitBtn.textContent = "Submitting...";
-    submitBtn.disabled = true;
-
-    // 3. Send it!
-    fetch('api/api_submit_leave.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Reset button
-        submitBtn.textContent = "Submit";
-        submitBtn.disabled = false;
-
-        if (data.success) {
-            alert("Success! Your leave request has been submitted to the Admin.");
-            if (confirm("Would you like to file another leave request?")) {
-                resetForm(); 
-            } else {
-                window.location.href = "facultydashboardHOME.php"; 
-            }
-        } else {
-            alert("Error: " + data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("A network error occurred. Please try again.");
-        submitBtn.textContent = "Submit";
-        submitBtn.disabled = false;
-    });
+ 
   });
 
   // CANCEL
