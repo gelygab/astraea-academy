@@ -31,10 +31,6 @@ $user_uid = $_SESSION['uid'];
 
               <?php include 'faculty_sidebar.php'; ?>
 
-              <?php include 'faculty_sidebar.php'; ?>
-
-              <?php include 'faculty_sidebar.php'; ?>
-
         <div class="main-content">
   <div class="form-container">
     

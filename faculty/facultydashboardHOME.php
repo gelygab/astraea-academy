@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../db.php';
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+    exit;
+}
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +66,7 @@
                 </div> 
 
             <div class="main-grid-layout">
-                <div class="card icon-bar-card"> 
+              <div class="card icon-bar-card"> 
                     <div class="icon-item">
                         <img src="../images/Facultyicon_class.png" alt="Class" class="stat-icon">
                         <p><strong id="curr-class">--</strong><br>On-Going Class</p>
@@ -72,20 +82,6 @@
                     <div class="icon-item">
                         <img src="../images/Facultyicon_pending.png" alt="Pending" class="stat-icon">
                         <p><strong id="curr-pending">--</strong><br>Pending Excuses</p>
-                        <img src="images/Facultyicon_class.png" alt="Class" class="stat-icon">
-                        <p><strong id="curr-class" class="loading">--</strong><br>On-Going Class</p>
-                    </div>
-                    <div class="icon-item">
-                        <img src="images/Facultyicon_enrolled.png" alt="Enrolled" class="stat-icon">
-                        <p><strong id="curr-enrolled" class="loading">--</strong><br>Total Enrolled</p>
-                    </div>
-                    <div class="icon-item">
-                        <img src="images/Facultyicon_present.png" alt="Present" class="stat-icon">
-                        <p><strong id="curr-present" class="loading">--</strong><br>Present Now</p>
-                    </div>
-                    <div class="icon-item">
-                        <img src="images/Facultyicon_pending.png" alt="Pending" class="stat-icon">
-                        <p><strong id="curr-pending" class="loading">--</strong><br>Pending Excuses</p>
                     </div>
                 </div>
 
@@ -103,7 +99,7 @@
                 <div class="card feed-card">
                     <h2>Live Attendance Feed</h2>
                     <div class="white-table-container">
-                        <div class="table-tab centered-tab">SOFTDES022</div>
+                        <div id="live-class-badge" class="table-tab centered-tab">SOFTDES022</div>
                         <table id="feed-table">
                             <thead>
                                 <tr>

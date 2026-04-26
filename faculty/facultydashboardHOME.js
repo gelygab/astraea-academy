@@ -41,22 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setDynamicEl('curr-enrolled', cc.enrolled);
                 setDynamicEl('curr-present', cc.present);
                 setDynamicEl('curr-pending', cc.pending === 0 ? "NONE" : cc.pending);
+
+                setDynamicEl('live-class-badge', cc.code);
             }
 
-            // LOAD LIVE FEED TABLE 
-            const feedBody = document.getElementById('feed-body');
-            if (feedBody) {
-                feedBody.innerHTML = common.live_feed.map(f => `
-                    <tr>
-                        <td class="col-name">${f.name}</td>
-                        <td class="col-time">${f.time}</td>
-                        <td><span class="status-pill ${f.status === 'On-Time' ? 'On-Time' : 'Late'}">${f.status}</span></td>
-                    </tr>
-                `).join('');
-                feedBody.classList.remove('loading');
-            }
-
-            // INITIALIZE DEFAULT VIEW
+            // INITIALIZE DEFAULT VIEW (This will now also draw the feed table!)
             updateDynamicSections('daily');
 
         } catch (error) {
@@ -67,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateDynamicSections(timeframe) {
         if (!cachedData || !cachedData.timeframes[timeframe]) return;
+
+        // 1. DEFINE tfData FIRST!
         const tfData = cachedData.timeframes[timeframe];
 
         // --- UPDATE TOP SUMMARY BOXES ---
@@ -118,21 +109,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const absentEl = document.getElementById('absentPercent');
         if (absentEl) {
             absentEl.textContent = absentRate + "%";
-            // Hide if 0, show if greater than 0
             absentEl.style.display = absentRate === 0 ? 'none' : 'block';
         }
 
         // Feedback Text
-        const feedbackTitle = presentRate >= 90 ? "Great Job!" : "Keep it up!";
-        const feedbackDesc = presentRate >= 90
-            ? `You have maintained a high attendance record for ${tfData.period_label.toLowerCase()}. Keep it up to ensure academic success!`
-            : `Your attendance for ${tfData.period_label.toLowerCase()} is at ${presentRate}%. Consistent attendance ensures academic success.`;
+        const feedbackTitle = 
+             presentRate >= 90 ? "Excellent!" :
+             presentRate >= 80? "Good Attendance!" :
+             presentRate >= 70 ? "Room for Improvement" : "Low Attendance Alert";
+             
+        const feedbackDesc = 
+             presentRate >= 90 ? `Outstanding! Your classes have maintained a high attendance rate of  ${presentRate}% for ${tfData.period_label.toLowerCase()}.` :
+             presentRate >= 80 ? `Class attendance is stable at ${presentRate}% for ${tfData.period_label.toLowerCase()}. Keep monitoring for any sudden drops.` :
+             presentRate >= 70 ? `Class attendance is dipping to ${presentRate}% for ${tfData.period_label.toLowerCase()}. You may want to check in with frequently absent students.` : 
+             `Class attendance is currently at (${presentRate}%) for ${tfData.period_label.toLowerCase()}. Please review your records and remind students of the attendance policy.`;
 
         setDynamicEl('feedbackTitle', feedbackTitle);
         setDynamicEl('attendanceDescription', feedbackDesc);
 
         const feedbackContainer = document.querySelector('.attendance-feedback');
         if (feedbackContainer) feedbackContainer.classList.remove('loading');
+
+        // --- UPDATE LIVE FEED TABLE (THE SMART SWITCH) ---
+        // The Live Feed should ALWAYS show the ongoing class, regardless of the dropdown!
+        let activeFeedArray = cachedData.common.feed_daily || [];
+
+        const feedBody = document.getElementById('feed-body');
+        if (feedBody) {
+            // Check if there are actually records to show
+            if (activeFeedArray.length > 0) {
+                feedBody.innerHTML = activeFeedArray.map(f => `
+                    <tr>
+                        <td class="col-name">${f.name}</td>
+                        <td class="col-time">${f.time}</td>
+                        <td><span class="status-pill ${f.status === 'On-Time' ? 'On-Time' : 'Late'}">${f.status}</span></td>
+                    </tr>
+                `).join('');
+            } else {
+                feedBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 20px;">No attendance records found for this view.</td></tr>`;
+            }
+            feedBody.classList.remove('loading');
+        }
     }
 
     // --- DROPDOWN MENU LOGIC ---
