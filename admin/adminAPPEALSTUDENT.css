@@ -570,7 +570,7 @@ body {
     background: var(--card-bg);
     border-radius: var(--border-radius);
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -648,6 +648,90 @@ body {
     padding: 12px;
     background: rgba(212, 168, 67, 0.05);
     border-radius: 8px;
+}
+
+/* Update Status Modal */
+.status-modal {
+    max-width: 450px;
+}
+
+.status-info {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+.status-info p {
+    font-size: 14px;
+    color: var(--brown);
+    margin-bottom: 4px;
+}
+
+.status-info .current-status {
+    margin-top: 8px;
+    font-size: 13px;
+    color: rgba(107, 78, 61, 0.7);
+}
+
+.status-info .current-status span {
+    font-weight: 600;
+    color: var(--pending-color);
+}
+
+.options-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brown);
+    margin-bottom: 12px;
+}
+
+.status-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.status-btn {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px solid transparent;
+}
+
+.status-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.status-btn.approve {
+    background: rgba(56, 161, 105, 0.15);
+    color: var(--approved-color);
+    border-color: var(--approved-color);
+}
+
+.status-btn.approve:hover {
+    background: var(--approved-color);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.status-btn.reject {
+    background: rgba(229, 62, 62, 0.15);
+    color: var(--rejected-color);
+    border-color: var(--rejected-color);
+}
+
+.status-btn.reject:hover {
+    background: var(--rejected-color);
+    color: var(--white);
+    transform: translateY(-2px);
 }
 
 /* Responsive */

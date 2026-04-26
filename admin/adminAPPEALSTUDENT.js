@@ -287,6 +287,16 @@ function renderAppeals(appeals) {
                 <button class="btn-primary" onclick="viewSummary('${appeal.id}')">
                     View Appeal Summary
                 </button>
+                 ${appeal.status === 'pending' ? `
+                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
+                        Edit Status
+                    </button>
+                ` : ''}
+                ${appeal.status === 'rejected' ? `
+                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
+                        Edit Status
+                    </button>
+                ` : ''}
             </div>
         </div>
     `).join('');
@@ -320,6 +330,9 @@ function closeModal(modalId) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
     }
+    if (modalId === 'updateStatusModal') {
+        currentAppealId = null;
+    }
 }
 
 // Close modal when clicking outside
@@ -347,29 +360,68 @@ function viewSummary(appealId) {
 
     currentAppealId = appealId;
 
-    document.getElementById('summaryName').textContent       = appeal.studentName;
-    document.getElementById('summaryID').textContent         = appeal.studentId;
-    document.getElementById('summaryDepartment').textContent = appeal.departmentName;
-    document.getElementById('summaryYear').textContent       = appeal.yearLabel;
-    document.getElementById('summaryBlock').textContent      = appeal.block;
-    document.getElementById('summaryType').textContent       = appeal.typeLabel;
-    document.getElementById('summaryDate').textContent       = appeal.dateApplied;
+    document.getElementById('summaryName').textContent = appeal.studentName;
+    document.getElementById('summaryID').textContent = appeal.studentId;
+    document.getElementById('summaryDepartment').textContent = appeal.departmentName || appeal.department;
+    document.getElementById('summaryYear').textContent = appeal.yearLabel;
+    document.getElementById('summaryBlock').textContent = appeal.block;
+    document.getElementById('summaryType').textContent = appeal.typeLabel;
+    document.getElementById('summaryDate').textContent = appeal.dateApplied;
+    document.getElementById('summaryStartDate').textContent = appeal.startDate || 'N/A';
+    document.getElementById('summaryEndDate').textContent = appeal.endDate || 'N/A';
+    document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
+    document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
+    document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
+    if (appeal.attachmentUrl) {
+        document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
+        document.getElementById('summaryAttachment').style.pointerEvents = 'auto';
+        document.getElementById('summaryAttachment').style.color = 'var(--blue)';
+    } else {
+        document.getElementById('summaryAttachment').removeAttribute('href');
+        document.getElementById('summaryAttachment').style.pointerEvents = 'none';
+        document.getElementById('summaryAttachment').style.color = '#666';
+    }
+    document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'N/A';
 
     const statusEl = document.getElementById('summaryStatus');
     statusEl.textContent = appeal.status;
     statusEl.className = 'detail-value status-badge ' + appeal.status;
 
-    document.getElementById('summaryReason').textContent = appeal.reason;
 
     openModal('summaryModal');
 }
 
 // ============================================================
-// LOGOUT
+// UPDATE STATUS MODAL
 // ============================================================
-document.querySelector('.logout')?.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (confirm('Are you sure you want to log out?')) {
-        window.location.href = '/login';
-    }
-});
+function openUpdateStatus(appealId) {
+    const appeal = appealsData.find(a => a.id === appealId);
+    if (!appeal) return;
+
+    currentAppealId = appealId;
+
+    document.getElementById('statusStudentName').textContent = appeal.studentName;
+
+    const currentStatusEl = document.getElementById('statusCurrent');
+    currentStatusEl.textContent = appeal.status;
+    currentStatusEl.className = appeal.status;
+
+    openModal('updateStatusModal');
+}
+
+function updateStatus(newStatus) {
+    if (!currentAppealId) return;
+
+    const appeal = appealsData.find(a => a.id === currentAppealId);
+    if (!appeal) return;
+
+    // Update the data
+    appeal.status = newStatus;
+
+    // Re-render with current filters
+    applyFilters();
+
+    // Close modal
+    closeModal('updateStatusModal');
+}

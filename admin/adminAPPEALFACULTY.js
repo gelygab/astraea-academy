@@ -1,5 +1,8 @@
 // ============================================================
-// adminAPPEALSTUDENT.js — VERSION 2: Production 
+// adminAPPEALFACULTY.js — VERSION 1: Testing/Mock Data
+// ============================================================
+// Uses hardcoded mock data with College & Department fields.
+// Test the UI immediately without a backend.
 // ============================================================
 
 // Sidebar Navigation Toggle
@@ -9,194 +12,203 @@ function toggleNavGroup(button) {
 }
 
 let currentAppealId = null;
-let appealsData = [];          // Populated from API
-let departmentsList = [];      // Populated from API
 
 // ============================================================
-// CONFIGURATION — Update with your actual API endpoints
+// COLLEGE & DEPARTMENT CASCADING DATA
 // ============================================================
-const API_CONFIG = {
-    baseUrl: 'api/',
-    endpoints: {
-        appeals: 'get_faculty_appeals.php',
-        departments: 'get_faculty_departments.php',
-        updateStatus: '/student-appeals/{id}/status'
+const COLLEGE_DEPARTMENTS = {
+    engineering: {
+        name: 'College of Engineering',
+        departments: [
+            { value: 'civil', label: 'Civil Engineering' },
+            { value: 'chemical', label: 'Chemical Engineering' },
+            { value: 'computer', label: 'Computer Engineering' },
+            { value: 'electrical', label: 'Electrical Engineering' },
+            { value: 'electronics', label: 'Electronics Engineering' },
+            { value: 'mechanical', label: 'Mechanical Engineering' },
+            { value: 'manufacturing', label: 'Manufacturing Engineering' }
+        ]
+    },
+    education: {
+        name: 'College of Education',
+        departments: [
+            { value: 'early-childhood', label: 'Early Childhood Education' },
+            { value: 'elementary', label: 'Elementary Education' },
+            { value: 'physical', label: 'Physical Education' },
+            { value: 'secondary', label: 'Secondary Education' },
+            { value: 'special-needs', label: 'Special Needs Education' }
+        ]
+    },
+    chass: {
+        name: 'College of Humanities, Arts, and Social Sciences',
+        departments: [
+            { value: 'communications', label: 'Communications' },
+            { value: 'social-work', label: 'Social Work' },
+            { value: 'psychology', label: 'Psychology' }
+        ]
     }
 };
 
 // ============================================================
+// MOCK DATA — 5 FACULTY APPEALS WITH COLLEGE & DEPARTMENT
+// ============================================================
+const appealsData = [
+    {
+        id: '1',
+        facultyName: 'Dela Cruz, Juan',
+        facultyId: '55555',
+        college: 'engineering',
+        collegeName: 'College of Engineering',
+        department: 'civil',
+        departmentName: 'Civil Engineering',
+        type: 'leave',
+        typeLabel: 'Emergency Leave',
+        dateApplied: 'March 2, 2026',
+        status: 'pending',
+        reason: 'Family emergency — need to attend to sick family member in the province. Will be unavailable for 3 days.'
+    },
+    {
+        id: '2',
+        facultyName: 'Santos, Maria',
+        facultyId: '55556',
+        college: 'education',
+        collegeName: 'College of Education',
+        department: 'elementary',
+        departmentName: 'Elementary Education',
+        type: 'leave',
+        typeLabel: 'Sick Leave',
+        dateApplied: 'March 5, 2026',
+        status: 'pending',
+        reason: 'High fever and flu symptoms, advised by doctor to rest for 5 days. Medical certificate attached.'
+    },
+    {
+        id: '3',
+        facultyName: 'Reyes, Pedro',
+        facultyId: '55557',
+        college: 'chass',
+        collegeName: 'College of Humanities, Arts, and Social Sciences',
+        department: 'psychology',
+        departmentName: 'Psychology',
+        type: 'excuse',
+        typeLabel: 'Leave of Absence',
+        dateApplied: 'February 22, 2026',
+        status: 'approved',
+        reason: 'Attending professional development conference on Behavioral Psychology in Manila. Approved by department head.'
+    },
+    {
+        id: '4',
+        facultyName: 'Garcia, Ana',
+        facultyId: '55558',
+        college: 'engineering',
+        collegeName: 'College of Engineering',
+        department: 'computer',
+        departmentName: 'Computer Engineering',
+        type: 'excuse',
+        typeLabel: 'Medical Appointment',
+        dateApplied: 'March 8, 2026',
+        status: 'rejected',
+        reason: 'Regular dental check-up, not urgent. Requested only 2 hours but insufficient justification provided.'
+    },
+    {
+        id: '5',
+        facultyName: 'Lopez, Jose',
+        facultyId: '55559',
+        college: 'education',
+        collegeName: 'College of Education',
+        department: 'physical',
+        departmentName: 'Physical Education',
+        type: 'leave',
+        typeLabel: 'Personal Leave',
+        dateApplied: 'March 10, 2026',
+        status: 'approved',
+        reason: 'Family wedding out of town in Cebu. Will make up for missed classes upon return.'
+    }
+];
+
+// ============================================================
 // INITIALIZATION
 // ============================================================
-document.addEventListener('DOMContentLoaded', async function() {
-    await initializeApp();
+document.addEventListener('DOMContentLoaded', function() {
+    setupCollegeDepartmentCascade();
+    setupFilterListeners();
+    loadAppeals();
 });
 
-async function initializeApp() {
-    try {
-        // 1. Load departments for dropdown
-        await loadDepartments();
-
-        // 2. Setup filter listeners
-        setupFilterListeners();
-
-        // 3. Load appeals from backend
-        await loadAppealsFromAPI();
-
-    } catch (error) {
-        console.error('Failed to initialize app:', error);
-        showErrorMessage('Failed to load data. Please refresh the page.');
-    }
-}
-
 // ============================================================
-// API FETCH HELPER
+// COLLEGE → DEPARTMENT CASCADE
 // ============================================================
-async function apiFetch(endpoint, options = {}) {
-    const url = API_CONFIG.baseUrl + endpoint;
-    const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': 'Bearer ' + getAuthToken(),
+function setupCollegeDepartmentCascade() {
+    const collegeSelect = document.getElementById('college');
+    const departmentSelect = document.getElementById('department');
+
+    if (!collegeSelect || !departmentSelect) return;
+
+    collegeSelect.addEventListener('change', function() {
+        const selectedCollege = this.value;
+
+        // Clear existing options except "All Departments"
+        departmentSelect.innerHTML = '<option value="">All Departments</option>';
+
+        if (selectedCollege && COLLEGE_DEPARTMENTS[selectedCollege]) {
+            const departments = COLLEGE_DEPARTMENTS[selectedCollege].departments;
+            departments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.value;
+                option.textContent = dept.label;
+                departmentSelect.appendChild(option);
+            });
         }
-    };
 
-    const response = await fetch(url, { ...defaultOptions, ...options });
-
-    if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-}
-
-// ============================================================
-// LOAD DEPARTMENTS (for dropdown)
-// ============================================================
-async function loadDepartments() {
-    // --- OPTION A: Fetch from API ---
-    // departmentsList = await apiFetch(API_CONFIG.endpoints.departments);
-
-    // --- OPTION B: Hardcoded fallback (remove when API ready) ---
-    departmentsList = [
-        { value: 'civil', label: 'Civil Engineering' },
-        { value: 'chemical', label: 'Chemical Engineering' },
-        { value: 'computer', label: 'Computer Engineering' },
-        { value: 'electrical', label: 'Electrical Engineering' },
-        { value: 'electronics', label: 'Electronics Engineering' },
-        { value: 'mechanical', label: 'Mechanical Engineering' },
-        { value: 'manufacturing', label: 'Manufacturing Engineering' },
-        { value: 'early-childhood', label: 'Early Childhood Education' },
-        { value: 'elementary', label: 'Elementary Education' },
-        { value: 'physical', label: 'Physical Education' },
-        { value: 'secondary', label: 'Secondary Education' },
-        { value: 'special-needs', label: 'Special Needs Education' },
-        { value: 'communications', label: 'Communications' },
-        { value: 'social-work', label: 'Social Work' },
-        { value: 'psychology', label: 'Psychology' }
-    ];
-
-    populateDepartmentDropdown();
-}
-
-function populateDepartmentDropdown() {
-    const deptSelect = document.getElementById('department');
-    if (!deptSelect) return;
-
-    deptSelect.innerHTML = '<option value="">All Departments</option>';
-
-    departmentsList.forEach(dept => {
-        const option = document.createElement('option');
-        option.value = dept.value;
-        option.textContent = dept.label;
-        deptSelect.appendChild(option);
+        // Trigger filter update when college changes
+        applyFilters();
     });
+
+    // Also trigger filter when department changes
+    departmentSelect.addEventListener('change', applyFilters);
 }
 
 // ============================================================
-// LOAD APPEALS FROM API
-// ============================================================
-async function loadAppealsFromAPI() {
-    // --- Replace with your actual API call ---
-    // const data = await apiFetch(API_CONFIG.endpoints.appeals);
-    // appealsData = normalizeAppealData(data);
-
-    // --- Fallback: empty array until API connected ---
-    appealsData = [];
-
-    renderAppeals(appealsData);
-}
-
-// ============================================================
-// DATA NORMALIZATION
-// ============================================================
-function normalizeAppealData(apiData) {
-    return apiData.map(item => ({
-        id: item.id || item.appeal_id,
-        studentName: item.student_name || item.name,
-        studentId: item.student_id || item.student_number,
-        department: item.department_code || item.department,
-        departmentName: item.department_name || item.department,
-        year: String(item.year || item.year_level),
-        yearLabel: formatYearLabel(item.year || item.year_level),
-        block: item.block || item.section,
-        type: item.appeal_type || item.type,
-        typeLabel: item.type_label || formatTypeLabel(item.appeal_type || item.type),
-        dateApplied: item.date_applied || item.date,
-        status: item.status,
-        reason: item.reason
-    }));
-}
-
-function formatYearLabel(year) {
-    const y = String(year);
-    const suffix = { '1': 'st', '2': 'nd', '3': 'rd', '4': 'th' };
-    return `${y}${suffix[y] || 'th'} Year`;
-}
-
-function formatTypeLabel(type) {
-    if (!type) return '';
-    return type.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-}
-
-// ============================================================
-// FILTER LISTENERS — All 5 dropdowns
+// FILTER LISTENERS
 // ============================================================
 function setupFilterListeners() {
-    const filters = ['appealType', 'appealStatus', 'department', 'year', 'block'];
+    const typeFilter = document.getElementById('appealType');
+    const statusFilter = document.getElementById('appealStatus');
 
-    filters.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', applyFilters);
-        }
-    });
+    if (typeFilter) {
+        typeFilter.addEventListener('change', applyFilters);
+    }
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyFilters);
+    }
 }
 
 // ============================================================
-// APPLY FILTERS (Type, Status, Department, Year, Block)
+// APPLY FILTERS (Type, Status, College, Department)
 // ============================================================
 function applyFilters() {
-    const type       = document.getElementById('appealType')?.value   || '';
-    const status     = document.getElementById('appealStatus')?.value || '';
-    const department = document.getElementById('department')?.value   || '';
-    const year       = document.getElementById('year')?.value         || '';
-    const block      = document.getElementById('block')?.value        || '';
+    const type = document.getElementById('appealType')?.value || '';
+    const status = document.getElementById('appealStatus')?.value || '';
+    const college = document.getElementById('college')?.value || '';
+    const department = document.getElementById('department')?.value || '';
 
     const filtered = appealsData.filter(a => {
-        const typeMatch   = !type       || a.type === type;
-        const statusMatch = !status     || a.status === status;
-        const deptMatch   = !department || a.department === department;
-        const yearMatch   = !year       || a.year === year;
-        const blockMatch  = !block      || a.block === block;
-        return typeMatch && statusMatch && deptMatch && yearMatch && blockMatch;
+        const typeMatch = !type || a.type === type;
+        const statusMatch = !status || a.status === status;
+        const collegeMatch = !college || a.college === college;
+        const departmentMatch = !department || a.department === department;
+        return typeMatch && statusMatch && collegeMatch && departmentMatch;
     });
 
     renderAppeals(filtered);
 }
 
 // ============================================================
-// RENDER APPEALS
+// LOAD & RE  NDER APPEALS
 // ============================================================
+function loadAppeals() {
+    renderAppeals(appealsData);
+}
+
 function renderAppeals(appeals) {
     const grid = document.getElementById('appealsGrid');
     if (!grid) return;
@@ -234,30 +246,36 @@ function renderAppeals(appeals) {
             </div>
             <div class="appeal-details">
                 <div class="appeal-detail-row">
-                    <span class="label">Student Name</span>
-                    <span class="value">${appeal.studentName}</span>
+                    <span class="label">Faculty Name</span>
+                    <span class="value">${appeal.facultyName}</span>
                 </div>
                 <div class="appeal-detail-row">
-                    <span class="label">Student ID</span>
-                    <span class="value">${appeal.studentId}</span>
+                    <span class="label">Faculty ID</span>
+                    <span class="value">${appeal.facultyId}</span>
+                </div>
+                <div class="appeal-detail-row">
+                    <span class="label">College</span>
+                    <span class="value">${appeal.collegeName || appeal.college}</span>
                 </div>
                 <div class="appeal-detail-row">
                     <span class="label">Department</span>
-                    <span class="value">${appeal.departmentName}</span>
-                </div>
-                <div class="appeal-detail-row">
-                    <span class="label">Year</span>
-                    <span class="value">${appeal.yearLabel}</span>
-                </div>
-                <div class="appeal-detail-row">
-                    <span class="label">Block</span>
-                    <span class="value">${appeal.block}</span>
+                    <span class="value">${appeal.departmentName || appeal.department}</span>
                 </div>
             </div>
             <div class="appeal-actions">
                 <button class="btn-primary" onclick="viewSummary('${appeal.id}')">
                     View Appeal Summary
                 </button>
+                ${appeal.status === 'pending' ? `
+                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
+                        Edit Status
+                    </button>
+                ` : ''}
+                ${appeal.status === 'rejected' ? `
+                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
+                        Edit Status
+                    </button>
+                ` : ''}
             </div>
         </div>
     `).join('');
@@ -291,6 +309,9 @@ function closeModal(modalId) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
     }
+    if (modalId === 'updateStatusModal') {
+        currentAppealId = null;
+    }
 }
 
 // Close modal when clicking outside
@@ -318,50 +339,67 @@ function viewSummary(appealId) {
 
     currentAppealId = appealId;
 
-    document.getElementById('summaryName').textContent       = appeal.studentName;
-    document.getElementById('summaryID').textContent         = appeal.studentId;
-    document.getElementById('summaryDepartment').textContent = appeal.departmentName;
-    document.getElementById('summaryYear').textContent       = appeal.yearLabel;
-    document.getElementById('summaryBlock').textContent      = appeal.block;
-    document.getElementById('summaryType').textContent       = appeal.typeLabel;
-    document.getElementById('summaryDate').textContent       = appeal.dateApplied;
+    document.getElementById('summaryName').textContent = appeal.facultyName;
+    document.getElementById('summaryID').textContent = appeal.facultyId;
+    document.getElementById('summaryCollege').textContent = appeal.collegeName || appeal.college;
+    document.getElementById('summaryDepartment').textContent = appeal.departmentName || appeal.department;
+    document.getElementById('summaryType').textContent = appeal.typeLabel;
+    document.getElementById('summaryDate').textContent = appeal.dateApplied;
+    document.getElementById('summaryStartDate').textContent = appeal.startDate || 'N/A';
+    document.getElementById('summaryEndDate').textContent = appeal.endDate || 'N/A';
+    document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
+    document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
+    document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
+    if (appeal.attachmentUrl) {
+        document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
+        document.getElementById('summaryAttachment').style.pointerEvents = 'auto';
+        document.getElementById('summaryAttachment').style.color = 'var(--blue)';
+    } else {
+        document.getElementById('summaryAttachment').removeAttribute('href');
+        document.getElementById('summaryAttachment').style.pointerEvents = 'none';
+        document.getElementById('summaryAttachment').style.color = '#666';
+    }
+    document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'N/A';
 
+    
     const statusEl = document.getElementById('summaryStatus');
     statusEl.textContent = appeal.status;
     statusEl.className = 'detail-value status-badge ' + appeal.status;
-
-    document.getElementById('summaryReason').textContent = appeal.reason;
 
     openModal('summaryModal');
 }
 
 // ============================================================
-// UTILITY FUNCTIONS
+// UPDATE STATUS MODAL
 // ============================================================
-function showErrorMessage(message) {
-    const grid = document.getElementById('appealsGrid');
-    if (grid) {
-        grid.innerHTML = `
-            <div class="no-appeals" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #E53E3E;">
-                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px;">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="15" y1="9" x2="9" y2="15"></line>
-                    <line x1="9" y1="9" x2="15" y2="15"></line>
-                </svg>
-                <h3 style="font-size: 18px; margin-bottom: 8px;">Error</h3>
-                <p style="font-size: 14px;">${message}</p>
-            </div>
-        `;
-    }
+function openUpdateStatus(appealId) {
+    const appeal = appealsData.find(a => a.id === appealId);
+    if (!appeal) return;
+
+    currentAppealId = appealId;
+
+    document.getElementById('statusFacultyName').textContent = appeal.facultyName;
+
+    const currentStatusEl = document.getElementById('statusCurrent');
+    currentStatusEl.textContent = appeal.status;
+    currentStatusEl.className = appeal.status;
+
+    openModal('updateStatusModal');
 }
 
-// ============================================================
-// LOGOUT
-// ============================================================
-document.querySelector('.logout')?.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (confirm('Are you sure you want to log out?')) {
-        window.location.href = '/login';
-    }
-});
+function updateStatus(newStatus) {
+    if (!currentAppealId) return;
 
+    const appeal = appealsData.find(a => a.id === currentAppealId);
+    if (!appeal) return;
+
+    // Update the data
+    appeal.status = newStatus;
+
+    // Re-render with current filters
+    applyFilters();
+
+    // Close modal
+    closeModal('updateStatusModal');
+}

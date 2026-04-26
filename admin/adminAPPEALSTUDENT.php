@@ -125,7 +125,7 @@ $user_uid = $_SESSION['uid'];
                 <p>Student Appeals</p>
             </div>
 
-            <!-- Filters Section — Matches Faculty Module Exactly -->
+            <!-- Filters Section -->
             <div class="filters-section">
                 <div class="filter-group">
                     <label for="appealType">Select Appeal Type</label>
@@ -212,22 +212,84 @@ $user_uid = $_SESSION['uid'];
                         <span class="detail-label">Appeal Type:</span>
                         <span class="detail-value" id="summaryType">-</span>
                     </div>
+                      <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value status-badge" id="summaryStatus">-</span>
+                    </div>
                     <div class="detail-row">
                         <span class="detail-label">Date Applied:</span>
                         <span class="detail-value" id="summaryDate">-</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Status:</span>
-                        <span class="detail-value status-badge" id="summaryStatus">-</span>
+                        <span class="detail-label">Start Date:</span>
+                        <span class="detail-value" id="summaryStartDate">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">End Date:</span>
+                        <span class="detail-value" id="summaryEndDate">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Number of Days:</span>
+                        <span class="detail-value" id="summaryDays">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Return on:</span>
+                        <span class="detail-value" id="summaryReturnDate">-</span>
                     </div>
                     <div class="detail-row full-width">
                         <span class="detail-label">Reason:</span>
                         <p class="detail-text" id="summaryReason">-</p>
                     </div>
+                      <div class="detail-row full-width">
+                        <span class="detail-label">Attachment:</span>
+                        <p class="detail-text" id="summaryAttachment">
+                            <a href="#" target="_blank" class="attachment-link">View Attachment</a>
+                        </p>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">Status Updated By:</span>
+                        <p class="detail-text" id="summaryUpdatedBy">-</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Update Status Modal -->
+    <div class="modal" id="updateStatusModal">
+        <div class="modal-content status-modal">
+            <div class="modal-header">
+                <h2>Update Appeal Status</h2>
+                <button class="close-btn" onclick="closeModal('updateStatusModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="status-info">
+                    <p>Updating status for appeal from <strong id="statusStudentName">-</strong></p>
+                    <p class="current-status">Current Status: <span id="statusCurrent">-</span></p>
+                </div>
+                
+                <div class="status-options">
+                    <p class="options-label">Select New Status:</p>
+                    <div class="status-buttons">
+                        <button class="status-btn approve" onclick="updateStatus('approved')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Approve
+                        </button>
+                        <button class="status-btn reject" onclick="updateStatus('rejected')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Reject
+                        </button>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="adminAPPEALSTUDENT.js"></script>
 </body>
