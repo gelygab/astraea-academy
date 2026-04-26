@@ -471,8 +471,7 @@ aside:hover ~ .faculty-dashboard {
 .icon-item b {
     color: var(--white) !important;
 }
-
-.feed-card h2, 
+ 
 .white-table-container h2 {
     color: var(--white) !important;
 }
