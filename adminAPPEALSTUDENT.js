@@ -367,12 +367,27 @@ function viewSummary(appealId) {
     document.getElementById('summaryBlock').textContent = appeal.block;
     document.getElementById('summaryType').textContent = appeal.typeLabel;
     document.getElementById('summaryDate').textContent = appeal.dateApplied;
+    document.getElementById('summaryStartDate').textContent = appeal.startDate || 'N/A';
+    document.getElementById('summaryEndDate').textContent = appeal.endDate || 'N/A';
+    document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
+    document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
+    document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
+    if (appeal.attachmentUrl) {
+        document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
+        document.getElementById('summaryAttachment').style.pointerEvents = 'auto';
+        document.getElementById('summaryAttachment').style.color = 'var(--blue)';
+    } else {
+        document.getElementById('summaryAttachment').removeAttribute('href');
+        document.getElementById('summaryAttachment').style.pointerEvents = 'none';
+        document.getElementById('summaryAttachment').style.color = '#666';
+    }
+    document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'N/A';
 
     const statusEl = document.getElementById('summaryStatus');
     statusEl.textContent = appeal.status;
     statusEl.className = 'detail-value status-badge ' + appeal.status;
 
-    document.getElementById('summaryReason').textContent = appeal.reason;
 
     openModal('summaryModal');
 }
