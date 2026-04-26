@@ -1,18 +1,32 @@
+<?php
+session_start();
+require_once '../db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: adminlogin.php');
+}
+
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astraea Academy - Student Appeal History</title>
-    <link rel="stylesheet" href="adminAPPEALSTUDENT.css">
+    <title>Astraea Academy - Faculty Appeal History</title>
+    <link rel="stylesheet" href="adminAPPEALFACULTY.css">
 
 </head>
 <body>
-   <div class="dashboard-container">
+    <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="images/AA_Logo.png" alt="Astraea Academy Logo" class="logo">
+                <img src="../images/AA_Logo.png" alt="Astraea Academy Logo" class="logo">
                 <div class="logo-text">
                     <h2>Astraea Academy</h2>
                 </div>
@@ -21,7 +35,7 @@
             <nav class="sidebar-nav">
                 <p class="nav-label">MAIN MENU</p>
 
-                <a href="admindashboardHOME.html" class="nav-item">
+                <a href="admindashboardHOME.php" class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -43,14 +57,14 @@
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminSTUDENTREPORT.html" class="nav-subitem">
+                        <a href="adminSTUDENTREPORT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminFACULTYREPORT.html" class="nav-subitem ">
+                        <a href="adminFACULTYREPORT.php" class="nav-subitem ">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -72,14 +86,14 @@
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminAPPEALSTUDENT.html" class="nav-subitem active">
+                        <a href="adminAPPEALSTUDENT.php" class="nav-subitem ">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminAPPEALFACULTY.html" class="nav-subitem ">
+                        <a href="adminAPPEALFACULTY.php" class="nav-subitem active">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -102,28 +116,28 @@
             </div>
         </aside>
 
-
         <!-- Main Content -->
         <main class="main-content">
             <!-- Page Header -->
             <div class="page-header">
                 <h1>View Appeal History</h1>
-                <p>Student Appeals</p>
+                <p>Faculty Appeals</p>
             </div>
 
-            <!-- Filters Section — Matches Faculty Module Exactly -->
+            <!-- Filters Section -->
             <div class="filters-section">
                 <div class="filter-group">
                     <label for="appealType">Select Appeal Type</label>
                     <select id="appealType">
                         <option value="">All Types</option>
-                        <option value="leave">Leave</option>
                         <option value="excuse">Excuse</option>
+                        <option value="leave">Leave</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label for="appealStatus">Select Appeal Status</label>
                     <select id="appealStatus">
+                        <label for="appealType">Select Appeal Type</label>
                         <option value="">All Statuses</option>
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
@@ -131,32 +145,22 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="department">Department</label>
-                    <select id="department">
-                        <option value="">All Departments</option>
-                        <!-- Populated dynamically -->
-                    </select>
+                    <label for="college">College</label>
+                        <select id="college">
+                            <option value="">All Colleges</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="education">Education</option>
+                            <option value="chass">Humanities, Arts, and Social Sciences</option>
+                        </select>
+                    </div>
+                 <div class="filter-group">
+                        <label for="department">Department</label>
+                        <select id="department">
+                            <option value="">All Departments</option>
+                            <!-- Departments populated dynamically via JavaScript -->
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label for="year">Year</label>
-                    <select id="year">
-                        <option value="">All Years</option>
-                        <option value="1">1st Year</option>
-                        <option value="2">2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="block">Block</label>
-                    <select id="block">
-                        <option value="">All Blocks</option>
-                        <option value="1">Block 1</option>
-                        <option value="2">Block 2</option>
-                        <option value="3">Block 3</option>
-                    </select>
-                </div>
-            </div>
 
             <!-- Appeals Grid -->
             <div class="appeals-grid" id="appealsGrid">
@@ -175,24 +179,20 @@
             <div class="modal-body">
                 <div class="appeal-detail-section">
                     <div class="detail-row">
-                        <span class="detail-label">Student Name:</span>
+                        <span class="detail-label">Faculty Name:</span>
                         <span class="detail-value" id="summaryName">-</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Student ID:</span>
+                        <span class="detail-label">Faculty ID:</span>
                         <span class="detail-value" id="summaryID">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">College:</span>
+                        <span class="detail-value" id="summaryCollege">-</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Department:</span>
                         <span class="detail-value" id="summaryDepartment">-</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Year:</span>
-                        <span class="detail-value" id="summaryYear">-</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Block:</span>
-                        <span class="detail-value" id="summaryBlock">-</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Appeal Type:</span>
@@ -215,6 +215,41 @@
         </div>
     </div>
 
-    <script src="adminAPPEALSTUDENT.js"></script>
+    <!-- Update Status Modal -->
+    <div class="modal" id="updateStatusModal">
+        <div class="modal-content status-modal">
+            <div class="modal-header">
+                <h2>Update Appeal Status</h2>
+                <button class="close-btn" onclick="closeModal('updateStatusModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="status-info">
+                    <p>Updating status for appeal from <strong id="statusFacultyName">-</strong></p>
+                    <p class="current-status">Current Status: <span id="statusCurrent">-</span></p>
+                </div>
+                
+                <div class="status-options">
+                    <p class="options-label">Select New Status:</p>
+                    <div class="status-buttons">
+                        <button class="status-btn approve" onclick="updateStatus('approved')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Approve
+                        </button>
+                        <button class="status-btn reject" onclick="updateStatus('rejected')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Reject
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="adminAPPEALFACULTY.js"></script>
 </body>
 </html>

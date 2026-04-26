@@ -10,9 +10,9 @@ const API_CONFIG = {
     baseUrl: 'api/', // Adjust based on your server setup
     endpoints: {
         getStudents: 'get_students.php',
-        getsubjects: 'get_subjects.php',
-        getattendance: 'get_attendance.php',
-        getstudentProfile: 'get_student_profile.php'
+        getSubjects: 'get_subjects.php',
+        getAttendance: 'get_attendance.php',
+        getStudentProfile: 'get_student_profile.php'
     }
 };
 
@@ -510,6 +510,7 @@ function renderStudents(students) {
 }
 
 function viewRecord(student) {
+    // To add view record get api
     showStudentRecord(student);
 }
 

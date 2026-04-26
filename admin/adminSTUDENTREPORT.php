@@ -12,14 +12,13 @@ $user_uid = $_SESSION['uid'];
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astraea Academy - Student Report</title>
     <link rel="stylesheet" href="adminSTUDENTREPORT.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
 <body>
     <div class="dashboard-container">
@@ -32,16 +31,19 @@ $user_uid = $_SESSION['uid'];
                 </div>
             </div>
 
+
             <nav class="sidebar-nav">
                 <p class="nav-label">MAIN MENU</p>
 
-                <a href="admindashboardHOME.php" class="nav-item">
+
+                <a href="admindashboardHOME.html" class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                     <span class="nav-text">Home</span>
                 </a>
+
 
                 <div class="nav-group open">
                     <button class="nav-item nav-toggle active" onclick="toggleNavGroup(this)">
@@ -57,14 +59,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminSTUDENTREPORT.php" class="nav-subitem active">
+                        <a href="adminSTUDENTREPORT.html" class="nav-subitem active">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminFACULTYREPORT.php" class="nav-subitem">
+                        <a href="adminFACULTYREPORT.html" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -73,6 +75,7 @@ $user_uid = $_SESSION['uid'];
                         </a>
                     </div>
                 </div>
+
 
                 <div class="nav-group">
                     <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
@@ -86,14 +89,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminAPPEALSTUDENT.php" class="nav-subitem">
+                        <a href="adminAPPEALSTUDENT.html" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminAPPEALFACULTY.php" class="nav-subitem">
+                        <a href="adminAPPEALFACULTY.html" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -103,6 +106,7 @@ $user_uid = $_SESSION['uid'];
                     </div>
                 </div>
             </nav>
+
 
             <div class="sidebar-footer">
                 <a href="#" class="nav-item logout">
@@ -116,6 +120,7 @@ $user_uid = $_SESSION['uid'];
             </div>
         </aside>
 
+
         <!-- Main Content -->
         <main class="main-content">
                  <!-- Page Header -->
@@ -123,6 +128,7 @@ $user_uid = $_SESSION['uid'];
                 <h1>View Team Reports</h1>
                 <p>Student Reports</p>
             </div>
+
 
             <!-- VIEW 1: Main Student Report List -->
             <div id="mainReportView" class="view-container active main-report-container">
@@ -144,21 +150,21 @@ $user_uid = $_SESSION['uid'];
                         <label>Department</label>
                         <select id="department">
                             <option value="">All Departments</option>
-                            <option value="Civil">Civil Engineering</option>
-                            <option value="Chemical">Chemical Engineering</option>
-                            <option value="Computer">Computer Engineering</option>
-                            <option value="Electrical">Electrical Engineering</option>
-                            <option value="Electronics">Electronics Engineering</option>
-                            <option value="Mechanical">Mechanical Engineering</option>
-                            <option value="Manufacturing">Manufacturing Engineering</option>
-                            <option value="Early Childhood">Early Childhood Education</option>
-                            <option value="Elementary Education">Elementary Education</option>
-                            <option value="Secondary Education">Secondary Education</option>
-                            <option value="Special Needs">Special Needs Education</option>
-                            <option value="Physical Education">Physical Education</option>
-                            <option value="Social Work">Social Work</option>
-                            <option value="Mass Communication">Mass Communication</option>
-                            <option value="Psychology">Psychology</option>
+                            <option value="civil">Civil Engineering</option>
+                            <option value="chemical">Chemical Engineering</option>
+                            <option value="computer">Computer Engineering</option>
+                            <option value="electrical">Electrical Engineering</option>
+                            <option value="electronics">Electronics Engineering</option>
+                            <option value="mechanical">Mechanical Engineering</option>
+                            <option value="manufacturing">Manufacturing Engineering</option>
+                            <option value="early childhood">Early Childhood Education</option>
+                            <option value="elementary education">Elementary Education</option>
+                            <option value="secondary education">Secondary Education</option>
+                            <option value="special needs">Special Needs Education</option>
+                            <option value="physical education">Physical Education</option>
+                            <option value="social work">Social Work</option>
+                            <option value="mass communication">Mass Communication</option>
+                            <option value="psychology">Psychology</option>
                         </select>
                     </div>
                     <div class="filter-group-dark">
@@ -181,6 +187,7 @@ $user_uid = $_SESSION['uid'];
                         </select>
                     </div>
                 </div>
+
 
                 <!-- Stats Row - Dark Themed -->
                 <div class="stats-row-dark">
@@ -222,35 +229,18 @@ $user_uid = $_SESSION['uid'];
                     </div>
                 </div>
 
+
                 <!-- Students Grid with Horizontal Bar Charts -->
                 <div class="students-grid-list" id="studentsGrid">
                     <!-- Student cards will be dynamically generated -->
                 </div>
             </div>
 
+
             <!-- VIEW 2: Individual Student Record (View Record State) -->
             <div id="studentRecordView" class="view-container">
-                <!-- Top Filter Bar - Gold bordered -->
-                <div class="top-filter-bar">
-                    <div class="filter-item">
-                        <label>School Year</label>
-                        <select id="recordSchoolYear">
-                            <option value="2025-2026">2025-2026</option>
-                        </select>
-                    </div>
-                    <div class="filter-item">
-                        <label>Semester</label>
-                        <select id="recordSemester">
-                            <option value="first">First Semester</option>
-                        </select>
-                    </div>
-                    <div class="filter-item">
-                        <label>Department</label>
-                        <select id="recordDepartment">
-                            <option value="civil">Civil Engineering</option>
-                        </select>
-                    </div>
-                </div>
+                <!--News -->
+
 
                 <!-- Profile and Overview Row -->
                 <div class="profile-overview-row">
@@ -269,6 +259,7 @@ $user_uid = $_SESSION['uid'];
                             <div id="profileDepartment">Civil Engineering</div>
                         </div>
                     </div>
+
 
                     <!-- Attendance Overview - Brown Card with 4 Donuts -->
                     <div class="attendance-overview-card">
@@ -314,6 +305,7 @@ $user_uid = $_SESSION['uid'];
                     </div>
                 </div>
 
+
                 <!-- Subject Attendance Table -->
                 <div class="subject-attendance-section">
                     <h3 class="section-title">Subject Attendance</h3>
@@ -345,6 +337,7 @@ $user_uid = $_SESSION['uid'];
                 </div>
             </div>
 
+
             <!-- VIEW 3: Calendar View -->
             <div id="calendarView" class="view-container calendar-view-container">
                 <!-- Header with Back Button -->
@@ -372,10 +365,12 @@ $user_uid = $_SESSION['uid'];
                     </button>
                 </div>
 
+
                 <!-- Subject Header -->
                 <div class="subject-header-brown">
                     <h2 id="calendarSubjectTitle">CET 0211 Differential Equations</h2>
                 </div>
+
 
                 <!-- Calendar Container -->
                 <div class="calendar-container-white">
@@ -385,6 +380,7 @@ $user_uid = $_SESSION['uid'];
                         <span class="calendar-month-display" id="calendarMonthDisplay">March 2026</span>
                         <button class="calendar-nav-btn" onclick="changeMonth(1)">&#8250;</button>
                     </div>
+
 
                     <!-- Calendar Grid -->
                     <div class="calendar-grid-white">
@@ -404,8 +400,10 @@ $user_uid = $_SESSION['uid'];
                 </div>
             </div>
 
+
         </main>
     </div>
+
 
     <!-- Attendance Details Modal -->
     <div class="modal-overlay" id="attendanceModal" onclick="closeAttendanceModal(event)">
@@ -435,6 +433,10 @@ $user_uid = $_SESSION['uid'];
         </div>
     </div>
 
+
     <script src="adminSTUDENTREPORT.js"></script>
 </body>
 </html>
+
+
+
