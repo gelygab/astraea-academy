@@ -7,34 +7,34 @@ const MOCK_STUDENTS = [
     { uid: '11001', name: 'Amores, Jasmine', department: 'Civil Engineering', absence: 2, leave: 5, excused: 2 },
     { uid: '12002', name: 'Hollander, Shane', department: 'Civil Engineering', absence: 2, leave: 4, excused: 1 },
     { uid: '12003', name: 'Rozanov, Ilya', department: 'Civil Engineering', absence: 5, leave: 3, excused: 2 },
-    
+
     // Electrical Engineering
     { uid: '21001', name: 'Leclerc, Charles', department: 'Electrical Engineering', absence: 1, leave: 2, excused: 0 },
     { uid: '22002', name: 'Sainz, Carlos', department: 'Electrical Engineering', absence: 3, leave: 1, excused: 1 },
     { uid: '23003', name: 'Verstappen, Max', department: 'Electrical Engineering', absence: 0, leave: 4, excused: 2 },
     { uid: '23004', name: 'Tsunoda, Yuki', department: 'Electrical Engineering', absence: 2, leave: 0, excused: 3 },
-    
+
     // Mechanical Engineering
     { uid: '31001', name: 'Sorilla, Katrina', department: 'Mechanical Engineering', absence: 4, leave: 2, excused: 1 },
     { uid: '32002', name: 'Ternate, Jessie', department: 'Mechanical Engineering', absence: 1, leave: 3, excused: 0 },
     { uid: '33003', name: 'Paz, Francesca', department: 'Mechanical Engineering', absence: 6, leave: 1, excused: 2 },
     { uid: '33004', name: 'Choi, Alexa', department: 'Mechanical Engineering', absence: 2, leave: 2, excused: 1 },
     { uid: '33005', name: 'Lee, Rean', department: 'Mechanical Engineering', absence: 0, leave: 1, excused: 0 },
-    
+
     // Computer Engineering
     { uid: '42001', name: 'Faiyaz, Brent', department: 'Computer Engineering', absence: 1, leave: 1, excused: 0 },
     { uid: '41002', name: 'Perez, Grent', department: 'Computer Engineering', absence: 3, leave: 4, excused: 1 },
     { uid: '41003', name: 'Tiller, Bryson', department: 'Computer Engineering', absence: 2, leave: 2, excused: 2 },
     { uid: '42004', name: 'Aiko, Jhene', department: 'Computer Engineering', absence: 0, leave: 0, excused: 1 },
-    
+
     // Chemical Engineering
     { uid: '42001', name: 'Yoon, Jeonghan', department: 'Chemical Engineering', absence: 2, leave: 3, excused: 1 },
     { uid: '33002', name: 'Quero, Jael', department: 'Chemical Engineering', absence: 4, leave: 1, excused: 0 },
-    
+
     // Electronics Engineering
     { uid: '21001', name: 'Takuma, Ino', department: 'Electronics Engineering', absence: 1, leave: 2, excused: 1 },
     { uid: '12002', name: 'Zenin, Maki', department: 'Electronics Engineering', absence: 3, leave: 3, excused: 2 },
-    
+
     // Manufacturing Engineering
     { uid: '31001', name: 'Ieiri, Shoko', department: 'Manufacturing Engineering', absence: 5, leave: 2, excused: 1 },
     { uid: '12002', name: 'Tsukumo, Yuki', department: 'Manufacturing Engineering', absence: 2, leave: 4, excused: 0 }
@@ -153,11 +153,14 @@ function backToStudentTeamRecords() {
 
 function showStudentRecord(studentData) {
     currentStudent = studentData;
-    
+
+    //NEWW - No need to hide filter bar since it was removed from HTML
+
     // Update profile display
     document.getElementById('profileLastName').textContent = MOCK_STUDENT_PROFILE.lastName;
     document.getElementById('profileFirstName').textContent = MOCK_STUDENT_PROFILE.firstName;
     document.getElementById('profileCollege').textContent = MOCK_STUDENT_PROFILE.college;
+    //NEW - Use the actual student's department instead of hardcoded profile department
     document.getElementById('profileDepartment').textContent = studentData.department || MOCK_STUDENT_PROFILE.department;
 
     // Initialize donut charts
@@ -194,7 +197,7 @@ function setupFilterListeners() {
     const departmentFilter = document.getElementById('department');
     const yearFilter = document.getElementById('year');
     const blockFilter = document.getElementById('block');
-    
+
     if (departmentFilter) {
         departmentFilter.addEventListener('change', applyFilters);
     }
@@ -210,37 +213,37 @@ function applyFilters() {
     const departmentValue = document.getElementById('department')?.value || '';
     const yearValue = document.getElementById('year')?.value || '';
     const blockValue = document.getElementById('block')?.value || '';
-    
+
     // Filter students based on selected criteria
     let filteredStudents = MOCK_STUDENTS.filter(student => {
         let matchesDepartment = true;
         let matchesYear = true;
         let matchesBlock = true;
-        
+
         // Department filter
         if (departmentValue && DEPARTMENT_MAP[departmentValue]) {
             matchesDepartment = student.department === DEPARTMENT_MAP[departmentValue];
         }
-        
+
         // Year filter (extract from UID or use a year property if available)
         // For mock data, we'll simulate year from UID first digit
         if (yearValue) {
             const studentYear = student.uid.charAt(0);
             matchesYear = studentYear === yearValue;
         }
-        
+
         // Block filter (simulate from UID second digit)
         if (blockValue) {
             const studentBlock = student.uid.charAt(1);
             matchesBlock = studentBlock === blockValue;
         }
-        
+
         return matchesDepartment && matchesYear && matchesBlock;
     });
-    
+
     // Update working copy
     allStudents = filteredStudents;
-    
+
     // Re-render students and statistics
     loadStudents(allStudents);
     updateStatistics(allStudents);
@@ -253,27 +256,27 @@ function applyFilters() {
 function updateStatistics(students) {
     // Calculate statistics based on current filtered data
     const totalStudents = students.length;
-    
+
     // Calculate total absences across all filtered students
     const totalAbsences = students.reduce((sum, student) => sum + student.absence, 0);
-    
+
     // Calculate productivity (students with 0 absences / total students)
     const studentsWithNoAbsences = students.filter(s => s.absence === 0).length;
     const productivity = totalStudents > 0 
         ? ((studentsWithNoAbsences / totalStudents) * 100).toFixed(1) 
         : '0.0';
-    
+
     // Calculate absenteeism rate (average absences per student)
     const avgAbsences = totalStudents > 0 ? (totalAbsences / totalStudents) : 0;
     // Cap at 100% for display, scale appropriately
     const absenteeism = Math.min((avgAbsences / 5 * 100), 100).toFixed(1);
-    
+
     // Update DOM elements
     const totalStudentsEl = document.getElementById('totalStudents');
     const totalAbsentEl = document.getElementById('totalAbsent');
     const productivityEl = document.getElementById('productivity');
     const absenteeismEl = document.getElementById('absenteeism');
-    
+
     if (totalStudentsEl) totalStudentsEl.textContent = totalStudents;
     if (totalAbsentEl) totalAbsentEl.textContent = totalAbsences;
     if (productivityEl) productivityEl.textContent = productivity + '%';
@@ -370,19 +373,19 @@ function initDonutCharts(studentData) {
     const absence = parseInt(studentData.absence) || 0;
     const leave = parseInt(studentData.leave) || 0;
     const excused = parseInt(studentData.excused) || 0;
-    
+
     // Calculate percentages that sum to 100
     // Assume a base of 100 total days for calculation
     const totalDays = 100;
-    
+
     // Calculate raw values first
     let absencePct = Math.min(absence * 5, 30); // Cap at 30%
     let leavePct = Math.min(leave * 3, 25);     // Cap at 25%
     let excusedPct = Math.min(excused * 2, 15); // Cap at 15%
-    
+
     // Present is whatever remains (ensures total = 100)
     let presentPct = Math.max(0, 100 - absencePct - leavePct - excusedPct);
-    
+
     // Round to whole numbers
     presentPct = Math.round(presentPct);
     absencePct = Math.round(absencePct);
