@@ -337,7 +337,7 @@ aside:hover ~ .main-content {
   width: 100%;
   max-width: 1000px;
   background-color: var(--softpink);
-  border-radius: 40px; ;
+  border-radius: var(--border-radius);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   flex-direction: column; 
