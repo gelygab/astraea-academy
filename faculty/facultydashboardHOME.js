@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchData() {
         try {
-            const response = await fetch('api/api_get_faculty_details.php');
+            const response = await fetch('faculty_data.json');
             if (!response.ok) throw new Error("JSON file missing or server not running");
             cachedData = await response.json();
 
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pie) {
             pie.classList.remove('loading');
             pie.style.setProperty('--absent-percent', absentRate);
-            pie.style.background = `conic-gradient(#f4d1e0 0% ${absentRate}%, #8a0b3f ${absentRate}% 100%)`;
+            pie.style.background = `conic-gradient(var(--lightpink) 0% ${absentRate}%, var(--purple) ${absentRate}% 100%)`;
             document.getElementById('absentPercent').textContent = absentRate + "%";
             document.getElementById('presentPercent').textContent = presentRate + "%";
         }
@@ -123,16 +123,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Feedback Text
-        const feedbackTitle = presentRate >= 90 ? "Great Job!" : "Keep it up!";
-        const feedbackDesc = presentRate >= 90
-            ? `You have maintained a high attendance record for ${tfData.period_label.toLowerCase()}. Keep it up to ensure academic success!`
-            : `Your attendance for ${tfData.period_label.toLowerCase()} is at ${presentRate}%. Consistent attendance ensures academic success.`;
+        const feedbackTitle = 
+            presentRate >= 90 ? "Excellent!" :
+            presentRate >= 80 ? "Good Job!" :
+            presentRate >= 70 ? "Room for Improvement" : 
+            "Warning";
+
+        const feedbackDesc = 
+            presentRate >= 90 ? `Outstanding commitment to your studies! You have maintained a high attendance record for ${tfData.period_label.toLowerCase()}.` :
+            presentRate >= 80 ? `You're doing well, but try not to miss any more sessions for ${tfData.period_label.toLowerCase()}. Your current rate is ${presentRate}%.` :
+            presentRate >= 70 ? `Your attendance for ${tfData.period_label.toLowerCase()} is dipping at ${presentRate}%. Consistency is key to passing!` :
+            `Low attendance (${presentRate}%) may affect your grades. Please see your adviser regarding your records for ${tfData.period_label.toLowerCase()}.`;
 
         setDynamicEl('feedbackTitle', feedbackTitle);
         setDynamicEl('attendanceDescription', feedbackDesc);
 
         const feedbackContainer = document.querySelector('.attendance-feedback');
         if (feedbackContainer) feedbackContainer.classList.remove('loading');
+
     }
 
     // --- DROPDOWN MENU LOGIC ---
