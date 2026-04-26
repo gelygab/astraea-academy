@@ -1,10 +1,6 @@
 <?php
 session_start();
-<<<<<<<< HEAD:student/api/get_schedule.php
 require_once '../../db.php';
-========
-require_once '../db.php';
->>>>>>>> main:faculty/get_schedule.php
 
 header('Content-Type: application/json');
 

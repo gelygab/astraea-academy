@@ -7,21 +7,13 @@ require_once '../db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<<< HEAD:admin/admin_change_password.php
-    <title>Astraea Academy - Faculty Login</title>
-========
     <title>Astraea Academy - Student Login</title>
->>>>>>>> main:faculty/facultylogin.html
-    <link rel="stylesheet" href="facultylogin.css">
+    <link rel="stylesheet" href="studentlogin.css">
 </head>
 <body>
     <!-- Background -->
     <div class="background-container">
-<<<<<<<< HEAD:admin/admin_change_password.php
-        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
-========
-        <img src="../images/AA_loginbackground.png" alt="Background" class="background-image">
->>>>>>>> main:faculty/facultylogin.html
+        <img src="../images/Slogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <!-- Pink Top Bar -->
@@ -38,6 +30,11 @@ require_once '../db.php';
         </div>
     </div>
 
+    <!-- Back Button -->
+    <button class="back-btn" onclick="goBack()">
+        <span class="back-arrow">←</span> Back
+    </button>
+
     <!-- Main Login Container -->
     <div class="login-container">
         <!-- Login Card - Centered -->
@@ -48,23 +45,18 @@ require_once '../db.php';
                 </div>
             </div>
             <div class="card-body">
-                <h2 class="greeting">Faculty Login</h2>
-<<<<<<<< HEAD:admin/admin_change_password.php
-                <p class="instruction">Welcome back, Esteemed Educator!</p>
-========
-                <p class="instruction">Welcome back, Esteemed Faculty Member!</p>
->>>>>>>> main:faculty/facultylogin.html
+                <h2 class="greeting">Student Login</h2>
+                <p class="instruction">Welcome back, Stellar Student!</p>
                 
-                <form id="loginForm" class="login-form">
+                <!-- This is for first-time users -->
+                <form id="loginForm" class="login-form" action ="login_process.php" method="post">
                     <div class="form-group">
-                        <label for="uid">Faculty ID</label>
-                        <input type="text" id="uid" name="uid" placeholder="Enter your Faculty ID" required>
-                    </div>
-                    
-                    <div class="form-group">
+                        <label for="uid">Student UID</label>
+                        <input type="text" id="uid" name="uid" placeholder="Enter your Student UID" required>
+
                         <label for="password">Password</label>
                         <div class="password-wrapper">
-                            <input type="password" id="password" name="confirm_password" placeholder="Confirm your password" required>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
                             <button type="button" class="toggle-password" onclick="togglePassword()">
                                 <span id="eye-icon">👁</span>
                             </button>
@@ -81,6 +73,6 @@ require_once '../db.php';
     <!-- Custom Cursor -->
     <div class="custom-cursor" id="cursor"></div>
 
-    <script src="facultylogin.js"></script>
+    <script src="studentlogin.js"></script>
 </body>
 </html>

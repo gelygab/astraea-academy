@@ -1,3 +1,7 @@
+/*
+ * Astraea Academy - Admin Login Page
+ */
+
 // ==========================================
 // CUSTOM CURSOR
 // ==========================================
@@ -44,7 +48,7 @@ function togglePassword() {
 class LoginForm {
     constructor() {
         this.form = document.getElementById('loginForm');
-        this.newpassInput = document.getElementById('new-password');
+        this.uidInput = document.getElementById('uid');
         this.passwordInput = document.getElementById('password');
         this.loginBtn = document.querySelector('.login-btn');
         this.init();
@@ -58,17 +62,17 @@ class LoginForm {
             this.handleSubmit();
         });
 
-        this.newpassInput.addEventListener('blur', () => this.validateNewPass());
+        this.uidInput.addEventListener('blur', () => this.validateUID());
         this.passwordInput.addEventListener('blur', () => this.validatePassword());
     }
 
-    validateNewPass() {
-        const newpass = this.newpassInput.value.trim();
-        if (!newpass) {
-            this.showError(this.newpassInput, 'Please enter your new password.');
+    validateUID() {
+        const uid = this.uidInput.value.trim();
+        if (!uid) {
+            this.showError(this.uidInput, 'Please enter your UID');
             return false;
         }
-        this.clearError(this.newpassInput);
+        this.clearError(this.uidInput);
         return true;
     }
 
@@ -112,36 +116,46 @@ class LoginForm {
     }
 
     handleSubmit() {
+        // const isUIDValid = this.validateUID();
+        // const isPasswordValid = this.validatePassword();
         const formData = new FormData(this.form);
-        this.setLoading(true);
-
-        fetch('api/faculty_change_password.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(status => {
-            const result = status.trim();
-            
-            if (result === 'dashboard' || result === 'success') {
-                this.showSuccessMessage();
-
-                setTimeout(() => {
-                    if (result === 'dashboard') {
-                        window.location.href = 'facultydashboardHOME.php';
-                    }
-                }, 1000);
-            }else {
-                this.setLoading(false);
-                alert('Confirm Password not a match!');
-                this.passwordInput.value = '';
-            } 
-        })
         
-        .catch(error => {
-            this.setLoading(false);
-            console.error('Error:', error);
-        });
+        // if (isUIDValid && isPasswordValid) {
+            this.setLoading(true);
+            
+            fetch('adminlogin_process.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(status => {
+                const result = status.trim();
+                
+                if (result === 'first_login' || result === 'dashboard') {
+                    if (result === 'first_login') {
+                        this.showChangePasswordMessage();
+                    } else if (result === 'dashboard') {
+                        this.showSuccessMessage();
+                    }
+                    setTimeout(() => {
+                        if (result === 'first_login') {
+                            window.location.href = 'admin_change_password.php'
+                        } else if (result === 'dashboard') {
+                            window.location.href = 'admindashboardHOME.php'
+                        }
+                    }, 2000);
+                } else {
+                    this.setLoading(false);
+                    alert('Login Failed: ' + result);
+                    this.passwordInput.value = '';
+                }
+            })
+
+            .catch(error => {
+                this.setLoading(false);
+                console.error('Error: ', error);
+            });
+        // }
     }
 
     setLoading(loading) {
@@ -152,6 +166,34 @@ class LoginForm {
             this.loginBtn.classList.remove('loading');
             this.loginBtn.disabled = false;
         }
+    }
+
+    showChangePasswordMessage() {
+        const overlay = document.createElement('div');
+        overlay.className = 'success-overlay';
+        overlay.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            animation: fadeIn 0.2s ease;
+        `;
+        
+        overlay.innerHTML = `
+            <div style="font-size: 60px; margin-bottom: 15px;">✨</div>
+            <h3 style="font-family: Inter, sans-serif; font-size: 22px; color: #4a1c3d; margin-bottom: 10px;">Welcome!</h3>
+            <p style="font-size: 14px; color: #5a3d4a;">Redirecting to change your password...</p>
+        `;
+        
+        document.querySelector('.login-card').appendChild(overlay);
     }
 
     showSuccessMessage() {
@@ -180,6 +222,11 @@ class LoginForm {
         `;
         
         document.querySelector('.login-card').appendChild(overlay);
+        
+        setTimeout(() => {
+            alert('Welcome to the Admin Portal!');
+            overlay.remove();
+        }, 1000);
     }
 }
 
@@ -192,7 +239,7 @@ function goBack() {
     loginCard.style.opacity = '0';
     
     setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
     }, 400);
 
 }
@@ -204,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
-    console.log('✨ Faculty Login initialized');
+    console.log('✨ Admin Login initialized');
 });
 
 const style = document.createElement('style');

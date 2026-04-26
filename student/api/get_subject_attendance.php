@@ -1,11 +1,7 @@
 <?php
 session_start();
-<<<<<<<< HEAD:student/api/get_subject_attendance.php
 require_once '../../db.php';
-========
-require_once '../db.php';
 
->>>>>>>> main:faculty/get_subject_attendance.php
 header('Content-Type: application/json');
 
 $user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
