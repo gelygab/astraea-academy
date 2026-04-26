@@ -6,50 +6,149 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadBtn = document.getElementById("upload-btn");
   const fileInput = document.getElementById("file-input");
 
-  // FLATPICKR CALENDAR
-  flatpickr("#start-date", {
-    dateFormat: "F j, Y",
-    minDate: "today",
-    onChange: calculateDates
-  });
+   /* =========================================
+       1. CUSTOM CALENDAR LOGIC
+    ========================================= */
+    let currentDate = new Date(); 
+    let activeInputId = '';
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  flatpickr("#end-date", {
-    dateFormat: "F j, Y",
-    minDate: "today",
-    onChange: calculateDates 
-  });
+    let startDateValue = null;
+    let endDateValue = null;
 
-// Function to calculate days and return date
-function calculateDates() {
-    const startVal = startDateInput.value;
-    const endVal = endDateInput.value;
+    // for HTML onclick attributes
+    window.openCalendar = function(inputId) {
+        activeInputId = inputId;
+        const modal = document.getElementById('calendarModal');
+        if(modal) {
+            modal.classList.add('active');
+            renderCalendar();
+        }
+    };
 
-    if (startVal && endVal) {
-      // Convert the text back into a Date object
-      const start = new Date(startVal);
-      const end = new Date(endVal);
+    window.closeCalendar = function() {
+        const modal = document.getElementById('calendarModal');
+        if(modal) {
+            modal.classList.remove('active');
+        }
+    };
 
-      const timeDiff = end.getTime() - start.getTime();
-      
-      if (timeDiff >= 0) {
-        const diffDays = (timeDiff / (1000 * 3600 * 24)) + 1;
-        numDaysInput.value = diffDays === 1 ? "1 day" : `${diffDays} days`;
+    // Close when clicking outside the calendar white box
+    document.getElementById('calendarModal')?.addEventListener('click', function(e) {
+        if (e.target === this) window.closeCalendar();
+    });
 
-        const returnDate = new Date(end);
-        returnDate.setDate(returnDate.getDate() + 1);
-        
-        const options = { month: 'short', day: 'numeric', year: 'numeric' };
-        returnOnInput.value = returnDate.toLocaleDateString('en-US', options);
-      } else {
-        numDaysInput.value = "Invalid range";
-        returnOnInput.value = "";
-      }
+    window.changeMonth = function(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        renderCalendar();
+    };
+
+function renderCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    const monthYearElement = document.getElementById('calendarMonthYear');
+    if (monthYearElement) {
+        monthYearElement.textContent = `${monthNames[month]} ${year}`;
     }
-  }
 
-  // Listeners for date changes
-  startDateInput.addEventListener("change", calculateDates);
-  endDateInput.addEventListener("change", calculateDates);
+    const daysContainer = document.getElementById('calendarDays');
+    if (!daysContainer) return; 
+
+    daysContainer.innerHTML = '';
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate(); 
+    const daysInPrevMonth = new Date(year, month, 0).getDate(); 
+
+    // Previous month inactive days
+    for (let i = firstDay; i > 0; i--) {
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day', 'inactive');
+        dayDiv.textContent = daysInPrevMonth - i + 1;
+        daysContainer.appendChild(dayDiv);
+    }
+
+    // Current month days
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day'); 
+        dayDiv.textContent = i;
+        
+        const isToday = (i === new Date().getDate() && 
+                         month === new Date().getMonth() && 
+                         year === new Date().getFullYear());
+        if (isToday) dayDiv.classList.add('today'); 
+
+        const cellDate = new Date(year, month, i);
+        let isSelected = false;
+
+        if (activeInputId === 'start-date' && startDateValue && cellDate.getTime() === startDateValue.getTime()) {
+            isSelected = true; 
+        } else if (activeInputId === 'end-date' && endDateValue && cellDate.getTime() === endDateValue.getTime()) {
+            isSelected = true; 
+        }
+
+        if (isSelected) dayDiv.classList.add('selected'); 
+
+        dayDiv.onclick = () => window.selectDate(i, month, year);
+        daysContainer.appendChild(dayDiv);
+    } 
+
+    // Next month inactive days
+    const totalCells = firstDay + daysInMonth;
+    const nextDays = 42 - totalCells; 
+    for (let i = 1; i <= nextDays; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day', 'inactive'); 
+        dayDiv.textContent = i;
+        daysContainer.appendChild(dayDiv);
+    }
+}
+
+    window.selectDate = function(day, month, year) {
+        const selectedDate = new Date(year, month, day);
+        const formattedDate = `${monthNames[month].substring(0,3)} ${String(day).padStart(2, '0')}, ${year}`;
+
+        const inputField = document.getElementById(activeInputId);
+        if(inputField) {
+            inputField.value = formattedDate;
+        }
+
+        if (activeInputId === 'start-date') {
+            startDateValue = selectedDate;
+        } else if (activeInputId === 'end-date') {
+            endDateValue = selectedDate;
+        }
+
+        window.closeCalendar();
+        calculateExcuseDetails();
+    };
+
+    function calculateExcuseDetails() {
+        const numDaysInput = document.getElementById('num-days');
+        const returnOnInput = document.getElementById('return-on');
+
+        if (startDateValue && endDateValue) {
+            const timeDiff = endDateValue.getTime() - startDateValue.getTime();
+
+            if (timeDiff >= 0) {
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                numDaysInput.value = daysDiff === 1 ? '1 day' : `${daysDiff} days`;
+
+                const returnDate = new Date(endDateValue);
+                returnDate.setDate(returnDate.getDate() + 1);
+
+                const retMonth = monthNames[returnDate.getMonth()].substring(0,3);
+                const retDay = String(returnDate.getDate()).padStart(2, '0');
+                const retYear = returnDate.getFullYear();
+                returnOnInput.value = `${retMonth} ${retDay}, ${retYear}`;
+            } else {
+                numDaysInput.value = 'Invalid range';
+                returnOnInput.value = '';
+            }
+        }
+    }
 
   // Trigger file upload click when clicking the upload box
   uploadBtn.addEventListener("click", () => {
@@ -82,7 +181,6 @@ function calculateDates() {
   submitBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
-    // 1. Grab values using your HTML IDs
     const excuseType = document.getElementById("time-type").value;
     const startDate = document.getElementById("start-date").value;
     const endDate = document.getElementById("end-date").value;
@@ -96,16 +194,15 @@ function calculateDates() {
       return;
     }
 
-    // --- NEW: Block Time Travel! ---
     const startConvert = new Date(startDate);
     const endConvert = new Date(endDate);
 
     if (startConvert > endConvert) {
       alert("Hold up! The End Date cannot be before the Start Date.");
-      return; // This immediately kills the function so the fetch() never runs!
+      return; 
     }
 
-    // 2. Package data for PHP
+    // Package data for PHP
     const formData = new FormData();
     formData.append('excuseType', excuseType);
     formData.append('startDate', startDate);
@@ -123,7 +220,7 @@ function calculateDates() {
     submitBtn.textContent = "Submitting...";
     submitBtn.disabled = true;
 
-    // 3. Send to PHP
+    // Send to PHP
     fetch('api/api_submit_excuse.php', {
         method: 'POST',
         body: formData
