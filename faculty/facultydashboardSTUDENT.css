@@ -3,7 +3,8 @@
 /* RESET & BASE */
 * {
     margin: 0; padding: 0; outline: 0; border: 0;
-    text-decoration: none; box-sizing: border-box;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 /* BASE ELEMENTS */
@@ -65,7 +66,7 @@ aside {
 }
 
 aside:hover { 
-    width: 22rem; 
+    width: 22rem;
 }
 
 aside h1, aside h2, aside h3 {
@@ -76,7 +77,7 @@ aside h1, aside h2, aside h3 {
 
 aside:hover h1, aside:hover h2, aside:hover h3 {
     opacity: 1;                
-    transition-delay: 150ms;   
+    transition-delay: 150ms;
 }
 
 aside .top {
@@ -98,7 +99,7 @@ aside .logo img {
 }
 
 aside .logo h3 {
-    font-size: 1.2rem; 
+    font-size: 1.2rem;
 }
 
 /* SIDEBAR NAVIGATION LINKS */
@@ -126,7 +127,7 @@ aside .sidebar a, aside .below a {
 }
 
 aside .sidebar a h2, aside .below a h2 {
-    font-size: 1.15rem; 
+    font-size: 1.15rem;
 }
 
 aside .sidebar a span, aside .below a span {
@@ -164,7 +165,6 @@ aside .below {
 }
 
 /* SUBMENU STYLES */
-
 aside .sidebar .submenu {
     display: flex;
     flex-direction: column;
@@ -179,11 +179,11 @@ aside .sidebar .submenu a {
 }
 
 aside .sidebar .submenu a h2 {
-    font-size: 0.95rem; 
+    font-size: 0.95rem;
 }
 
 aside .sidebar .submenu a:hover {
-    padding-left: 5.5rem; 
+    padding-left: 5.5rem;
 }
 
 aside .sidebar .submenu a span {
@@ -195,7 +195,7 @@ aside .sidebar .submenu a span {
 
 aside:hover .sidebar .submenu a span {
     opacity: 1;
-    transition-delay: 150ms; 
+    transition-delay: 150ms;
 }
 
 /* MASTER HEADER BANNER  */
@@ -205,7 +205,7 @@ aside:hover .sidebar .submenu a span {
     border-radius: 18px;
     padding: 20px 40px;
     position: relative;
-    margin-top: 45px;
+    margin-top: 0;
     margin-bottom: 0;
     color: white;
     box-shadow: 0 12px 35px rgba(0,0,0,0.25); 
@@ -302,7 +302,6 @@ aside:hover .sidebar .submenu a span {
 }
 
 /* FOLDER TAB BUTTON */
-
 .header-toggle-btn {
     position: absolute;
     top: -42px; 
@@ -311,14 +310,14 @@ aside:hover .sidebar .submenu a span {
     color: rgba(255, 255, 255, 0.5);
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-bottom: none; 
-    padding: 12px 30px 14px 30px; 
+    padding: 12px 30px 14px 30px;
     border-radius: 15px 15px 0 0; 
     font-weight: bold;
     font-size: 1.05rem;
     letter-spacing: 0.5px;
     cursor: pointer;
     z-index: 10;
-    box-shadow: 0 -8px 20px rgba(0,0,0,0.3); 
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
 }
 
@@ -331,7 +330,7 @@ aside:hover .sidebar .submenu a span {
 
 .class-list-dashboard { 
     flex: 1; 
-    padding: 2rem 3rem 2rem 2rem; 
+    padding: 2rem 3rem 2rem 2rem;
     display: flex; 
     flex-direction: column; 
     gap: 20px; 
@@ -345,13 +344,13 @@ aside:hover .sidebar .submenu a span {
     background: linear-gradient(135deg, #8A254C, #4B1535); 
     border-radius: 1.6rem; 
     padding: 2rem 2.5rem; 
-    color: #ffffff; 
+    color: #ffffff;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); 
 }
 
 .card h2 { 
     color: #ffffff; 
-    font-size: 2rem; 
+    font-size: 2rem;
     font-weight: 700; 
     margin-bottom: 25px; 
     text-align: center; 
@@ -361,27 +360,27 @@ aside:hover .sidebar .submenu a span {
     display: flex; 
     flex-direction: column; 
     gap: 1.5rem; 
-    max-width: 800px; 
+    max-width: 800px;
     margin: 0 auto; 
 }
 
 .filter-row { 
     display: grid; 
     grid-template-columns: 1fr 1fr; 
-    gap: 1.5rem; 
+    gap: 1.5rem;
 }
 
 .input-group { 
     display: flex; 
     align-items: center; 
-    gap: 15px; 
+    gap: 15px;
 }
 
 .input-group label { 
     font-weight: 600; 
     color: #ffffff; 
     font-size: 1rem; 
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .input-group select { 
@@ -389,7 +388,7 @@ aside:hover .sidebar .submenu a span {
     padding: 12px 40px 12px 16px; 
     border: none; 
     border-radius: 8px; 
-    font-family: inherit; 
+    font-family: inherit;
     font-size: 0.95rem; 
     color: #333333; 
     font-weight: 600; 
@@ -417,7 +416,7 @@ aside:hover .sidebar .submenu a span {
 .tabs-header { 
     display: flex; 
     justify-content: space-around; 
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 
 .tab {
@@ -426,32 +425,46 @@ aside:hover .sidebar .submenu a span {
     color: #ffffff; 
     padding: 12px 0;
     font-weight: 600; 
-    cursor: pointer; 
+    cursor: pointer;
     border-radius: 10px 10px 0 0; 
     transition: background-color 0.3s;
 }
 
 .tab.active { 
-    background-color: #94426A; 
+    background-color: #94426A;
 }
 
 .tab:not(.active):hover { 
     background-color: rgba(255, 255, 255, 0.1); 
 }
 
+/* ============================================================== 
+   WHITE BOX & OUTER LAYOUT ADJUSTMENTS
+   ============================================================== */
 .main-white-box {
     background-color: #ffffff;
     border-radius: 15px;
     padding: 20px 30px;
     position: relative;
-    min-height: 500px;
+    min-height: auto; 
     overflow: hidden;
 }
+
+.detail-card-layout {
+    margin: -20px -30px -20px -30px; 
+    background-color: #ffffff; 
+    border-radius: 15px;
+    border: 1px solid #cccccc;
+    border-top: 15px solid #620e2c; 
+    padding: 25px 40px 30px 40px; 
+    min-height: auto; 
+}
+/* ============================================================== */
 
 .tab-top-controls {
     display: flex; 
     justify-content: flex-end; 
-    align-items: center; 
+    align-items: center;
     gap: 15px; 
     margin-bottom: 20px;
 }
@@ -465,7 +478,7 @@ aside:hover .sidebar .submenu a span {
     font-size: 14px; 
     font-family: 'Inter', sans-serif;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); 
-    transition: box-shadow 0.3s ease; 
+    transition: box-shadow 0.3s ease;
 }
 
 .sort-dropdown-container { 
@@ -474,7 +487,7 @@ aside:hover .sidebar .submenu a span {
 
 .sort-btn {
     padding: 8px 20px; 
-    border-radius: 20px; 
+    border-radius: 20px;
     border: 1px solid #cccccc; 
     background-color: #ffffff;
     cursor: pointer; 
@@ -494,7 +507,7 @@ aside:hover .sidebar .submenu a span {
     right: 0; 
     background: #ffffff; 
     border: 1px solid #cccccc;
-    border-radius: 10px; 
+    border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
     z-index: 100;
     width: max-content; 
@@ -526,7 +539,7 @@ aside:hover .sidebar .submenu a span {
 }
 
 .box-title {
-    text-align: center !important; 
+    text-align: center !important;
     color: #333333; 
     margin: 0 auto 30px auto !important; 
     font-size: 28px; 
@@ -534,13 +547,13 @@ aside:hover .sidebar .submenu a span {
     text-decoration-thickness: 2px; 
     text-underline-offset: 5px;
     display: block;
-    width: 100%; 
+    width: 100%;
 }
 
 .cards-grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 20px; 
+    gap: 20px;
 }
 
 .request-card {
@@ -548,13 +561,13 @@ aside:hover .sidebar .submenu a span {
     border-radius: 15px; 
     overflow: hidden; 
     text-align: center;
-    background-color: #ffffff; 
+    background-color: #ffffff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
     transition: transform 0.3s ease;
 }
 
 .request-card:hover { 
-    transform: translateY(-5px); 
+    transform: translateY(-5px);
     box-shadow: 0 8px 15px rgba(0,0,0,0.15); 
     border-color: #94426A; 
 }
@@ -562,7 +575,7 @@ aside:hover .sidebar .submenu a span {
 .card-header { 
     background-color: #620e2c; 
     color: #ffffff; 
-    padding: 5px 0; 
+    padding: 5px 0;
     font-weight: bold; 
 }
 
@@ -571,14 +584,14 @@ aside:hover .sidebar .submenu a span {
 }
 
 .student-name { 
-    font-size: 20px; 
+    font-size: 20px;
     margin: 0 0 5px 0; 
     color: #333333; 
 }
 
 .apply-date { 
     font-size: 14px; 
-    color: #666666; 
+    color: #666666;
     margin: 0 0 20px 0; 
 }
 
@@ -595,7 +608,38 @@ aside:hover .sidebar .submenu a span {
 }
 
 .review-btn:hover { 
-    background-color: #620e2c; 
+    background-color: #620e2c;
+}
+
+.card-details {
+    margin-bottom: 20px;
+}
+
+.card-details .detail-row,
+.card-details .detail-label,
+.card-details .detail-value {
+    font-size: 13px; 
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.detail-label {
+    color: #666;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #333;
+    text-align: right;
+}
+
+.full-width-btn {
+    width: 100%;
 }
 
 .table-wrapper {
@@ -608,7 +652,7 @@ aside:hover .sidebar .submenu a span {
 
 .data-table { 
     background: transparent !important;
-    width: 100%; 
+    width: 100%;
     border-collapse: collapse; 
     color: #ffffff; 
     text-align: left; 
@@ -619,25 +663,27 @@ aside:hover .sidebar .submenu a span {
 }
 
 .data-table thead { 
-    background-color: rgba(0, 0, 0, 0.2); 
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .data-table th { 
     padding: 15px 20px; 
     font-weight: bold; 
     font-size: 15px; 
+    text-align: center;
 }
 
 .data-table td { 
     padding: 15px 20px; 
     font-size: 14px; 
     border-bottom: 1px solid rgba(255,255,255,0.1); 
-    cursor: pointer; 
+    cursor: pointer;
     transition: background-color 0.2s; 
+    text-align: center;
 }
 
 .data-table tbody tr:hover { 
-    background-color: rgba(255, 255, 255, 0.1); 
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .data-table th:first-child, 
@@ -645,31 +691,21 @@ aside:hover .sidebar .submenu a span {
     border-right: 2px solid #ffffff; 
     text-align: center; 
     width: 60px; 
+    text-align: center;
 }
 
 .data-table th:nth-child(3),
 .data-table td:nth-child(3) {
-    text-align: left; 
+    text-align: center; 
 }
 
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
-    text-align: left;
-}
-
-.detail-card-layout {
-    margin: -20px -30px -20px -30px; 
-    background-color: #ffffff; 
-    border-radius: 15px;
-    border: none;
-    border: 1px solid #cccccc; 
-    border-top: 15px solid #620e2c; 
-    padding: 60px 60px 20px 60px;
-    min-height: 500px;
+    text-align: center;
 }
 
 .detail-top-actions { 
-    display: flex; 
+    display: flex;
     justify-content: flex-end; 
     margin-bottom: 10px; 
 }
@@ -679,7 +715,7 @@ aside:hover .sidebar .submenu a span {
     color: #ffffff; 
     border: none; 
     border-radius: 20px;
-    padding: 6px 30px; 
+    padding: 6px 30px;
     cursor: pointer; 
     font-weight: bold; 
     font-size: 14px; 
@@ -687,55 +723,32 @@ aside:hover .sidebar .submenu a span {
 }
 
 .back-btn:hover { 
-    opacity: 0.8; 
+    opacity: 0.8;
 }
 
 .detail-content-row { 
     display: flex; 
-    justify-content: space-between; 
-    gap: 100px; 
-    max-width: 1100px;
+    justify-content: center; 
+    gap: 80px;
+    max-width: 1050px;
     margin: 0 auto;
 }
 
 .detail-left-col { 
-    flex: 1.2; 
-    display: flex; 
-    flex-direction: column; 
-}
-
-.detail-right-col { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
+    max-width: 450px; 
+}
+
+.detail-right-col { 
+    flex: 1;
+    display: flex; 
+    flex-direction: column; 
     padding-top: 15px; 
+    max-width: 450px; /*comment box*/
 }
-
-.detail-name { 
-    font-size: 42px; 
-    color: #000000; 
-    margin: 0 0 2px 0; 
-}
-
-.detail-applied { 
-    color: #555555; 
-    font-size: 16px; 
-    font-weight: bold; 
-    margin: 0 0 25px 0; 
-}
-
-.detail-info-list p { 
-    color: #444444; 
-    margin: 0 0 5px 0; 
-    font-size: 15px; 
-    display: flex;
-}
-
-.detail-info-list strong { 
-    width: 160px; 
-    flex-shrink: 0; 
-}
-
+/* ============================================================== */
 
 .detail-action-buttons { 
     margin-top: 30px; 
@@ -753,14 +766,14 @@ aside:hover .sidebar .submenu a span {
     border: none; 
     border-radius: 20px; 
     color: #ffffff;
-    font-weight: bold; 
+    font-weight: bold;
     font-size: 15px; 
     cursor: pointer; 
     transition: transform 0.2s ease;
 }
 
 .action-btn:hover { 
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 
 .action-btn.decline-btn { 
@@ -768,29 +781,25 @@ aside:hover .sidebar .submenu a span {
     color: #ffffff !important; 
 }
 
-.decline-reason-container {
-    margin-top: 20px !important; 
-}
-
 .action-btn.approve-btn { 
     background-color: #2F8C2F !important; 
-    color: #ffffff !important; 
+    color: #ffffff !important;
 }
 
 .comment-section label { 
     color: #444444; 
     font-size: 16px; 
     display: block; 
-    margin-bottom: 5px; 
+    margin-bottom: 5px;
 }
 
 .comment-area {
     width: 100%; 
-    height: 140px; 
+    height: 180px; 
     background-color: #e5e5e5; 
     border: 1px solid #777777; 
     color: #333333;
-    border-radius: 5px; 
+    border-radius: 5px;
     resize: none; 
     margin-bottom: 5px !important; 
     padding: 10px; 
@@ -798,25 +807,25 @@ aside:hover .sidebar .submenu a span {
 }
 
 textarea[readonly] { 
-    cursor: default; 
+    cursor: default;
 }
 
 .attachment-section { 
     margin-top: 15px !important;
-    margin-bottom: 30px !important; 
+    margin-bottom: 30px !important;
 }
 
 .attachment-section p { 
     color: #444444; 
     font-size: 16px; 
-    margin: 0 0 5px 0; 
+    margin: 0 0 5px 0;
 }
 
 .attachment-link { 
     color: #666666; 
     text-decoration: underline; 
     font-weight: bold; 
-    font-size: 15px; 
+    font-size: 15px;
 }
 
 td .attachment-link { 
@@ -826,7 +835,7 @@ td .attachment-link {
 /* MODALS */
 .modal-overlay {
     display: none; 
-    position: fixed; 
+    position: fixed;
     top: 0; 
     left: 0; 
     width: 100%; 
@@ -842,7 +851,7 @@ td .attachment-link {
     left: 50%; 
     transform: translate(-50%, -50%);
     width: 400px; 
-    background-color: #ffffff; 
+    background-color: #ffffff;
     border-radius: 15px; 
     z-index: 1000;
     overflow: hidden; 
@@ -854,7 +863,7 @@ td .attachment-link {
     padding: 15px; 
     color: #ffffff; 
     font-size: 20px; 
-    font-weight: bold; 
+    font-weight: bold;
 }
 
 .modal-body { 
@@ -862,7 +871,7 @@ td .attachment-link {
 }
 
 .modal-body p { 
-    margin: 0 0 20px 0; 
+    margin: 0 0 20px 0;
     color: #333333; 
     font-size: 16px; 
 }
@@ -872,7 +881,7 @@ td .attachment-link {
     border-radius: 20px; 
     border: none;
     font-weight: bold; 
-    cursor: pointer; 
+    cursor: pointer;
     transition: opacity 0.2s;
 }
 
@@ -881,33 +890,20 @@ td .attachment-link {
 }
 
 .back-to-pending-btn { 
-    background-color: #E0E0E0; 
+    background-color: #E0E0E0;
     color: #333333; 
     padding: 10px 30px; 
 }
 
-.reason-area {
-    width: 100%; 
-    height: 80px; 
-    border: 1px solid #999999; 
-    border-radius: 5px;
-    resize: none; 
-    margin-bottom: 15px; 
-    padding: 10px; 
-    font-family: 'Inter', sans-serif; 
-    font-size: 14px;
-}
-
 .modal-action-row { 
-    display: flex; 
+    display: flex;
     justify-content: flex-end; 
 }
 
 /* TOGGLE FIX (HIDES INACTIVE SECTIONS) */
-
 .section-wrapper {
     display: none; 
-    animation: fadeIn 0.4s ease-in-out; 
+    animation: fadeIn 0.4s ease-in-out;
 }
 
 .section-wrapper.active-section {
@@ -919,83 +915,9 @@ td .attachment-link {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* WARNING BANNER & AFFECTED CLASSES STYLES  */
-
-.warning-banner {
-    background-color: #ffffff;
-    border: 2px solid #9C2727; 
-    border-radius: 15px;
-    padding: 12px 20px;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.warning-icon {
-    color: #9C2727;
-    font-weight: bold;
-    flex-shrink: 0;
-    font-size: 16px;
-}
-
-.warning-text {
-    line-height: 1.4;
-    font-size: 15px;
-    font-weight: 600;
-    color: #000000;
-}
-
-.affected-classes-box {
-    background-color: #ffffff;
-    border: 3px solid #620e2c;
-    border-radius: 15px;
-    overflow: hidden;
-    margin-bottom: 25px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-}
-
-.affected-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #333333;
-}
-
-.affected-table thead {
-    background-color: #f5f5f5;
-    border-bottom: 2px solid #620e2c;
-}
-
-.affected-table th {
-    padding: 12px 25px;
-    font-size: 14px;
-    text-align: left;
-    font-weight: bold;
-    color: #000000;
-}
-
-.affected-table td {
-    padding: 12px 25px;
-    font-size: 13px;
-    font-weight: bold;
-    border-bottom: 1px solid #eeeeee;
-}
-
-.affected-table th:last-child,
-.affected-table td:last-child {
-    text-align: right;
-    font-weight: 500;
-}
-
-.affected-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
 /* TWINKLING STARS */
 .master-header-card {
-    position: relative; 
+    position: relative;
 }
 
 .header-content {
@@ -1031,15 +953,99 @@ td .attachment-link {
 
 @keyframes twinkle {
     0% { 
-        opacity: 0.1; 
+        opacity: 0.1;
         transform: scale(0.8) rotate(0deg); 
     }
     100% { 
-        opacity: 1; 
+        opacity: 1;
         transform: scale(1.15) rotate(15deg); 
     }
 }
 
 aside .sidebar .nav-dropdown .submenu {
-    display: none !important; 
+    display: none !important;
+}
+
+/* Card Header */
+.appeal-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.appeal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.appeal-type {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+.apply-date {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: #888;
+    text-align: left;
+}
+
+/* ADMIN STYLE DETAILS FOR MODAL */
+.admin-style-details, .detail-right-col {
+    margin-top: 5px; 
+}
+
+.admin-style-details {
+    font-size: 14px;
+}
+
+.admin-style-details .appeal-detail-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.admin-style-details .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0; 
+    margin-bottom: 0 !important; 
+    border-bottom: 1px solid #f0e6e6;
+}
+
+.admin-style-details .detail-label {
+    color: #8c7b75; 
+    font-weight: 500;
+}
+
+.admin-style-details .detail-value {
+    color: #4a3b32;
+    font-weight: 600;
+    text-align: right;
+}
+
+.admin-style-details .attachment-row {
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: none;
+    gap: 4px;
+    padding-top: 8px; 
+    margin-bottom: 0;
+}
+
+.updated-by-row {
+    margin-top: 15px; 
+    padding-top: 15px; 
+    border-top: 1px solid rgba(0, 0, 0, 0.08); 
+}
+
+.updated-by-row .detail-label,
+.updated-by-row .detail-value {
+    font-size: 1.15rem; 
+    font-weight: 700;  
+    color: #3e2723;    
 }
