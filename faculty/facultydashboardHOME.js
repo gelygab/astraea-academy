@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchData() {
         try {
+            // Reverted back to the live API instead of the static JSON file
             const response = await fetch('api/api_get_faculty_details.php');
             if (!response.ok) throw new Error("JSON file missing or server not running");
             cachedData = await response.json();
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pie) {
             pie.classList.remove('loading');
             pie.style.setProperty('--absent-percent', absentRate);
-            pie.style.background = `conic-gradient(#f4d1e0 0% ${absentRate}%, #8a0b3f ${absentRate}% 100%)`;
+            pie.style.background = `conic-gradient(var(--lightpink) 0% ${absentRate}%, var(--purple) ${absentRate}% 100%)`;
             document.getElementById('absentPercent').textContent = absentRate + "%";
             document.getElementById('presentPercent').textContent = presentRate + "%";
         }
@@ -112,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
             absentEl.style.display = absentRate === 0 ? 'none' : 'block';
         }
 
-        // Feedback Text
+        // Feedback Text 
         const feedbackTitle = 
              presentRate >= 90 ? "Excellent!" :
-             presentRate >= 80? "Good Attendance!" :
+             presentRate >= 80 ? "Good Attendance!" :
              presentRate >= 70 ? "Room for Improvement" : "Low Attendance Alert";
              
         const feedbackDesc = 
