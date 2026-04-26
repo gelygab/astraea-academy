@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
  
     <div class="container">
@@ -17,34 +17,52 @@
 
         <main class="class-list-dashboard">
             <div class="card filter-card">
-              <div class="card filter-card">
                 <h2>Generate Report</h2>
                 <div class="filter-controls">
                     <div class="filter-row-1">
                         <div class="input-group">
                             <label>Academic Year</label>
-                            <select id="academic-year" required>
+                            <select required>
                                 <option value="" disabled selected hidden>Select year</option>
-                                <option value="SY 2025-2026">S.Y 2025-2026</option>
+                                <option value="sy_2025-2026">SY 2025-2026</option>
                             </select>
                         </div>
                         <div class="input-group">
                             <label>Semester</label>
-                            <select id="semester" required>
+                            <select required>
                                 <option value="" disabled selected hidden>Select semester</option>
-                                <option value="First Semester">First Semester</option>
-                                <option value="Second Semester">Second Semester</option>
+                                <option value="first_Semester">First Semester</option>
+                                <option value="second_Semester">Second Semester</option>
                             </select>
                         </div>
                     </div>
                     <div class="input-group full-width">
-                        <label>Student Name</label>
-                        <select id="student-name" required>
-                            <option value="" disabled selected hidden>Loading students...</option>
+                        <label>Subject</label>
+                        <select required>
+                            <option value="" disabled selected hidden>Select a subject</option>
+                            <option value="software_design">Software Design</option>
+                            <option value="engineering_management">Engineering Management</option>
+                        </select>
+                    </div>
+                    <div class="filter-row-2">
+                        <div class="input-group">
+                            <label>Program</label>
+                            <select required>
+                                <option value="" disabled selected hidden>Select program</option>
+                                <option value="bscpe">BSCPE</option>
                             </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Block</label>
+                            <select required>
+                                <option value="" disabled selected hidden>Select block</option>
+                                <option value="block_1">Block 1</option>
+                                <option value="block_2">Block 2</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div> 
+            </div>
 
             <div class="card date-picker-card">
                 <div class="report-header">Date Range Picker</div>
