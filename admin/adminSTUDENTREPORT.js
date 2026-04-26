@@ -234,25 +234,62 @@ function backToStudentTeamRecords() {
 }
 
 async function showStudentRecord(studentData) {
-    currentStudent = studentData;
-    
-    // Fetch detailed profile if available
-    const profile = await fetchStudentProfile(studentData.uid);
-    
-    // Update profile display
-    document.getElementById('profileLastName').textContent = profile?.lastName || studentData.name.split(',')[0] + ',';
-    document.getElementById('profileFirstName').textContent = profile?.firstName || studentData.name.split(',')[1] || '';
-    document.getElementById('profileCollege').textContent = profile?.college || 'College of Engineering';
-    document.getElementById('profileDepartment').textContent = studentData.department || profile?.department || 'Unknown Department';
+     currentStudent = studentData; //EDITTTT
+// start edit
+   
+    let lastName = '', firstName = ''; 
+    if (studentData.name && studentData.name.includes(',')) { 
+        const parts = studentData.name.split(','); 
+        lastName = parts[0].trim() + ','; 
+        firstName = parts[1]?.trim() || ''; 
+    } else if (studentData.name) { 
+        // Fallback: assume "First Last" format 
+        const parts = studentData.name.trim().split(/\s+/); 
+        lastName = parts.pop() + ','; // Last word as last name 
+        firstName = parts.join(' '); 
+    } 
 
-    // Initialize donut charts with dynamic data
-    initDonutCharts(studentData);
+    // Fetch detailed profile if available 
+    let profile = null; 
+    try { 
+        profile = await fetchStudentProfile(studentData.uid); 
+    } catch (e) { 
+        console.warn('Profile fetch failed:', e); 
+    } 
 
-    // Load subject table (could fetch from API)
-    await loadSubjectTable(studentData.uid);
+    // Update profile display with fallbacks 
+    const profileLastNameEl = document.getElementById('profileLastName'); 
+    const profileFirstNameEl = document.getElementById('profileFirstName'); 
+    const profileCollegeEl = document.getElementById('profileCollege'); 
+    const profileDeptEl = document.getElementById('profileDepartment'); 
 
-    showView('studentRecordView');
+    if (profileLastNameEl) profileLastNameEl.textContent = profile?.lastName || lastName; 
+    if (profileFirstNameEl) profileFirstNameEl.textContent = profile?.firstName || firstName;
+    if (profileCollegeEl) profileCollegeEl.textContent = profile?.college || 'College of Engineering'; 
+    if (profileDeptEl) profileDeptEl.textContent = studentData.department || profile?.department || 'Unknown Department'; 
+
+    // Initialize donut charts with guard 
+    try { 
+        if (typeof Chart !== 'undefined') { 
+            initDonutCharts(studentData); 
+        } else { 
+            console.error('Chart.js not loaded. Charts will not render.'); 
+            // Set fallback percentages 
+            ['presentPercentage', 'latePercentage', 'absencePercentage', 'excusePercentage'].forEach(id => {
+                const el = document.getElementById(id); 
+                if (el) el.textContent = '0%'; 
+            }); 
+        } 
+    } catch (chartError) { 
+        console.error('Chart initialization failed:', chartError); 
+    } 
+
+    // Load subject table (could fetch from API) 
+    await loadSubjectTable(studentData.uid); 
+
+    showView('studentRecordView'); 
 }
+// end edit
 
 async function showCalendarView(subjectCode = null) {
     if (subjectCode && currentStudent) {
@@ -474,7 +511,8 @@ function renderStudents(students) {
                     <span class="student-name-text">${student.name}</span>
                     <span class="student-dept-text" style="font-size: 11px; color: rgba(107, 78, 61, 0.6); margin-top: 2px;">${student.department || 'Unknown Department'}</span>
                 </div>
-                <button class="btn-view-record-gold" onclick='viewRecord(${JSON.stringify(student).replace(/'/g, "&#39;")})'>
+                
+                <button class="btn-view-record-gold" onclick="viewRecord(decodeURIComponent('${encodeURIComponent(JSON.stringify(student))}'))"> 
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
@@ -510,8 +548,11 @@ function renderStudents(students) {
 }
 
 function viewRecord(student) {
-    // To add view record get api
+     //EDITTTT
     showStudentRecord(student);
+    if (typeof student === 'string') { 
+        student = JSON.parse(student); 
+    }
 }
 
 // ==========================================
@@ -519,12 +560,26 @@ function viewRecord(student) {
 // ==========================================
 
 function initDonutCharts(studentData) {
+// start edit 
+
+   // Guard: Check if Chart library is available 
+    if (typeof Chart === 'undefined') { 
+        console.error('Chart.js library not loaded. Donut charts will not render.'); 
+        return; 
+    } 
+
     // Destroy existing charts
     ['presentChart', 'lateChart', 'absenceChart', 'excuseChart'].forEach(id => {
         if (donutCharts[id]) {
-            donutCharts[id].destroy();
+            try { 
+                donutCharts[id].destroy();
+            } catch (e) { 
+                console.warn('Failed to destroy chart:', id); 
+            } 
         }
     });
+
+// end edit
 
     // Ensure we have valid numbers (handle both API data and calculated data)
     const absence = parseInt(studentData.absence) || parseInt(studentData.absencePercentage) || 0;
