@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db.php';
+require_once '../db.php';
 
 if (!isset($_SESSION['uid'])) {
     header('Location: facultylogin.php');
@@ -23,7 +23,7 @@ $user_uid = $_SESSION['uid'];
 </head>
 <body>
     <div class="background-container">
-        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">

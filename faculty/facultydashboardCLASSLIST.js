@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // --- SMART FUNCTIONS ---
 
 function loadSubjects() {
-    fetch('api_get_subjects.php')
+    fetch('api/api_get_subjects.php')
         .then(response => response.json())
         .then(data => {
             allSchedules = data; 
@@ -203,7 +203,7 @@ function loadSubjects() {
 }
 
 function loadClassList(scheduleId) {
-    fetch(`api_get_class_list.php?schedule_id=${scheduleId}`)
+    fetch(`api/api_get_class_list.php?schedule_id=${scheduleId}`)
         .then(response => response.json())
         .then(students => {
             const tableBody = document.querySelector("#studentTable tbody");

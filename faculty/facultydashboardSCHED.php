@@ -1,6 +1,22 @@
+<?php
+session_start();
+require_once '../db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+    exit();
+}
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Dashboard - Manage Schedule</title>
@@ -9,7 +25,7 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
@@ -34,7 +50,8 @@
                         <label for="semester">Semester</label>
                         <div class="custom-select">
                             <select id="semester">
-                                <option value="First Semester">First Semester</option>
+                                <option value="First">First Semester</option>
+                                <option value="Second">Second Semester</option>
                             </select>
                             <span class="material-symbols-outlined select-arrow">expand_more</span>
                         </div>

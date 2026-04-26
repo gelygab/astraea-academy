@@ -1,10 +1,9 @@
 const API_CONFIG = {
-    baseUrl: '/api/',
-    
+    baseUrl: 'api/', 
     endpoints: {
-        getSchedule: 'get_schedule.php',
-        getSubjectAttendance: 'get_subject_attendance.php',
-        getApprovedRecords: 'get_approved_records.php'
+        getSchedule: 'api_get_schedule.php', 
+        getSubjectAttendance: 'api_get_subject_attendance.php',
+        getApprovedRecords: 'api_get_approved_records.php'
     }
 };
 
@@ -40,25 +39,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function initializeScheduleDashboard() {
-    currentFacultyId = getCurrentFacultyId();
+    currentFacultyId = typeof CURRENT_USER_UID !== 'undefined' ? CURRENT_USER_UID : null;
     
     if (!currentFacultyId) {
-        // For development: use placeholder if no login
-        // REMOVE IN PRODUCTION: usePlaceholderData();
-        // REPLACE WITH: window.location.href = 'facultylogin.html';
-        usePlaceholderData();
+        console.error("No Faculty ID found. Are you logged in?");
         return;
     }
     
     await loadScheduleData();
-}
-
-function getCurrentFacultyId() {
-    return sessionStorage.getItem('faculty_id') || localStorage.getItem('faculty_id') || null;
-}
-
-function getAuthToken() {
-    return sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token') || '';
 }
 
 async function loadScheduleData() {
@@ -76,34 +64,24 @@ async function loadScheduleData() {
         
         const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getSchedule}?${params}`;
         
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
-            },
-            credentials: 'include'
-        });
+        const response = await fetch(url);
         
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         
         const result = await response.json();
+        const actualData = result.data ? result.data : result;
         
-        if (result.success) {
-            currentScheduleData = result.data;
-            populateFilters(result.data.available_years, result.data.available_semesters);
-            renderSchedule(result.data);
+        if (actualData && actualData.subjects) {
+            currentScheduleData = actualData;
+            populateFilters(actualData.available_years, actualData.available_semesters);
+            renderSchedule(actualData);
         } else {
-            throw new Error(result.message || 'Invalid response');
+            throw new Error('No schedule data found for this semester.');
         }
         
     } catch (error) {
         console.error('Failed to load schedule:', error);
-        // For development: show placeholder on error
-        // REMOVE IN PRODUCTION: usePlaceholderData();
-        // REPLACE WITH: showEmptyState(true);
-        usePlaceholderData();
+        showEmptyState(true); 
     } finally {
         showLoading(false);
     }
@@ -115,20 +93,15 @@ async function handleFilterChange() {
 
 function populateFilters(years, semesters) {
     const yearSelect = document.getElementById('schoolYear');
-    const semesterSelect = document.getElementById('semester');
     
-    if (yearSelect.options.length === 0 && years) {
+    if (years && years.length > 0) {
         yearSelect.innerHTML = years.map(y => 
             `<option value="${y}" ${y === currentScheduleData?.school_year ? 'selected' : ''}>${y}</option>`
         ).join('');
     }
     
-    if (semesterSelect.options.length === 0 && semesters) {
-        semesterSelect.innerHTML = semesters.map(s => 
-            `<option value="${s}" ${s === currentScheduleData?.semester ? 'selected' : ''}>${s}</option>`
-        ).join('');
-    }
 }
+
 
 function renderSchedule(data) {
     if (!data.subjects || data.subjects.length === 0) {
@@ -141,6 +114,7 @@ function renderSchedule(data) {
     renderWeeklyGrid(data.schedule_slots || []);
 }
 
+// --- THIS IS THE MISSING FUNCTION THAT BROKE IT ---
 function renderSubjectsTable(subjects) {
     const tbody = document.getElementById('subjectsTableBody');
     tbody.innerHTML = subjects.map(subject => `
@@ -152,12 +126,33 @@ function renderSubjectsTable(subjects) {
     `).join('');
 }
 
-// Render weekly grid with proper spanning class blocks
+function renderSubjectCards() {
+    if (!currentScheduleData?.subjects) return;
+    
+    const grid = document.getElementById('subjectCardsGrid');
+    
+    grid.innerHTML = currentScheduleData.subjects.map(subject => `
+        <div class="subject-card" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="subject-card-header">
+                ${escapeHtml(subject.subject_code)}
+            </div>
+            <div class="subject-card-body" style="display: flex; flex-direction: column; flex-grow: 1;">
+                <p><strong>${escapeHtml(subject.description)}</strong></p>
+                <p>Units: ${subject.units || 'N/A'}</p>
+                <p style="margin-bottom: 15px;">${escapeHtml(subject.schedule_display || formatSchedule(subject))}</p>
+                
+                <button class="view-record-btn" style="margin-top: auto;" onclick="openSubjectAttendance('${subject.subject_code}')">
+                    View Leave and Excuse Record
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
 function renderWeeklyGrid(scheduleSlots) {
     const grid = document.getElementById('weeklyScheduleGrid');
     grid.innerHTML = '';
     
-    // Create header row
     const cornerCell = document.createElement('div');
     cornerCell.className = 'grid-time-header';
     cornerCell.textContent = 'Time';
@@ -170,18 +165,14 @@ function renderWeeklyGrid(scheduleSlots) {
         grid.appendChild(dayHeader);
     });
     
-    // Generate time slots with full format
     const timeSlots = generateTimeSlots();
     
-    // Create empty grid cells first 
     timeSlots.forEach((slot, index) => {
-        // Time label column
         const timeCell = document.createElement('div');
         timeCell.className = 'grid-time-header';
         timeCell.textContent = slot.label;
         grid.appendChild(timeCell);
         
-        // Day columns
         SCHEDULE_CONFIG.days.forEach(day => {
             const cell = document.createElement('div');
             cell.className = 'grid-cell';
@@ -192,7 +183,6 @@ function renderWeeklyGrid(scheduleSlots) {
         });
     });
     
-    // Class blocks that span multiple rows
     if (scheduleSlots) {
         scheduleSlots.forEach(slot => {
             placeClassBlock(grid, slot, timeSlots);
@@ -215,7 +205,6 @@ function generateTimeSlots() {
     return slots;
 }
 
-// Full time format 
 function formatTimeFull(hour, minute) {
     const period = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
@@ -223,32 +212,27 @@ function formatTimeFull(hour, minute) {
     return `${displayHour}:${displayMinute} ${period}`;
 }
 
-// Place class block spanning multiple time slots
 function placeClassBlock(grid, classData, timeSlots) {
     const dayIndex = SCHEDULE_CONFIG.days.indexOf(classData.day);
     if (dayIndex === -1) return;
     
-    // Find start and end row indices
     const startRow = timeSlots.findIndex(t => t.time === classData.start_time);
     const endRow = timeSlots.findIndex(t => t.time === classData.end_time);
     
     if (startRow === -1) return;
     
-    // Calculate span (how many 30-min slots)
     const rowSpan = endRow - startRow;
     
-    // Find the cell at start time + day
     const gridCells = grid.querySelectorAll('.grid-cell');
     const cellIndex = startRow * 7 + dayIndex;
     const targetCell = gridCells[cellIndex];
     
     if (!targetCell) return;
     
-    // Create the class block
     const block = document.createElement('div');
     block.className = 'class-block';
     block.style.gridRow = `span ${rowSpan}`;
-    block.style.height = `${rowSpan * 50 - 4}px`; // 50px per row, minus gap
+    block.style.height = `${rowSpan * 50 - 4}px`; 
     
     block.innerHTML = `
         <span class="subject-code">${escapeHtml(classData.subject_code)}</span>
@@ -257,11 +241,9 @@ function placeClassBlock(grid, classData, timeSlots) {
     
     block.onclick = () => openSubjectAttendance(classData.subject_code);
     
-    // Position absolutely within the cell
     targetCell.style.position = 'relative';
     targetCell.appendChild(block);
     
-    // Mark cells as occupied
     for (let i = 0; i < rowSpan; i++) {
         const occupiedIndex = (startRow + i) * 7 + dayIndex;
         if (gridCells[occupiedIndex]) {
@@ -281,7 +263,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// View Navigation
 function showSubjectDetailsView() {
     document.getElementById('mainScheduleView').classList.add('hidden');
     document.getElementById('subjectDetailsView').classList.remove('hidden');
@@ -293,28 +274,6 @@ function showMainScheduleView() {
     document.getElementById('mainScheduleView').classList.remove('hidden');
 }
 
-function renderSubjectCards() {
-    if (!currentScheduleData?.subjects) return;
-    
-    const grid = document.getElementById('subjectCardsGrid');
-    grid.innerHTML = currentScheduleData.subjects.map(subject => `
-        <div class="subject-card">
-            <div class="subject-card-header">
-                ${escapeHtml(subject.subject_code)}
-            </div>
-            <div class="subject-card-body">
-                <p><strong>${escapeHtml(subject.description)}</strong></p>
-                <p>Units: ${subject.units || 'N/A'}</p>
-                <p>${escapeHtml(subject.schedule_display || formatSchedule(subject))}</p>
-                <button class="view-record-btn" onclick="openSubjectAttendance('${subject.subject_code}')">
-                    View Leave and Excuse Record
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Attendance Calendar
 async function openSubjectAttendance(subjectCode) {
     currentAttendanceCalendar.selectedSubject = subjectCode;
     currentAttendanceCalendar.currentDate = new Date();
@@ -333,7 +292,6 @@ async function loadAttendanceData(subjectCode) {
         const month = currentAttendanceCalendar.currentDate.getMonth() + 1;
         
         const params = new URLSearchParams({
-            student_id: currentStudentId,
             subject_code: subjectCode,
             year: year,
             month: month
@@ -341,35 +299,27 @@ async function loadAttendanceData(subjectCode) {
         
         const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getSubjectAttendance}?${params}`;
         
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
-            },
-            credentials: 'include'
-        });
+        const response = await fetch(url);
         
         if (!response.ok) throw new Error('Failed to fetch attendance');
         
         const result = await response.json();
+        const actualData = result.data ? result.data : result;
         
-        if (result.success) {
-            currentAttendanceCalendar.attendanceData = result.data;
+        if (result.success || actualData) {
+            currentAttendanceCalendar.attendanceData = actualData;
         } else {
             throw new Error(result.message);
         }
         
     } catch (error) {
-        // For development: use placeholder attendance data
-        // REMOVE IN PRODUCTION: usePlaceholderAttendanceData(subjectCode);
-        // REPLACE WITH:
+        console.error('Failed to load live attendance:', error);
+        
         currentAttendanceCalendar.attendanceData = {
             subject_code: subjectCode,
             subject_name: getSubjectName(subjectCode),
             attendance_days: []
         };
-        usePlaceholderAttendanceData(subjectCode);
     }
 }
 
@@ -378,7 +328,6 @@ function getSubjectName(code) {
     return subject?.description || code;
 }
 
-// Calendar 
 function renderAttendanceCalendar() {
     const date = currentAttendanceCalendar.currentDate;
     const year = date.getFullYear();
@@ -394,7 +343,6 @@ function renderAttendanceCalendar() {
     const grid = document.getElementById('attendanceCalendarGrid');
     grid.innerHTML = '';
     
-    // Weekday headers
     const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     weekdays.forEach(day => {
         const header = document.createElement('div');
@@ -403,7 +351,6 @@ function renderAttendanceCalendar() {
         grid.appendChild(header);
     });
     
-    // Calculate calendar structure
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrevMonth = new Date(year, month, 0).getDate();
@@ -411,14 +358,12 @@ function renderAttendanceCalendar() {
     const today = new Date();
     const attendanceMap = buildAttendanceMap();
     
-    // Previous month days
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
         const day = daysInPrevMonth - i;
         const dayDiv = createCalendarDay(day, true, false, false, []);
         grid.appendChild(dayDiv);
     }
     
-    // Current month days
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
@@ -429,7 +374,6 @@ function renderAttendanceCalendar() {
         grid.appendChild(dayDiv);
     }
     
-    // Next month days (gray) - fill to complete 6 rows (42 cells)
     const totalCellsSoFar = firstDayOfMonth + daysInMonth;
     const remainingCells = 42 - totalCellsSoFar;
     
@@ -452,7 +396,6 @@ function createCalendarDay(day, isOtherMonth, isToday, isSelected, indicators) {
     numberSpan.textContent = day;
     cell.appendChild(numberSpan);
     
-    // Indicators only for current month
     if (!isOtherMonth && indicators.length > 0) {
         const indicatorsDiv = document.createElement('div');
         indicatorsDiv.className = 'day-indicators';
@@ -519,126 +462,6 @@ function showEmptyState(show) {
     if (show) {
         document.getElementById('mainScheduleView').classList.add('hidden');
     }
-}
-
-// ==========================================
-// PLACEHOLDER DATA - REMOVE IN PRODUCTION
-// ========================================== 
-
-function usePlaceholderData() {
-    // PLACEHOLDER 1: 
-    const placeholder1 = {
-        school_year: "2025-2026",
-        semester: "First Semester",
-        available_years: ["2025-2026"],
-        available_semesters: ["First Semester"],
-        subjects: [
-            {
-                subject_code: "ENGMAN",
-                description: "Engineering Management",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - S 05:30PM-08:30PM GV 311"
-            },
-            {
-                subject_code: "SOFTDES",
-                description: "Software Design (Lecture)",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - W 06:00PM-09:00PM GV 208"
-            },
-            {
-                subject_code: "FECLEC",
-                description: "Fundamentals of Electronic Circuit (Lecture)",
-                lec_hours: 0,
-                lab_hours: 3,
-                units: 1,
-                schedule_display: "2 - BSCpE 2-2 - TH 06:00PM-09:00PM GV 311"
-            },
-            {
-                subject_code: "BEEE",
-                description: "Basic Electrical and Electronics Engineering",
-                lec_hours: 3,
-                lab_hours: 0,
-                units: 3,
-                schedule_display: "2 - BSCpE 2-2 - T 11:30AM-01:00PM GV 208/F 11:30AM-01:00PM GV 208"
-            },
-            {
-                subject_code: "FECLAB",
-                description: "Fundamentals of Electronic Circuits (Laboratory)",
-                lec_hours: 0,
-                lab_hours: 3,
-                units: 1,
-                schedule_display: "2 - BSCpE 2-2 - W 02:00PM-05:00PM GV I&CLAB2B"
-            }
-        ],
-        schedule_slots: [
-            // BEEE - Basic Electrical and Electronics Engineering | Units: 3
-            { subject_code: "BEEE", day: "Tuesday", start_time: "11:30", end_time: "13:00", room: "GV 208", section: "BSCpE 2-2" },
-            { subject_code: "BEEE", day: "Friday", start_time: "11:30", end_time: "13:00", room: "GV 208", section: "BSCpE 2-2" },
-
-            // FECLAB - Fundamentals of Electronic Circuits (Lab) | Units: 1
-            { subject_code: "FECLAB", day: "Wednesday", start_time: "14:00", end_time: "17:00", room: "GV I&CLAB2B", section: "BSCpE 2-2" },
-
-            // SOFTDES - Software Design (Lecture) | Units: 3
-            { subject_code: "SOFTDES", day: "Wednesday", start_time: "18:00", end_time: "21:00", room: "GV 208", section: "BSCpE 2-2" },
-
-            // FECLEC - Fundamentals of Electronic Circuit (Lecture) | Units: 1
-            { subject_code: "FECLEC", day: "Thursday", start_time: "18:00", end_time: "21:00", room: "GV 311", section: "BSCpE 2-2" },
-
-            // ENGMAN - Engineering Management | Units: 3
-            { subject_code: "ENGMAN", day: "Saturday", start_time: "17:30", end_time: "20:30", room: "GV 311", section: "BSCpE 2-2" }
-        ]
-    };
-
-    // Placeholder 1 
-    currentScheduleData = placeholder1;
-    
-    // To test other placeholders, comment out above and uncomment below:
-    // currentScheduleData = placeholder2;
-    // currentScheduleData = placeholder3;
-    
-    populateFilters(currentScheduleData.available_years, currentScheduleData.available_semesters);
-    renderSchedule(currentScheduleData);
-}
-
-// Placeholder attendance data for calendar
-function usePlaceholderAttendanceData(subjectCode) {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    
-    // Generate sample attendance records
-    const attendanceDays = [];
-    
-    // Add some sample records with different statuses
-    const sampleDays = [6, 7, 10, 13, 14, 20, 21, 27];
-    const statuses = ['absent', 'leave', 'excused'];
-    
-    sampleDays.forEach((day, index) => {
-        const date = new Date(year, month, day);
-        // Skip weekends
-        if (date.getDay() === 0 || date.getDay() === 6) return;
-        
-        // Multiple statuses possible per day (absent + excused, etc.)
-        const numStatuses = Math.random() > 0.7 ? 2 : 1;
-        
-        for (let i = 0; i < numStatuses; i++) {
-            const status = statuses[Math.floor(Math.random() * statuses.length)];
-            attendanceDays.push({
-                date: date.toISOString().split('T')[0],
-                status: status
-            });
-        }
-    });
-    
-    currentAttendanceCalendar.attendanceData = {
-        subject_code: subjectCode,
-        subject_name: getSubjectName(subjectCode),
-        attendance_days: attendanceDays
-    };
 }
 
 // Expose functions globally

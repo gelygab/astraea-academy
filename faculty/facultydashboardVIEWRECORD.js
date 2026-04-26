@@ -6,16 +6,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (studentUid) {
         // 2. Fetch the specific student's data
-        fetch(`api_get_student_record.php?uid=${studentUid}`)
+        fetch(`api/api_get_full_record.php?uid=${studentUid}`)
             .then(response => response.json())
-            .then(student => {
-                if (student.error) {
+            .then(studentData=> {
+                console.log("Database sent this:", studentData);
+
+                let student = Array.isArray(studentData) ? studentData [0] : studentData;
+
+                if (!student || student.error) {
                     alert("Student not found!");
                     return;
                 }
 
+                let profile = student.profile;
+
                 // Translate Department ID to text (e.g., 3 -> BSCpE)
-                let programName = student.department_id;
+                let programName = profile.department_id;
                 if (programName == 1) programName = 'BSCE';
                 if (programName == 2) programName = 'BSChE';
                 if (programName == 3) programName = 'BSCpE';
@@ -26,23 +32,23 @@ document.addEventListener("DOMContentLoaded", () => {
                
                 // --- NEW: Add the correct suffix to the Year ---
                 let yearSuffix = "th";
-                if (student.student_year == '1' || student.student_year == 1) yearSuffix = "st";
-                if (student.student_year == '2' || student.student_year == 2) yearSuffix = "nd";
-                if (student.student_year == '3' || student.student_year == 3) yearSuffix = "rd";
+                if (profile.student_year == '1' || profile.student_year == 1) yearSuffix = "st";
+                if (profile.student_year == '2' || profile.student_year == 2) yearSuffix = "nd";
+                if (profile.student_year == '3' || profile.student_year == 3) yearSuffix = "rd";
                 
-                let formattedYear = `${student.student_year}${yearSuffix}`;
+                let formattedYear = `${profile.student_year}${yearSuffix}`;
                 // ----------------------------------------------
 
                 // 3. Inject the data into the HTML!
-                document.getElementById('studentName').textContent = `${student.first_name} ${student.last_name}`;
+                document.getElementById('studentName').textContent = `${profile.first_name} ${profile.last_name}`;
                 
                 // Use our new formattedYear here!
                 document.getElementById('studentProgram').textContent = `${formattedYear} Year - ${programName}`;
                 
-                document.getElementById('studentUidDisplay').textContent = student.user_uid;
-                document.getElementById('studentContact').textContent = student.student_contact || 'N/A';
-                document.getElementById('studentEmail').textContent = student.student_email || 'N/A';
-                document.getElementById('studentAddress').textContent = student.student_address || 'N/A';
+                document.getElementById('studentUidDisplay').textContent = profile.user_uid || studentUid;
+                document.getElementById('studentContact').textContent = profile.student_contact || 'N/A';
+                document.getElementById('studentEmail').textContent = profile.student_email || 'N/A';
+                document.getElementById('studentAddress').textContent = profile.student_address || 'N/A';
             })
             .catch(error => console.error('Error fetching student record:', error));
     } else {

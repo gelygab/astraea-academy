@@ -1,6 +1,21 @@
 <?php 
     $current_page = basename($_SERVER['PHP_SELF']); 
 ?>
+
+<style>
+    /* --- ULTIMATE SIDEBAR OVERRIDE --- */
+    aside { overflow-x: hidden !important; display: flex !important; flex-direction: column !important; }
+    aside a, .sidebar-footer a {
+        display: flex !important; align-items: center !important; gap: 15px !important;
+        white-space: nowrap !important; text-decoration: none !important;
+    }
+    aside .nav-text, aside h1, aside h3 { opacity: 0 !important; visibility: hidden !important; }
+    aside:hover .nav-text, aside:hover h1, aside:hover h3 { opacity: 1 !important; visibility: visible !important; }
+    aside svg { width: 24px !important; height: 24px !important; min-width: 24px !important; flex-shrink: 0 !important; }
+    aside .logo img, aside .logo svg { width: 35px !important; height: 35px !important; min-width: 35px !important; margin: 0 !important;}
+</style>
+
+
 <aside>
     <div class="top">
         <div class="logo">
