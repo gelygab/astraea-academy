@@ -124,37 +124,53 @@ function showAppealDetails(appealId) {
 function populateDetails(appeal) {
     const statusConfig = STATUS_CONFIG[appeal.status] || STATUS_CONFIG['pending'];
     const typeDisplayName = APPEAL_TYPE_NAMES[appeal.appeal_type] || appeal.appeal_type;
-    
-    const modalHeader = document.getElementById('modalHeader');
-    modalHeader.className = `blueprint-header ${statusConfig.modalClass}`;
-    document.getElementById('modalTitle').textContent = typeDisplayName;
-    
-    document.getElementById('modalTimeType').value = typeDisplayName;
-    document.getElementById('modalDateFiled').value = formatDate(appeal.date_filed);
-    document.getElementById('modalStartDate').value = formatDate(appeal.start_date);
-    document.getElementById('modalEndDate').value = formatDate(appeal.end_date);
-    document.getElementById('modalNumDays').value = appeal.num_days || '';
-    document.getElementById('modalReturnDate').value = formatDate(appeal.return_date);
-    document.getElementById('modalComment').value = appeal.comment || '';
-    
-    const attachmentLink = document.getElementById('modalAttachment');
-    if (appeal.attachment_url) {
-        attachmentLink.href = appeal.attachment_url;
-        attachmentLink.textContent = appeal.attachment_name || 'View Attachment';
-        attachmentLink.parentElement.style.display = 'block';
-    } else {
-        attachmentLink.parentElement.style.display = 'none';
-    }
-    
-    document.getElementById('modalUpdatedBy').textContent = appeal.updated_by || 'System';
-    
-    const statusBadge = document.getElementById('modalStatus');
-    statusBadge.textContent = `Status: ${statusConfig.display}`;
-}
 
-function hideDetails() {
-    document.getElementById('appealDetailsSection').classList.add('hidden');
-    document.getElementById('appealsGrid').classList.remove('hidden');
+    // Helper function to prevent errors if an ID is missing
+    const setSafeText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+
+    setSafeText('detName', appeal.faculty_name);
+    setSafeText('detId', appeal.faculty_id);
+    setSafeText('detCollege', appeal.college);
+    setSafeText('detDept', appeal.department);
+    setSafeText('detType', typeDisplayName);
+    setSafeText('detDate', formatDate(appeal.date_filed));
+    setSafeText('detStartDate', formatDate(appeal.start_date));
+    setSafeText('detEndDate', formatDate(appeal.end_date));
+    setSafeText('detNumDays', appeal.num_days);
+    setSafeText('detReturn', formatDate(appeal.return_date));
+    setSafeText('detReason', appeal.comment);
+    setSafeText('detUpdatedBy', appeal.updated_by);
+    
+    const badge = document.getElementById('detStatusBadge');
+    if (badge) {
+        badge.className = `status-badge ${statusConfig.badgeClass}`;
+        badge.textContent = statusConfig.display;
+    }
+
+   const row = document.getElementById('attachmentRow');
+    const link = document.getElementById('detAttachment');
+    if (row && link) {
+        row.style.display = 'flex';
+        
+        if (appeal.attachment_url) {
+    
+            link.href = appeal.attachment_url;
+            link.textContent = appeal.attachment_name || "View Attachment";
+            link.style.pointerEvents = 'auto'; 
+            link.style.color = '#9e05c0'; 
+            link.style.textDecoration = 'underline';
+        } else {
+           
+            link.removeAttribute('href'); 
+            link.textContent = "No attached file"; 
+            link.style.pointerEvents = 'none'; 
+            link.style.color = '#888888'; 
+            link.style.textDecoration = 'none'; 
+        }
+    }
 }
 
 function showLoading(show) {
