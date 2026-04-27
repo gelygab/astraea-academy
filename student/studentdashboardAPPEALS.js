@@ -189,7 +189,7 @@ setSafeText('detUpdatedBy', appeal.updated_by);
             link.href = appeal.attachment_url;
             link.textContent = appeal.attachment_name || "View Attachment";
             link.style.pointerEvents = 'auto'; 
-            link.style.color = '#94426A'; 
+            link.style.color = '#f57190'; 
             link.style.textDecoration = 'underline';
         } else {
            
