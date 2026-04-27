@@ -164,6 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---DOWNLOAD REPORT TRIGGER ---
+    const downloadBtn = document.getElementById('downloadReportBtn');
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            const selectedPeriod = document.getElementById('displayValue')?.textContent.trim().toLowerCase() || 'monthly';
+
+            // Redirect to PHP export file
+            window.location.href = `faculty-download_report.php?period=${selectedPeriod}`;
+        });
+    }
+    
+
     window.onclick = () => { if (menu) menu.style.display = 'none'; };
 
     fetchData();
