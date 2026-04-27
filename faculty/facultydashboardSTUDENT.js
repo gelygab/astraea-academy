@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
- // TOGGLE SWITCH
+    // TOGGLE SWITCH
     const btnExcuse = document.getElementById('btn-excuse');
     const btnLeave = document.getElementById('btn-leave');
     const toggleSlider = document.getElementById('toggle-slider');
@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnExcuse.classList.remove('active');
         btnLeave.classList.add('active');
         
-        toggleSlider.style.transform = 'translateX(175px)'; 
-        
+        toggleSlider.style.transform = 'translateX(175px)';
         // Switch the actual content sections
         excuseSection.classList.remove('active-section');
         leaveSection.classList.add('active-section');
@@ -46,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const targetId = tab.getAttribute('data-target');
                 const targetContent = document.getElementById(targetId);
-                if(targetContent) targetContent.style.display = 'block';
+                if(targetContent) 
+                    targetContent.style.display = 'block';
             });
         });
     }
@@ -85,9 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', () => {
                 pendingView.style.display = 'none';
                 pendingControls.style.display = 'none';
-                pendingTitle.style.display = 'none';
+                if (pendingTitle) pendingTitle.style.display = 'none'; // Hides title
                 pendingDetail.style.display = 'block';
-            });
+             });
         });
 
         if (pendingBackBtn) {
@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 pendingDetail.style.display = 'none';
                 pendingView.style.display = 'block';
                 pendingControls.style.display = 'flex';
-                pendingTitle.style.display = 'block';
-            });
+                if (pendingTitle) pendingTitle.style.display = 'block'; // Shows title
+             });
         }
 
         // Approved
@@ -104,12 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const approvedView = document.getElementById(`${prefix}-approved-view`);
         const approvedDetail = document.getElementById(`${prefix}-approved-detail`);
         const approvedControls = document.getElementById(`${prefix}-approved-controls`);
+        const approvedTitle = document.getElementById(`${prefix}-approved-title`);
         const approvedBackBtn = document.getElementById(`${prefix}-approved-back-btn`);
 
         approvedRows.forEach(row => {
             row.addEventListener('click', () => {
                 approvedView.style.display = 'none';
                 approvedControls.style.display = 'none';
+                if (approvedTitle) approvedTitle.style.display = 'none'; // Hides title
                 approvedDetail.style.display = 'block';
             });
         });
@@ -119,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 approvedDetail.style.display = 'none';
                 approvedView.style.display = 'block';
                 approvedControls.style.display = 'flex';
+                if (approvedTitle) approvedTitle.style.display = 'block'; // Shows title
             });
         }
 
@@ -127,12 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const declinedView = document.getElementById(`${prefix}-declined-view`);
         const declinedDetail = document.getElementById(`${prefix}-declined-detail`);
         const declinedControls = document.getElementById(`${prefix}-declined-controls`);
+        const declinedTitle = document.getElementById(`${prefix}-declined-title`);
         const declinedBackBtn = document.getElementById(`${prefix}-declined-back-btn`);
 
         declinedRows.forEach(row => {
             row.addEventListener('click', () => {
                 declinedView.style.display = 'none';
                 declinedControls.style.display = 'none';
+                if (declinedTitle) declinedTitle.style.display = 'none'; // Hides title
                 declinedDetail.style.display = 'block';
             });
         });
@@ -142,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 declinedDetail.style.display = 'none';
                 declinedView.style.display = 'block';
                 declinedControls.style.display = 'flex';
+                if (declinedTitle) declinedTitle.style.display = 'block'; // Shows title
             });
         }
     }
@@ -153,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('modal-overlay');
     const eApproveModal = document.getElementById('e-approve-modal');
     const lApproveModal = document.getElementById('l-approve-modal');
-    const declineReasonModal = document.getElementById('decline-reason-modal');
     const declineSuccessModal = document.getElementById('decline-success-modal');
     const reevalConfirmModal = document.getElementById('reeval-confirm-modal');
     const reevalSuccessModal = document.getElementById('reeval-success-modal');
@@ -162,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if(overlay) overlay.style.display = 'none';
       if(eApproveModal) eApproveModal.style.display = 'none';
       if(lApproveModal) lApproveModal.style.display = 'none';
-      if(declineReasonModal) declineReasonModal.style.display = 'none';
       if(declineSuccessModal) declineSuccessModal.style.display = 'none';
       if(reevalConfirmModal) reevalConfirmModal.style.display = 'none';
       if(reevalSuccessModal) reevalSuccessModal.style.display = 'none';
@@ -183,23 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Decline Triggers
+    // Decline Triggers (Direct to Success Modal)
     document.querySelectorAll('.e-trigger-decline, .l-trigger-decline').forEach(btn => {
         btn.addEventListener('click', () => {
             if(overlay) overlay.style.display = 'block';
-            if(declineReasonModal) declineReasonModal.style.display = 'block';
-            const reasonText = document.getElementById('decline-reason-text');
-            if(reasonText) reasonText.value = ''; 
+            if(declineSuccessModal) declineSuccessModal.style.display = 'block';
         });
     });
-
-    const submitDeclineBtn = document.getElementById('submit-decline-btn');
-    if (submitDeclineBtn) {
-      submitDeclineBtn.addEventListener('click', () => {
-        if(declineReasonModal) declineReasonModal.style.display = 'none';
-        if(declineSuccessModal) declineSuccessModal.style.display = 'block';
-      });
-    }
 
     // Re-eval Triggers
     document.querySelectorAll('.e-trigger-reeval, .l-trigger-reeval').forEach(btn => {
@@ -248,11 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const term = e.target.value.toLowerCase();
                 items.forEach(item => {
                     const nameElement = item.querySelector(nameSelector);
-                    if (nameElement) {
+                   
+                     if (nameElement) {
                         const name = nameElement.textContent.toLowerCase();
                         // Hide or show based on search term
                         item.style.display = name.includes(term) ? '' : 'none';
-                    }
+                     }
                 });
             });
         }
@@ -268,15 +263,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSearch('.l-app-search', '#l-approved-view tbody tr', 'td:nth-child(2)');
     setupSearch('.l-dec-search', '#l-declined-view tbody tr', 'td:nth-child(2)');
 
-    // Leave Tab Search Event Listeners
-    setupSearch('.l-search', '#l-pending-view .request-card', '.student-name');
-    setupSearch('.l-app-search', '#l-approved-view tbody tr', 'td:nth-child(2)');
-    setupSearch('.l-dec-search', '#l-declined-view tbody tr', 'td:nth-child(2)');
-
     // URL CHECKER FOR TAB REDIRECTION
     const urlParams = new URLSearchParams(window.location.search);
     const requestedTab = urlParams.get('tab');
-
+    
     if (requestedTab === 'leave') {
         // Find the leave button 
         const leaveBtn = document.getElementById('btn-leave');
