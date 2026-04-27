@@ -6,7 +6,6 @@ const API_CONFIG = {
     }
 };
 
-
 async function loadDashboard() {
     try {
         const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getStudentData}?uid=${CURRENT_USER_UID}`;
@@ -108,7 +107,7 @@ async function loadDashboard() {
 function updatePeachBoxes(logs, type, now) {
     const filtered = logs.filter(l => {
         const [year, month, day] = l.date.split('-').map(Number);
-        const d = new Date(year, month - 1, day); // local time
+        const d = new Date(year, month - 1, day);
 
         if (type === 'daily') return d.toDateString() === now.toDateString();
         if (type === 'weekly') {
@@ -118,36 +117,50 @@ function updatePeachBoxes(logs, type, now) {
         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     });
 
-    const stats = [
+    const summaryData = [
         { label: "Total Attendance", status: "Present" },
         { label: "Late Attendance", status: "Late" },
         { label: "Undertime", status: "Undertime" },
         { label: "Total Absent", status: "Absent" }
     ];
 
-    const grid = document.getElementById('attendanceGrid');
-    if (grid) {
-        grid.innerHTML = stats.map(s => {
-            const count = filtered.filter(l => {
-                if (!l.status) return false;
-                return l.status.trim().toLowerCase() === s.status.toLowerCase();
-            }).length;
+    const summaryContainer = document.getElementById('attendanceGrid');
+    if (summaryContainer) {
+        summaryContainer.innerHTML = summaryData.map(item => {
+            const count = filtered.filter(l => 
+                l.status && l.status.trim().toLowerCase() === item.status.toLowerCase()
+            ).length;
+
+            const labelLower = item.label.toLowerCase();
+            let icon = "star"; // Fallback
+            if (labelLower.includes("attendance")) {
+                icon = "groups";
+            } else if (labelLower.includes("late")) {
+                icon = "schedule";
+            } else if (labelLower.includes("undertime")) {
+                icon = "hourglass_bottom";
+            } else if (labelLower.includes("absent")) {
+                icon = "person_off";
+            }
+
             const dayText = count === 1 ? 'Day' : 'Days';
 
             return `
                 <div class="peach-box">
-                    <span class="material-symbols-outlined">star</span>
-                    <div class="box-content">
+                    <div class="icon-wrapper">
+                        <span class="material-symbols-outlined">${icon}</span>
+                    </div>
+                    <div class="box-text">
                         <strong>${count} ${dayText}</strong>
-                        <p>${s.label}</p>
+                        <p>${item.label}</p>
                     </div>
                 </div>`;
         }).join('');
+        
+        summaryContainer.classList.remove('loading');
     }
-
-    console.log("Current Month being filtered:", now.getMonth());
-    console.log("Records found after filter:", filtered.length);
 }
+
 
 function updateAttendanceRate(logs) {
     const presentCount = logs.filter(l => l.status === "Present" || l.status === "Late" || l.status === "Undertime").length;
@@ -158,7 +171,7 @@ function updateAttendanceRate(logs) {
 
 function updateSixMonthPie(student, now) {
     const svg = document.getElementById('pieSvg');
-    const colors = ['#5dade2', '#e67e22', '#a6acaf', '#9b59b6', '#f1c40f', '#1abc9c'];
+    const colors = [ '#c4536d', '#f4b6c2', '#ffe4e1', '#ff87a3', '#f57190', '#e85f7f'];
     
     let data = [];
     let totalPresent = 0;
@@ -252,7 +265,7 @@ function updateBarChart(logs) {
     });
 
     const max = Math.max(...Object.values(stats), 1);
-    const colors = ['#3498db', '#82cc00', '#f39c12', '#e74c3c'];
+    const colors = ['#ed5b7d', '#ffa0b3', '#f4b6c2', '#bb435f'];
 
     const container = document.getElementById('barChartContainer');
     if (!container) return;
