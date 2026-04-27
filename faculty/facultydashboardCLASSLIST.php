@@ -108,7 +108,6 @@ $user_uid = $_SESSION['uid'];
     </div> 
     <script src="facultydashboardCLASSLIST.js"></script>
                 
-                <button type="submit" class="btn-save">Save Changes</button>
             </form>
         </div>
     </div>

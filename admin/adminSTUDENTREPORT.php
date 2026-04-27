@@ -170,19 +170,19 @@ $user_uid = $_SESSION['uid'];
                         <label>Year</label>
                         <select id="year">
                             <option value="">All Years</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
                         </select>
                     </div>
                     <div class="filter-group-dark">
                         <label>Block</label>
                         <select id="block">
                             <option value="">All Blocks</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            <option value="1">Block 1</option>
+                            <option value="2">Block 2</option>
+                            <option value="3">Block 3</option>
                         </select>
                     </div>
                 </div>
@@ -424,8 +424,20 @@ $user_uid = $_SESSION['uid'];
                     <span class="detail-data" id="modalID">-</span>
                 </div>
                 <div class="detail-line">
-                    <span class="detail-title">Status:</span>
-                    <span class="detail-data status-pill" id="modalStatus">-</span>
+                   <span class="detail-title">Appeal Type:</span>
+                    <span class="detail-data" id="modalAppealType">-</span>
+                </div>
+                <div class="detail-line">
+                   <span class="detail-title">Date Applied:</span>
+                    <span class="detail-data" id="modalDateApplied">-</span>
+                </div>
+                <div class="detail-line">
+                    <span class="detail-title">Reason:</span>
+                    <span class="detail-data" id="modalReason">-</span>
+                </div>
+                <div class="detail-line">
+                    <span class="detail-title">Status Updated By:</span>
+                    <span class="detail-data" id="modalStatusUpdatedBy">-</span>
                 </div>
             </div>
         </div>

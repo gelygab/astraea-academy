@@ -80,6 +80,7 @@ async function fetchAndLoadStudents() {
                 // Add authentication headers if needed
                 // 'Authorization': 'Bearer ' + getAuthToken()
             }
+            
         });
 
         if (!response.ok) {
@@ -234,25 +235,62 @@ function backToStudentTeamRecords() {
 }
 
 async function showStudentRecord(studentData) {
-    currentStudent = studentData;
-    
-    // Fetch detailed profile if available
-    const profile = await fetchStudentProfile(studentData.uid);
-    
-    // Update profile display
-    document.getElementById('profileLastName').textContent = profile?.lastName || studentData.name.split(',')[0] + ',';
-    document.getElementById('profileFirstName').textContent = profile?.firstName || studentData.name.split(',')[1] || '';
-    document.getElementById('profileCollege').textContent = profile?.college || 'College of Engineering';
-    document.getElementById('profileDepartment').textContent = studentData.department || profile?.department || 'Unknown Department';
+     currentStudent = studentData; //EDITTTT
+// start edit
+   
+    let lastName = '', firstName = ''; 
+    if (studentData.name && studentData.name.includes(',')) { 
+        const parts = studentData.name.split(','); 
+        lastName = parts[0].trim() + ','; 
+        firstName = parts[1]?.trim() || ''; 
+    } else if (studentData.name) { 
+        // Fallback: assume "First Last" format 
+        const parts = studentData.name.trim().split(/\s+/); 
+        lastName = parts.pop() + ','; // Last word as last name 
+        firstName = parts.join(' '); 
+    } 
 
-    // Initialize donut charts with dynamic data
-    initDonutCharts(studentData);
+    // Fetch detailed profile if available 
+    let profile = null; 
+    try { 
+        profile = await fetchStudentProfile(studentData.uid); 
+    } catch (e) { 
+        console.warn('Profile fetch failed:', e); 
+    } 
 
-    // Load subject table (could fetch from API)
-    await loadSubjectTable(studentData.uid);
+    // Update profile display with fallbacks 
+    const profileLastNameEl = document.getElementById('profileLastName'); 
+    const profileFirstNameEl = document.getElementById('profileFirstName'); 
+    const profileCollegeEl = document.getElementById('profileCollege'); 
+    const profileDeptEl = document.getElementById('profileDepartment'); 
 
-    showView('studentRecordView');
+    if (profileLastNameEl) profileLastNameEl.textContent = profile?.lastName || lastName; 
+    if (profileFirstNameEl) profileFirstNameEl.textContent = profile?.firstName || firstName;
+    if (profileCollegeEl) profileCollegeEl.textContent = profile?.college || 'College of Engineering'; 
+    if (profileDeptEl) profileDeptEl.textContent = studentData.department || profile?.department || 'Unknown Department'; 
+
+    // Initialize donut charts with guard 
+    try { 
+        if (typeof Chart !== 'undefined') { 
+            initDonutCharts(studentData); 
+        } else { 
+            console.error('Chart.js not loaded. Charts will not render.'); 
+            // Set fallback percentages 
+            ['presentPercentage', 'latePercentage', 'absencePercentage', 'excusePercentage'].forEach(id => {
+                const el = document.getElementById(id); 
+                if (el) el.textContent = '0%'; T
+            }); 
+        } 
+    } catch (chartError) { 
+        console.error('Chart initialization failed:', chartError); 
+    } 
+
+    // Load subject table (could fetch from API) 
+    await loadSubjectTable(studentData.uid); 
+
+    showView('studentRecordView'); 
 }
+// end edit
 
 async function showCalendarView(subjectCode = null) {
     if (subjectCode && currentStudent) {
@@ -474,7 +512,8 @@ function renderStudents(students) {
                     <span class="student-name-text">${student.name}</span>
                     <span class="student-dept-text" style="font-size: 11px; color: rgba(107, 78, 61, 0.6); margin-top: 2px;">${student.department || 'Unknown Department'}</span>
                 </div>
-                <button class="btn-view-record-gold" onclick='viewRecord(${JSON.stringify(student).replace(/'/g, "&#39;")})'>
+                
+                <button class="btn-view-record-gold" onclick="viewRecord(decodeURIComponent('${encodeURIComponent(JSON.stringify(student))}'))"> 
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
@@ -510,8 +549,11 @@ function renderStudents(students) {
 }
 
 function viewRecord(student) {
-    // To add view record get api
+     //EDITTTT
     showStudentRecord(student);
+    if (typeof student === 'string') { 
+        student = JSON.parse(student); 
+    }
 }
 
 // ==========================================
@@ -519,12 +561,26 @@ function viewRecord(student) {
 // ==========================================
 
 function initDonutCharts(studentData) {
+// start edit 
+
+   // Guard: Check if Chart library is available 
+    if (typeof Chart === 'undefined') { 
+        console.error('Chart.js library not loaded. Donut charts will not render.'); 
+        return; 
+    } 
+
     // Destroy existing charts
     ['presentChart', 'lateChart', 'absenceChart', 'excuseChart'].forEach(id => {
         if (donutCharts[id]) {
-            donutCharts[id].destroy();
+            try { 
+                donutCharts[id].destroy();
+            } catch (e) { 
+                console.warn('Failed to destroy chart:', id); 
+            } 
         }
     });
+
+// end edit
 
     // Ensure we have valid numbers (handle both API data and calculated data)
     const absence = parseInt(studentData.absence) || parseInt(studentData.absencePercentage) || 0;
@@ -738,35 +794,62 @@ async function changeMonth(direction) {
 // ATTENDANCE MODAL
 // ==========================================
 
-function showAttendanceDetails(day, status) {
+function showAttendanceDetails(day, status, appealType = '-', dateApplied = '-', reason = '-', updatedBy = '-') {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
 
     const dateStr = `${monthNames[currentMonth]} ${day}, ${currentYear}`;
 
+    // Targeted specifically to student HTML IDs
     document.getElementById('modalStudentName').textContent = 
         currentStudent ? currentStudent.name : '-';
     document.getElementById('modalDate').textContent = dateStr;
     document.getElementById('modalID').textContent = 
         currentStudent ? currentStudent.uid : '-';
 
-    const statusPill = document.getElementById('modalStatus');
-    statusPill.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-    statusPill.className = `detail-data status-pill ${status}`;
+    const appealRow = document.getElementById('modalAppealType').parentElement;
+    const dateAppliedRow = document.getElementById('modalDateApplied').parentElement;
+    const reasonRow = document.getElementById('modalReason').parentElement;
+    const updatedByRow = document.getElementById('modalStatusUpdatedBy').parentElement;
+
+    if (status.toLowerCase() === 'absent') {
+        appealRow.style.display = 'none';
+        dateAppliedRow.style.display = 'none';
+        reasonRow.style.display = 'none';
+        updatedByRow.style.display = 'none';
+    } else {
+        appealRow.style.display = 'flex';
+        dateAppliedRow.style.display = 'flex';
+        reasonRow.style.display = 'flex';
+        updatedByRow.style.display = 'flex';
+
+        document.getElementById('modalAppealType').textContent = appealType;
+        document.getElementById('modalDateApplied').textContent = dateApplied;
+        document.getElementById('modalReason').textContent = reason;
+        document.getElementById('modalStatusUpdatedBy').textContent = updatedBy;
+    }
 
     document.getElementById('attendanceModal').classList.add('active');
 }
 
 function closeAttendanceModal(event) {
-    if (!event || event.target.id === 'attendanceModal' || event.target.classList.contains('modal-close-btn')) {
-        document.getElementById('attendanceModal').classList.remove('active');
+    const modal = document.getElementById('attendanceModal');
+    if (!modal) return;
+
+    if (!event) {
+        modal.classList.remove('active');
+        return;
+    }
+
+    if (event.target.id === 'attendanceModal') {
+        modal.classList.remove('active');
     }
 }
 
 // ==========================================
 // LOGOUT
 // ==========================================
-
+ 
 document.querySelector('.logout')?.addEventListener('click', function(e) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out?')) {

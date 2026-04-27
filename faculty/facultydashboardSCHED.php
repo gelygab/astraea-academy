@@ -51,7 +51,6 @@ $user_uid = $_SESSION['uid'];
                         <div class="custom-select">
                             <select id="semester">
                                 <option value="First">First Semester</option>
-                                <option value="Second">Second Semester</option>
                             </select>
                             <span class="material-symbols-outlined select-arrow">expand_more</span>
                         </div>

@@ -287,16 +287,6 @@ function renderAppeals(appeals) {
                 <button class="btn-primary" onclick="viewSummary('${appeal.id}')">
                     View Appeal Summary
                 </button>
-                 ${appeal.status === 'pending' ? `
-                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
-                        Edit Status
-                    </button>
-                ` : ''}
-                ${appeal.status === 'rejected' ? `
-                    <button class="btn-secondary" onclick="openUpdateStatus('${appeal.id}')">
-                        Edit Status
-                    </button>
-                ` : ''}
             </div>
         </div>
     `).join('');
@@ -392,36 +382,13 @@ function viewSummary(appealId) {
     openModal('summaryModal');
 }
 
+
 // ============================================================
-// UPDATE STATUS MODAL
+// LOGOUT
 // ============================================================
-function openUpdateStatus(appealId) {
-    const appeal = appealsData.find(a => a.id === appealId);
-    if (!appeal) return;
-
-    currentAppealId = appealId;
-
-    document.getElementById('statusStudentName').textContent = appeal.studentName;
-
-    const currentStatusEl = document.getElementById('statusCurrent');
-    currentStatusEl.textContent = appeal.status;
-    currentStatusEl.className = appeal.status;
-
-    openModal('updateStatusModal');
-}
-
-function updateStatus(newStatus) {
-    if (!currentAppealId) return;
-
-    const appeal = appealsData.find(a => a.id === currentAppealId);
-    if (!appeal) return;
-
-    // Update the data
-    appeal.status = newStatus;
-
-    // Re-render with current filters
-    applyFilters();
-
-    // Close modal
-    closeModal('updateStatusModal');
-}
+document.querySelector('.logout')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to log out?')) {
+        window.location.href = '/login';
+    }
+});

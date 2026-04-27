@@ -2,7 +2,7 @@ const API_CONFIG = {
     baseUrl: 'api/', 
     endpoints: {
         getSchedule: 'api_get_schedule.php', 
-        getSubjectAttendance: 'api_get_subject_attendance.php',
+        getSubjectAttendance: 'api_get_faculty_appeals_calendar.php', // Updated to our new API!
         getApprovedRecords: 'api_get_approved_records.php'
     }
 };
@@ -102,7 +102,6 @@ function populateFilters(years, semesters) {
     
 }
 
-
 function renderSchedule(data) {
     if (!data.subjects || data.subjects.length === 0) {
         showEmptyState(true);
@@ -114,7 +113,6 @@ function renderSchedule(data) {
     renderWeeklyGrid(data.schedule_slots || []);
 }
 
-// --- THIS IS THE MISSING FUNCTION THAT BROKE IT ---
 function renderSubjectsTable(subjects) {
     const tbody = document.getElementById('subjectsTableBody');
     tbody.innerHTML = subjects.map(subject => `
@@ -292,6 +290,7 @@ async function loadAttendanceData(subjectCode) {
         const month = currentAttendanceCalendar.currentDate.getMonth() + 1;
         
         const params = new URLSearchParams({
+            uid: currentFacultyId,          // Added the UID parameter!
             subject_code: subjectCode,
             year: year,
             month: month
@@ -432,8 +431,10 @@ function buildAttendanceMap() {
         if (!map.has(record.date)) {
             map.set(record.date, []);
         }
-        map.get(record.date).push(record.status);
-    });
+        if (!map.get(record.date).includes(record.status)) {
+            map.get(record.date).push(record.status);
+        }
+});
     
     return map;
 }
