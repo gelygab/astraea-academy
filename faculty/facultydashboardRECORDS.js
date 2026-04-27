@@ -1,7 +1,7 @@
 const STATUS_CONFIG = {
-    'approved': { cardClass: 'status-approved', modalClass: 'status-approved', badgeClass: 'status-approved', display: 'Approved' },
-    'pending': { cardClass: 'status-pending', modalClass: 'status-pending', badgeClass: 'status-pending', display: 'Pending' },
-    'rejected': { cardClass: 'status-rejected', modalClass: 'status-rejected', badgeClass: 'status-rejected', display: 'Rejected' }
+    'approved': { cardClass: 'approved', badgeClass: 'approved', display: 'Approved' },
+    'pending': { cardClass: 'pending', badgeClass: 'pending', display: 'Pending' },
+    'rejected': { cardClass: 'rejected', badgeClass: 'rejected', display: 'Rejected' }
 };
 
 const APPEAL_TYPE_NAMES = {
@@ -20,53 +20,32 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAppeals();
 });
 
-// Placeholder function for data fetching
+// Mock data fetch
 async function loadAppeals() {
     showLoading(true);
     
     setTimeout(() => {
         appealsData = [
             {
-                id: "1",
-                status: "approved",
-                appeal_type: "emergency_leave",
-                date_filed: "2026-03-02",
-                start_date: "2026-03-02",
-                end_date: "2026-03-04",
-                num_days: "3",
-                return_date: "2026-03-05",
-                comment: "Family emergency requiring immediate travel. Documents attached.",
-                attachment_url: "#",
-                attachment_name: "medical_cert.pdf",
-                updated_by: "Admin"
+                id: "1", status: "pending", appeal_type: "sick_leave",
+                date_filed: "2026-03-05", start_date: "2026-03-05", end_date: "2026-03-06",
+                num_days: "2", return_date: "2026-03-07", comment: "Medical certificate attached.",
+                attachment_url: "#", attachment_name: "medical_cert.pdf", updated_by: "Admin",
+                faculty_name: "Santos, Maria", faculty_id: "55556", college: "College of Education", department: "Elementary Education"
             },
             {
-                id: "2",
-                status: "pending",
-                appeal_type: "sick_leave",
-                date_filed: "2026-03-13",
-                start_date: "2026-03-13",
-                end_date: "2026-03-16",
-                num_days: "1",
-                return_date: "2026-03-17",
-                comment: "Routine check-up at the city hospital.",
-                attachment_url: null,
-                attachment_name: null,
-                updated_by: "Admin"
+                id: "2", status: "approved", appeal_type: "leave_of_absence",
+                date_filed: "2026-02-22", start_date: "2026-02-24", end_date: "2026-02-26",
+                num_days: "3", return_date: "2026-02-27", comment: "Attending a conference outside the city.",
+                attachment_url: null, attachment_name: null, updated_by: "Admin",
+                faculty_name: "Reyes, Pedro", faculty_id: "55557", college: "College of Humanities, Arts, and Social Sciences", department: "Psychology"
             },
             {
-                id: "3",
-                status: "rejected",
-                appeal_type: "leave_of_absence",
-                date_filed: "2026-02-22",
-                start_date: "2026-02-24",
-                end_date: "2026-02-26",
-                num_days: "2",
-                return_date: "2026-02-27",
-                comment: "Attending a conference outside the city.",
-                attachment_url: "#",
-                attachment_name: "invite.jpg",
-                updated_by: "Admin"
+                id: "3", status: "rejected", appeal_type: "medical_appointment",
+                date_filed: "2026-03-08", start_date: "2026-03-10", end_date: "2026-03-10",
+                num_days: "1", return_date: "2026-03-11", comment: "Routine check-up.",
+                attachment_url: "#", attachment_name: "invite.jpg", updated_by: "Admin",
+                faculty_name: "Garcia, Ana", faculty_id: "55558", college: "College of Engineering", department: "Computer Engineering"
             }
         ];
 
@@ -82,7 +61,9 @@ async function loadAppeals() {
 function renderAppealsGrid(appeals) {
     const grid = document.getElementById('appealsGrid');
     showEmptyState(false);
-    grid.innerHTML = appeals.map(appeal => createAppealCard(appeal)).join('');
+    if (grid) {
+        grid.innerHTML = appeals.map(appeal => createAppealCard(appeal)).join('');
+    }
 }
 
 function createAppealCard(appeal) {
@@ -90,37 +71,75 @@ function createAppealCard(appeal) {
     const typeDisplayName = APPEAL_TYPE_NAMES[appeal.appeal_type] || appeal.appeal_type;
     const dateFiled = formatDate(appeal.date_filed);
     
+    const isLeave = appeal.appeal_type && appeal.appeal_type.includes('leave');
+    const iconClass = isLeave ? 'leave' : 'excuse';
+    const iconName = isLeave ? 'description' : 'schedule'; 
+
     return `
-        <div class="appeal-card ${statusConfig.cardClass}" onclick="showAppealDetails('${appeal.id}')">
-            <div class="card-header">
-                ${escapeHtml(typeDisplayName)}
+        <div class="appeal-card ${statusConfig.cardClass}">
+            <div class="appeal-header">
+                <div class="appeal-type">
+                    <div class="appeal-type-icon ${iconClass}">
+                        <span class="material-symbols-outlined">${iconName}</span>
+                    </div>
+                    <div class="appeal-type-info">
+                        <h4>${escapeHtml(typeDisplayName)}</h4>
+                        <p>Applied on: ${dateFiled}</p>
+                    </div>
+                </div>
+                <div class="status-badge ${statusConfig.cardClass}">${statusConfig.display}</div>
             </div>
-            <div class="card-body">
-                <p class="card-info">
-                    <strong>Applied on:</strong> ${dateFiled}
-                </p>
-                <p class="card-info">
-                    <strong>Status:</strong> ${statusConfig.display}
-                </p>
-                <button class="view-btn">View Appeal Summary</button>
+
+            <div class="appeal-details">
+                <div class="appeal-detail-row">
+                    <span class="label">Faculty Name</span>
+                    <span class="value">${escapeHtml(appeal.faculty_name || 'N/A')}</span>
+                </div>
+                <div class="appeal-detail-row">
+                    <span class="label">Faculty ID</span>
+                    <span class="value">${escapeHtml(appeal.faculty_id || 'N/A')}</span>
+                </div>
+                <div class="appeal-detail-row">
+                    <span class="label">College</span>
+                    <span class="value">${escapeHtml(appeal.college || 'N/A')}</span>
+                </div>
+                <div class="appeal-detail-row">
+                    <span class="label">Department</span>
+                    <span class="value">${escapeHtml(appeal.department || 'N/A')}</span>
+                </div>
+            </div>
+
+            <div class="appeal-actions">
+                <button type="button" class="view-btn" onclick="showAppealDetails('${appeal.id}')">View Appeal Summary</button>
             </div>
         </div>
     `;
 }
 
-function showAppealDetails(appealId) {
+// Function to SHOW modal
+window.showAppealDetails = function(appealId) {
     const appeal = appealsData.find(a => String(a.id) === String(appealId));
     if (!appeal) return;
     
     populateDetails(appeal);
     
-    // Hide Grid, Show Detail Section
-    document.getElementById('appealsGrid').classList.add('hidden');
-    document.getElementById('appealDetailsSection').classList.remove('hidden');
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    const modal = document.getElementById('appealDetailsSection');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Locks background scroll
+    }
+};
 
+// Function to HIDE modal
+window.hideDetails = function() {
+    const modal = document.getElementById('appealDetailsSection');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Unlocks background scroll
+    }
+};
+
+// Fixed populateDetails function with setSafeText
 function populateDetails(appeal) {
     const statusConfig = STATUS_CONFIG[appeal.status] || STATUS_CONFIG['pending'];
     const typeDisplayName = APPEAL_TYPE_NAMES[appeal.appeal_type] || appeal.appeal_type;
@@ -180,15 +199,11 @@ function showLoading(show) {
 
 function showEmptyState(show) {
     const emptyState = document.getElementById('emptyState');
-    const appealsGrid = document.getElementById('appealsGrid');
     if(emptyState) emptyState.classList.toggle('hidden', !show);
-    if (show && appealsGrid) {
-        appealsGrid.classList.add('hidden');
-    }
 }
 
 function formatDate(dateString) {
-    if (!dateString) return '';
+    if (!dateString) return 'N/A';
     const date = new Date(dateString.replace(/-/g, '/'));
     if (isNaN(date.getTime())) return dateString;
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -200,6 +215,3 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
-
-window.showAppealDetails = showAppealDetails;
-window.hideDetails = hideDetails;
