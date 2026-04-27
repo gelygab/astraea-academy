@@ -594,21 +594,18 @@ color: #888; margin: 0; }
 
 /*PINK HEADER BOX*/
 .elegant-pink-header {
-    background: linear-gradient(135deg, #ffb6c1 0%, #f57190 100%);
-    padding: 35px 60px;
+    padding: 30x 50px;
     border-radius: 16px; 
     margin-top: 0;
     margin-bottom: 0.3rem;
-    box-shadow: 0 8px 20px rgba(245, 113, 144, 0.25);
-    border: 2px solid rgba(255, 255, 255, 0.5);
     display: flex;
     align-items: center;
     overflow: hidden;
 }
 
-.elegant-pink-header h1 {
+.elegant-pink-header h3 {
     color: #ffffff;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 800;
     margin: 0;
     letter-spacing: 1px;

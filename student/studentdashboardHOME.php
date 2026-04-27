@@ -144,7 +144,7 @@ $user_uid = $_SESSION['uid'];?>
                             <p style="font-size: 0.75rem; opacity: 0.8;">Class days for Monthly</p>
                         </section>
                         <div class="right-column-data">
-                            <div id="classDaysText"><h2>--</h2><p>Days</p></div>
+                            <div id="classDaysText"><h2>--</h2>Days</div>
                         </div>
                     </div>
 

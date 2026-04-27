@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 /* RESET & BASE */
 
 * {
@@ -54,7 +54,7 @@ body {
 :root {
 --white: #ffffff;
 --black: #000000;
---main-pink: #ff87a3;
+--main-pink: #de677daa;
 --light-pink: #f4b6c2;
 --soft-pink: #ffd9e1;
 --peachy-pink: #f57190;

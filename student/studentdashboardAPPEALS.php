@@ -54,15 +54,8 @@ $user_uid = $_SESSION['uid'];
 
             <div class="elegant-pink-header">
                 
-                <div class="floating-stars">
-                    <span class="star-1">✦</span>
-                    <span class="star-2">✧</span>
-                    <span class="star-3">✦</span>
-                    <span class="star-4">✧</span>
-                    <span class="star-5">✦</span>
-                </div>
-
-                <h1>Student Appeal History</h1>
+    
+                <h3>Student Appeal History</h3>
             </div>
 
 
