@@ -403,8 +403,20 @@ $user_uid = $_SESSION['uid'];
                     <span class="detail-data" id="modalID">-</span>
                 </div>
                 <div class="detail-line">
-                    <span class="detail-title">Status:</span>
-                    <span class="detail-data status-pill" id="modalStatus">-</span>
+                    <span class="detail-title">Appeal Type:</span>
+                    <span class="detail-data" id="modalAppealType">-</span>
+                </div>
+                <div class="detail-line">
+                   <span class="detail-title">Date Applied:</span>
+                    <span class="detail-data" id="modalDateApplied">-</span>
+                </div>
+                <div class="detail-line">
+                    <span class="detail-title">Reason:</span>
+                    <span class="detail-data" id="modalReason">-</span>
+                </div>
+                <div class="detail-line">
+                    <span class="detail-title">Status Updated By:</span>
+                    <span class="detail-data" id="modalStatusUpdatedBy">-</span>
                 </div>
             </div>
         </div>
