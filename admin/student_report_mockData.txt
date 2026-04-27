@@ -1,0 +1,107 @@
+// ==========================================
+// Astraea Academy Student Report - Version 1 (Placeholders)
+// ==========================================
+
+const MOCK_STUDENTS = [
+    // Civil Engineering
+    { uid: '11001', name: 'Amores, Jasmine', department: 'Civil Engineering', absence: 2, leave: 5, excused: 2 },
+    { uid: '12002', name: 'Hollander, Shane', department: 'Civil Engineering', absence: 2, leave: 4, excused: 1 },
+    { uid: '12003', name: 'Rozanov, Ilya', department: 'Civil Engineering', absence: 5, leave: 3, excused: 2 },
+    
+    // Electrical Engineering
+    { uid: '21001', name: 'Leclerc, Charles', department: 'Electrical Engineering', absence: 1, leave: 2, excused: 0 },
+    { uid: '22002', name: 'Sainz, Carlos', department: 'Electrical Engineering', absence: 3, leave: 1, excused: 1 },
+    { uid: '23003', name: 'Verstappen, Max', department: 'Electrical Engineering', absence: 0, leave: 4, excused: 2 },
+    { uid: '23004', name: 'Tsunoda, Yuki', department: 'Electrical Engineering', absence: 2, leave: 0, excused: 3 },
+    
+    // Mechanical Engineering
+    { uid: '31001', name: 'Sorilla, Katrina', department: 'Mechanical Engineering', absence: 4, leave: 2, excused: 1 },
+    { uid: '32002', name: 'Ternate, Jessie', department: 'Mechanical Engineering', absence: 1, leave: 3, excused: 0 },
+    { uid: '33003', name: 'Paz, Francesca', department: 'Mechanical Engineering', absence: 6, leave: 1, excused: 2 },
+    { uid: '33004', name: 'Choi, Alexa', department: 'Mechanical Engineering', absence: 2, leave: 2, excused: 1 },
+    { uid: '33005', name: 'Lee, Rean', department: 'Mechanical Engineering', absence: 0, leave: 1, excused: 0 },
+    
+    // Computer Engineering
+    { uid: '42001', name: 'Faiyaz, Brent', department: 'Computer Engineering', absence: 1, leave: 1, excused: 0 },
+    { uid: '41002', name: 'Perez, Grent', department: 'Computer Engineering', absence: 3, leave: 4, excused: 1 },
+    { uid: '41003', name: 'Tiller, Bryson', department: 'Computer Engineering', absence: 2, leave: 2, excused: 2 },
+    { uid: '42004', name: 'Aiko, Jhene', department: 'Computer Engineering', absence: 0, leave: 0, excused: 1 },
+    
+    // Chemical Engineering
+    { uid: '42001', name: 'Yoon, Jeonghan', department: 'Chemical Engineering', absence: 2, leave: 3, excused: 1 },
+    { uid: '33002', name: 'Quero, Jael', department: 'Chemical Engineering', absence: 4, leave: 1, excused: 0 },
+    
+    // Electronics Engineering
+    { uid: '21001', name: 'Takuma, Ino', department: 'Electronics Engineering', absence: 1, leave: 2, excused: 1 },
+    { uid: '12002', name: 'Zenin, Maki', department: 'Electronics Engineering', absence: 3, leave: 3, excused: 2 },
+    
+    // Manufacturing Engineering
+    { uid: '31001', name: 'Ieiri, Shoko', department: 'Manufacturing Engineering', absence: 5, leave: 2, excused: 1 },
+    { uid: '12002', name: 'Tsukumo, Yuki', department: 'Manufacturing Engineering', absence: 2, leave: 4, excused: 0 }
+];
+
+// Subject attendance data
+const MOCK_SUBJECTS = [
+    { code: 'AAP 007', description: 'Art Appreciation', present: 92, absence: 0, late: 5, excuse: 0 },
+    { code: 'CET 023.1', description: 'Computer-Aided Drafting', present: 92, absence: 0, late: 2, excuse: 0 },
+    { code: 'CET 0211', description: 'Differential Equations', present: 90, absence: 2, late: 2, excuse: 0 },
+    { code: 'CET 0221', description: 'Engineering Data Analysis', present: 92, absence: 0, late: 2, excuse: 0 },
+    { code: 'CET 0223', description: 'Dynamics of Rigid Bodies', present: 91, absence: 1, late: 3, excuse: 0 },
+    { code: 'CIV 0221', description: 'Geology for Civil Engineers', present: 89, absence: 3, late: 1, excuse: 0 },
+    { code: 'CIV 0222', description: 'Mechanics of Deformable Bodies', present: 92, absence: 0, late: 1, excuse: 0 },
+    { code: 'PATHFIT 405', description: 'Larong Lahi', present: 92, absence: 0, late: 2, excuse: 0 }
+];
+
+// Student profile data
+const MOCK_STUDENT_PROFILE = {
+    lastName: 'AMORES,',
+    firstName: 'Princess Jasmine',
+    college: 'College of Engineering',
+    department: 'Civil Engineering'
+};
+
+// Calendar marked days
+const MOCK_CALENDAR_DAYS = {
+    3: 'absent',
+    6: 'excused',
+    7: 'absent',
+    13: 'leave',
+    14: 'absent',
+    20: 'excused',
+    21: 'leave',
+    27: 'absent',
+    28: 'excused'
+};
+
+// ==========================================
+// GLOBAL VARIABLES
+// ==========================================
+
+let currentStudent = null;
+let currentMonth = 2; // March (0-indexed)
+let currentYear = 2026;
+let currentSubject = { code: 'CET 0211', name: 'Differential Equations' };
+let allStudents = [...MOCK_STUDENTS]; // Working copy of students
+let donutCharts = {};
+
+// Department value mapping for filter dropdown
+const DEPARTMENT_MAP = {
+    'civil': 'Civil Engineering',
+    'chemical': 'Chemical Engineering',
+    'computer': 'Computer Engineering',
+    'electrical': 'Electrical Engineering',
+    'electronics': 'Electronics Engineering',
+    'mechanical': 'Mechanical Engineering',
+    'manufacturing': 'Manufacturing Engineering',
+    'early childhood': 'Early Childhood Education',
+    'elementary education': 'Elementary Education',
+    'secondary education': 'Secondary Education',
+    'special needs': 'Special Needs Education',
+    'physical education': 'Physical Education',
+    'social work': 'Social Work',
+    'mass communication': 'Mass Communication',
+    'psychology': 'Psychology',
+
+};
+
+

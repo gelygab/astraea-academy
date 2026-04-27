@@ -363,7 +363,7 @@ function navigateTo(role) {
     
     // Navigate after animation
         setTimeout(() => {
-            window.location.href = `${role}login.php`;
+            window.location.href = `${role}/${role}login.php`;
         }, 800);
 }   
 
