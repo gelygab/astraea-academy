@@ -80,6 +80,7 @@ async function fetchAndLoadStudents() {
                 // Add authentication headers if needed
                 // 'Authorization': 'Bearer ' + getAuthToken()
             }
+            
         });
 
         if (!response.ok) {
@@ -280,7 +281,7 @@ async function showStudentRecord(studentData) {
             // Set fallback percentages 
             ['presentPercentage', 'latePercentage', 'absencePercentage', 'excusePercentage'].forEach(id => {
                 const el = document.getElementById(id); 
-                if (el) el.textContent = '0%'; 
+                if (el) el.textContent = '0%'; T
             }); 
         } 
     } catch (chartError) { 
@@ -797,35 +798,62 @@ async function changeMonth(direction) {
 // ATTENDANCE MODAL
 // ==========================================
 
-function showAttendanceDetails(day, status) {
+function showAttendanceDetails(day, status, appealType = '-', dateApplied = '-', reason = '-', updatedBy = '-') {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
 
     const dateStr = `${monthNames[currentMonth]} ${day}, ${currentYear}`;
 
+    // Targeted specifically to student HTML IDs
     document.getElementById('modalStudentName').textContent = 
         currentStudent ? currentStudent.name : '-';
     document.getElementById('modalDate').textContent = dateStr;
     document.getElementById('modalID').textContent = 
         currentStudent ? currentStudent.uid : '-';
 
-    const statusPill = document.getElementById('modalStatus');
-    statusPill.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-    statusPill.className = `detail-data status-pill ${status}`;
+    const appealRow = document.getElementById('modalAppealType').parentElement;
+    const dateAppliedRow = document.getElementById('modalDateApplied').parentElement;
+    const reasonRow = document.getElementById('modalReason').parentElement;
+    const updatedByRow = document.getElementById('modalStatusUpdatedBy').parentElement;
+
+    if (status.toLowerCase() === 'absent') {
+        appealRow.style.display = 'none';
+        dateAppliedRow.style.display = 'none';
+        reasonRow.style.display = 'none';
+        updatedByRow.style.display = 'none';
+    } else {
+        appealRow.style.display = 'flex';
+        dateAppliedRow.style.display = 'flex';
+        reasonRow.style.display = 'flex';
+        updatedByRow.style.display = 'flex';
+
+        document.getElementById('modalAppealType').textContent = appealType;
+        document.getElementById('modalDateApplied').textContent = dateApplied;
+        document.getElementById('modalReason').textContent = reason;
+        document.getElementById('modalStatusUpdatedBy').textContent = updatedBy;
+    }
 
     document.getElementById('attendanceModal').classList.add('active');
 }
 
 function closeAttendanceModal(event) {
-    if (!event || event.target.id === 'attendanceModal' || event.target.classList.contains('modal-close-btn')) {
-        document.getElementById('attendanceModal').classList.remove('active');
+    const modal = document.getElementById('attendanceModal');
+    if (!modal) return;
+
+    if (!event) {
+        modal.classList.remove('active');
+        return;
+    }
+
+    if (event.target.id === 'attendanceModal') {
+        modal.classList.remove('active');
     }
 }
 
 // ==========================================
 // LOGOUT
 // ==========================================
-
+ 
 document.querySelector('.logout')?.addEventListener('click', function(e) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out?')) {

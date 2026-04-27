@@ -403,7 +403,7 @@ $user_uid = $_SESSION['uid'];
                     <span class="detail-data" id="modalID">-</span>
                 </div>
                 <div class="detail-line">
-                    <span class="detail-title">Appeal Type:</span>
+                   <span class="detail-title">Appeal Type:</span>
                     <span class="detail-data" id="modalAppealType">-</span>
                 </div>
                 <div class="detail-line">
