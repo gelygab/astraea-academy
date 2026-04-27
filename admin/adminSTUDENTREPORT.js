@@ -281,7 +281,7 @@ async function showStudentRecord(studentData) {
             // Set fallback percentages 
             ['presentPercentage', 'latePercentage', 'absencePercentage', 'excusePercentage'].forEach(id => {
                 const el = document.getElementById(id); 
-                if (el) el.textContent = '0%'; T
+                if (el) el.textContent = '0%'; 
             }); 
         } 
     } catch (chartError) { 

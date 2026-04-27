@@ -21,17 +21,19 @@ if (!$studentId) {
     exit;
 }
 
+$totalDays = 90;
+
 $subjects_query = "SELECT schedule_id.subject_code, 
                         schedule_id.subject_name, 
                         schedule_id.student_year,
                         schedule_id.student_block,
                         student_id.user_uid,
-                            COUNT(DISTINCT CASE WHEN attendance_id.attendance_status = 'Present' THEN attendance_id.attendance_id ELSE NULL END) as present_count,
-                            COUNT(DISTINCT CASE WHEN attendance_id.attendance_status = 'Absent' THEN attendance_id.attendance_id ELSE NULL END) as absent_count,
-                            COUNT(DISTINCT CASE WHEN appeals.time_type IN  ('extracurricular_activity', 'medical_appointment', 'personal_emergency', 'other_excuse') AND appeals.status = 'approved' THEN appeals.id ELSE NULL END) as excuse_count
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Present' THEN 1 ELSE 0 END) as present_count,
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Absent' THEN 1 ELSE 0 END) as absent_count,
+                            SUM(CASE WHEN appeals.time_type IN ('extracurricular_activity', 'medical_appointment', 'personal_emergency', 'other_excuse') AND appeals.status = 'approved' THEN 1 ELSE 0 END) as excuse_count
                     FROM schedule_id
                     LEFT JOIN student_id ON schedule_id.student_year = student_id.student_year AND schedule_id.student_block = student_id.student_block
-                    LEFT JOIN attendance_id ON student_id.user_uid = attendance_id.user_uid
+                    LEFT JOIN attendance_id ON student_id.user_uid = attendance_id.user_uid AND attendance_id.schedule_id = schedule_id.schedule_id
                     LEFT JOIN appeals ON student_id.user_uid = appeals.user_uid AND appeals.time_type IN ('extracurricular_activity', 'medical_appointment', 'personal_emergency', 'other_excuse') AND appeals.status = 'approved'
                     WHERE student_id.user_uid = ?
                     GROUP BY schedule_id.subject_code, 

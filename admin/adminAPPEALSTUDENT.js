@@ -345,7 +345,3 @@ document.querySelector('.logout')?.addEventListener('click', function(e) {
         window.location.href = '/login';
     }
 });
-<<<<<<< HEAD
-
-=======
->>>>>>> main

@@ -33,8 +33,6 @@ $stmt_profile->execute();
 $profile_result = $stmt_profile->get_result();
 $profile = $profile_result->fetch_assoc();
 
-// var_dump($profile);
-
 $finalResponse = ([
     "success" => true,
     "data" => $profile
