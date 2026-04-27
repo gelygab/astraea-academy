@@ -367,7 +367,7 @@ aside:hover ~ .faculty-dashboard {
     color: var(--white);
     font-size: 22px;
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 5px;
 }
 
 .pfp-circle {
@@ -906,4 +906,5 @@ aside:hover ~ .faculty-dashboard {
     display: flex; 
     align-items: center; 
     gap: 5px; 
+    transition:transform 0.2s, background 0.2s;
 }
