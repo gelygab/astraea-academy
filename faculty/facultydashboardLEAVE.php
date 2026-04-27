@@ -1,13 +1,28 @@
+<?php
+session_start();
+// Adjust the path to db.php if needed!
+require_once '../db.php'; 
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+    exit();
+}
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Dashboard - File for Leave</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="facultydashboardELEAVE.css">
 </head>
 <body>
@@ -40,14 +55,20 @@
         </select>
       </div>
 
-      <div class="form-row">
+     <div class="form-row">
         <div class="form-group">
           <label for="start-date">Start Date</label>
-          <input type="text" id="start-date" class="form-control" placeholder="Select Start Date">
+          <div class="date-input-wrapper">
+              <input type="text" id="start-date" class="form-control readonly" placeholder="Select Date" readonly onclick="openCalendar('start-date')">
+              <span class="material-symbols-outlined calendar-icon" onclick="openCalendar('start-date')">calendar_today</span>
+          </div>
         </div>
         <div class="form-group">
           <label for="end-date">End Date</label>
-          <input type="text" id="end-date" class="form-control" placeholder="Select End Date">
+          <div class="date-input-wrapper">
+              <input type="text" id="end-date" class="form-control readonly" placeholder="Select Date" readonly onclick="openCalendar('end-date')">
+              <span class="material-symbols-outlined calendar-icon" onclick="openCalendar('end-date')">calendar_today</span>
+          </div>
         </div>
       </div>
 
@@ -86,6 +107,20 @@
 </div>
 
 <script src="facultydashboardELEAVE.js"></script>
+
+<div id="calendarModal" class="calendar-modal">
+    <div class="calendar-container" onclick="event.stopPropagation()">
+        <div class="calendar-header">
+            <span class="material-symbols-outlined" onclick="changeMonth(-1)">chevron_left</span>
+            <span id="calendarMonthYear" class="month-year"></span>
+            <span class="material-symbols-outlined" onclick="changeMonth(1)">chevron_right</span>
+        </div>
+        <div class="calendar-weekdays">
+            <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+        </div>
+        <div id="calendarDays" class="calendar-days"></div>
+    </div>
+</div>
 
 </body>
 </html>

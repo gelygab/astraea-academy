@@ -18,9 +18,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                let profile = student.profile;
+                // Unpack the different sections using the EXACT names from your console
+                let profile = student.profile || student; 
+                let stats = student.attendance_summary || {}; 
+                let excuses = student.excuse_history || [];
 
-                // Translate Department ID to text (e.g., 3 -> BSCpE)
+                // --- PROFILE SECTION ---
                 let programName = profile.department_id;
                 if (programName == 1) programName = 'BSCE';
                 if (programName == 2) programName = 'BSChE';
@@ -30,25 +33,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (programName == 6) programName = 'BSME';
                 if (programName == 7) programName = 'BSMFGE';
                
-                // --- NEW: Add the correct suffix to the Year ---
                 let yearSuffix = "th";
                 if (profile.student_year == '1' || profile.student_year == 1) yearSuffix = "st";
                 if (profile.student_year == '2' || profile.student_year == 2) yearSuffix = "nd";
                 if (profile.student_year == '3' || profile.student_year == 3) yearSuffix = "rd";
                 
                 let formattedYear = `${profile.student_year}${yearSuffix}`;
-                // ----------------------------------------------
 
-                // 3. Inject the data into the HTML!
                 document.getElementById('studentName').textContent = `${profile.first_name} ${profile.last_name}`;
-                
-                // Use our new formattedYear here!
                 document.getElementById('studentProgram').textContent = `${formattedYear} Year - ${programName}`;
-                
                 document.getElementById('studentUidDisplay').textContent = profile.user_uid || studentUid;
                 document.getElementById('studentContact').textContent = profile.student_contact || 'N/A';
                 document.getElementById('studentEmail').textContent = profile.student_email || 'N/A';
                 document.getElementById('studentAddress').textContent = profile.student_address || 'N/A';
+
+                // --- STATS SECTION ---
+                // Using the exact Capitalized names from your console output
+                document.getElementById('statTotal').textContent = stats.Present || '0';
+                document.getElementById('statLate').textContent = stats.Late || '0';
+                document.getElementById('statUndertime').textContent = stats.Undertime || '0';
+                document.getElementById('statAbsent').textContent = stats.Absent || '0';
+
+                // --- EXCUSE HISTORY SECTION ---
+                const excuseBody = document.getElementById('excuseBody');
+                
+                if (excuses.length > 0) {
+                    excuseBody.innerHTML = ''; // Clear the "No excuses found" message
+                    
+                    excuses.forEach(excuse => {
+                        const tr = document.createElement('tr');
+                        
+                        // Using the column names we saw in your PHP files earlier
+                        tr.innerHTML = `
+                            <td>${excuse.date_filed || excuse.start_date || 'N/A'}</td>
+                            <td><span style="text-transform: capitalize;">${(excuse.time_type || excuse.category || 'N/A').replace('_', ' ')}</span></td>
+                            <td><span style="text-transform: capitalize;">${excuse.status || 'Pending'}</span></td>
+                            <td>${excuse.comment || excuse.remarks || 'None'}</td>
+                        `;
+                        excuseBody.appendChild(tr);
+                    });
+                }
+          
             })
             .catch(error => console.error('Error fetching student record:', error));
     } else {

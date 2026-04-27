@@ -39,12 +39,7 @@ $user_uid = $_SESSION['uid'];
                 <div class="profile-header-actions">
                     <button class="btn-back" onclick="window.location.href='facultydashboardCLASSLIST.php'">◀ Back</button>
                     <div class="right-actions">
-                        <select class="select-monthly">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
+                       
                         <button class="btn-download" id="downloadBtn">
                             <span class="material-symbols-outlined">file_download</span> Download
                         </button>

@@ -17,8 +17,6 @@ $user_uid = $_SESSION['uid'];
     <title>Faculty Dashboard - Request an Excuse</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="facultydashboardEXCUSE.css">
 </head>
 <body>
@@ -29,7 +27,6 @@ $user_uid = $_SESSION['uid'];
 
     <div class="container">
       <?php include 'faculty_sidebar.php'; ?>
-      
         <div class="main-content">
   <div class="form-container">
     
@@ -51,14 +48,20 @@ $user_uid = $_SESSION['uid'];
         </select>
       </div>
 
-      <div class="form-row">
+       <div class="form-row">
         <div class="form-group">
           <label for="start-date">Start Date</label>
-          <input type="text" id="start-date" class="form-control" placeholder="Select Start Date">
+          <div class="date-input-wrapper">
+              <input type="text" id="start-date" class="form-control readonly" placeholder="Select Date" readonly onclick="openCalendar('start-date')">
+              <span class="material-symbols-outlined calendar-icon" onclick="openCalendar('start-date')">calendar_today</span>
+          </div>
         </div>
         <div class="form-group">
           <label for="end-date">End Date</label>
-          <input type="text" id="end-date" class="form-control" placeholder="Select End Date">
+          <div class="date-input-wrapper">
+              <input type="text" id="end-date" class="form-control readonly" placeholder="Select Date" readonly onclick="openCalendar('end-date')">
+              <span class="material-symbols-outlined calendar-icon" onclick="openCalendar('end-date')">calendar_today</span>
+          </div>
         </div>
       </div>
 
@@ -97,6 +100,20 @@ $user_uid = $_SESSION['uid'];
 </div>
 
 <script src="facultydashboardEXCUSE.js"></script>
+
+<div id="calendarModal" class="modal">
+    <div class="modal-content">
+        <div class="calendar-header">
+            <span class="material-symbols-outlined" onclick="changeMonth(-1)">chevron_left</span>
+            <h3 id="calendarMonthYear"></h3>
+            <span class="material-symbols-outlined" onclick="changeMonth(1)">chevron_right</span>
+        </div>
+        <div class="calendar-weekdays">
+            <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+        </div>
+        <div id="calendarDays" class="calendar-days"></div>
+    </div>
+</div>
 
 </body>
 </html>

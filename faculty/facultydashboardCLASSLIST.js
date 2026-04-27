@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const blockDropdown = document.getElementById('blockDropdown');
     const displayText = document.getElementById('displayText');
 
-    // --- STEP 1: SUBJECT TRIGGER ---
+// --- STEP 1: SUBJECT TRIGGER ---
     if (subjectDropdown) {
         subjectDropdown.addEventListener('change', function() {
             sessionStorage.setItem('savedSubject', this.value);
@@ -36,20 +36,21 @@ document.addEventListener("DOMContentLoaded", () => {
             // Find all schedules that teach this exact subject
             const matchingSchedules = allSchedules.filter(s => s.subject_name === selectedSubject);
 
-            // Populate the Program dropdown
+            // 👀 OPEN YOUR CONSOLE! Look inside this object to find your real column names!
+            console.log("Database Schedule Row:", matchingSchedules[0]);
+
+            // 🛑 CHANGE 'department_id' BELOW TO MATCH YOUR DATABASE (e.g., s.program_id)
             const uniquePrograms = [...new Set(matchingSchedules.map(s => s.department_id))];
+            
             programDropdown.innerHTML = '<option value="" disabled selected hidden>Select a program</option>';
             uniquePrograms.forEach(progId => {
-                // Ignore empty database rows so we don't print blanks
                 if(progId) {
                     programDropdown.innerHTML += `<option value="${progId}">${getProgramName(progId)}</option>`;
                 }
             });
 
-            // Empty the Block dropdown until they pick a program!
             blockDropdown.innerHTML = '<option value="" disabled selected hidden>Select a program first</option>';
             
-            // Reset the banner and table
             displayText.textContent = `Please select a Program...`;
             document.querySelector("#studentTable tbody").innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; font-style:italic; color:#555;">Awaiting selection...</td></tr>';
         });
@@ -153,14 +154,18 @@ document.addEventListener("DOMContentLoaded", () => {
 function loadSubjects() {
     fetch('api/api_get_subjects.php')
         .then(response => response.json())
-        .then(data => {
-            allSchedules = data; 
+        .then(result => {
+            // Safely unwrap the package just like we did for the Schedule!
+            const actualData = result.data ? result.data : result;
+            
+            allSchedules = actualData; 
             const subjectDropdown = document.getElementById('subjectDropdown'); 
             
             if (subjectDropdown) {
                 subjectDropdown.innerHTML = '<option value="" disabled selected hidden>Select a subject</option>';
 
-                const uniqueSubjects = [...new Set(data.map(item => item.subject_name))];
+                // Use actualData here instead of data!
+                const uniqueSubjects = [...new Set(actualData.map(item => item.subject_name))];
 
                 uniqueSubjects.forEach(subjectName => {
                     const option = document.createElement('option');
@@ -205,13 +210,17 @@ function loadSubjects() {
 function loadClassList(scheduleId) {
     fetch(`api/api_get_class_list.php?schedule_id=${scheduleId}`)
         .then(response => response.json())
-        .then(students => {
+        .then(result => {
+            // FIX: Safely unwrap the package for the table!
+            const students = result.data ? result.data : result;
+
             const tableBody = document.querySelector("#studentTable tbody");
             if (!tableBody) return;
 
             tableBody.innerHTML = '';
 
-            if (students.length === 0) {
+            // Double check length works now that it's unwrapped
+            if (!students || students.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px; font-style:italic; color:#555;">No students found for this block.</td></tr>';
                 return;
             }
@@ -221,8 +230,8 @@ function loadClassList(scheduleId) {
                 tr.innerHTML = `
                     <td>${student.user_uid}</td>
                     <td>${student.last_name}, ${student.first_name}</td>
-                    <td>${student.total_attendance}</td>
-                    <td class="action-cell" style>
+                    <td>${student.total_attendance || 0}</td>
+                    <td class="action-cell">
                         <button class="btn-action btn-view" onclick="viewFullRecord('${student.user_uid}')">View Full Record</button>
                     </td>
                 `;
