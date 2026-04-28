@@ -4,20 +4,23 @@ require_once '../../db.php';
 
 header('Content-Type: application/json');
 
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
-if (!isset($user_id)) {
+$user_id = intval($_GET['uid'] ?? $_SESSION['uid'] ?? 0);
+if (!$user_id) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
-};
-
-$subject_code = $_GET['subject_code'];
-if (!isset($subject_code)) {
-    echo json_encode(['success' => false, 'message' => 'no_subjects_found']);
 }
-$month = $_GET['month']; // countings: 0 is january, 1 is febraury
-$year = $_GET['year'];
 
-// Fetch year and block from user uid
+$subject_code = $_GET['subject_code'] ?? '';
+if (empty($subject_code)) {
+    echo json_encode(['success' => false, 'message' => 'no_subjects_found']);
+    exit;
+}
+
+// FIX 1: Removed the math error! Just read the exact month sent by JS.
+$sql_month = intval($_GET['month']); 
+$year = intval($_GET['year']);
+
+// 1. Fetch year and block from user uid
 $yearblock_query = "SELECT student_year, student_block FROM student_id WHERE user_uid = ?";
 $stmt_yearblock = $conn->prepare($yearblock_query);
 $stmt_yearblock->bind_param("i", $user_id);
@@ -30,90 +33,100 @@ if (!$yearblock) {
     exit;
 }
 
-$finalResponse = null;
-
-// Fetch schedules from student year and block
-$schedule_query = "SELECT * FROM schedule_id WHERE student_year = ? AND student_block = ? AND subject_code = ?";
+// 2. Fetch schedules AND the day of the week they occur on
+$schedule_query = "SELECT schedule_id, day_week FROM schedule_id WHERE student_year = ? AND student_block = ? AND subject_code = ?";
 $stmt_schedule = $conn->prepare($schedule_query);
 $stmt_schedule->bind_param("iis", $yearblock['student_year'], $yearblock['student_block'], $subject_code);
 $stmt_schedule->execute();
 $schedule_result = $stmt_schedule->get_result();
-$schedule = [];
 
+$schedules = []; // We will store [schedule_id => day_week]
 if ($schedule_result->num_rows > 0) {
     while($row = $schedule_result->fetch_assoc()) {
-        $schedule[] = $row['schedule_id'];
-    }
-    if (empty($schedule)) {
-        echo json_encode(['success' => false, 'message' => 'schedule_not_found']);
-        exit;
+        $schedules[$row['schedule_id']] = $row['day_week'];
     }
 }
 
-$placeholders = implode(',', array_fill(0, count($schedule), '?'));
+if (empty($schedules)) {
+    echo json_encode(['success' => true, 'data' => ["subject_code" => $subject_code, "attendance_days" => []]]);
+    exit;
+}
 
-// Fetch attendance records from schedule
-$attendance_query = "SELECT attendance_id.*, 
-                        appeals.status AS appeal_status,
-                        appeals.time_type
-                    FROM attendance_id 
-                    LEFT JOIN appeals ON attendance_id.user_uid = appeals.user_uid 
-                        AND attendance_id.schedule_id = appeals.schedule_id
-                        AND attendance_id.date BETWEEN appeals.start_date AND appeals.end_date
-                        AND appeals.status = 'approved'
-                    WHERE attendance_id.user_uid = ?  
-                    AND MONTH(attendance_id.date) = ? 
-                    AND YEAR(attendance_id.date) = ?
-                    AND attendance_id.schedule_id IN ($placeholders)";
-$stmt_attendance = $conn->prepare($attendance_query);
-$params = 'iii' . str_repeat('i', count($schedule));
-$sql_month = intval($month) + 1;
-$stmt_attendance->bind_param($params, $user_id, $sql_month, $year, ...$schedule);
-$stmt_attendance->execute();
-$attendance_result = $stmt_attendance->get_result();
+$schedule_ids = array_keys($schedules);
+$placeholders = implode(',', array_fill(0, count($schedule_ids), '?'));
 
-if ($attendance_result->num_rows > 0) {
-    $attendance_days = [];
-    while ($row = $attendance_result->fetch_assoc()) {
-        
-        $rawStatus = strtolower($row['attendance_status']);
-        $displayStatus = $row['attendance_status']; 
+// This map will prevent duplicates and hold our final calendar dots
+$calendar_map = []; 
 
-        // Mapping para sa Legend
-        if ($row['appeal_status'] == 'approved') {
-            if ($row['time_type'] == 'sick_leave') {
-                $displayStatus = 'Leave'; 
+// 3. FIX 2: Query Appeals directly! (Pulls both pending and approved so students see their requests)
+$appeals_query = "SELECT schedule_id, start_date, end_date, time_type, status FROM appeals WHERE user_uid = ? AND schedule_id IN ($placeholders)";
+$stmt_appeals = $conn->prepare($appeals_query);
+$params_appeals = 'i' . str_repeat('i', count($schedule_ids));
+$stmt_appeals->bind_param($params_appeals, $user_id, ...$schedule_ids);
+$stmt_appeals->execute();
+$appeals_result = $stmt_appeals->get_result();
+
+while ($app = $appeals_result->fetch_assoc()) {
+    $start = new DateTime($app['start_date']);
+    $end = new DateTime($app['end_date']);
+    $day_week = $schedules[$app['schedule_id']];
+
+    // Loop through every day in the leave range
+    while ($start <= $end) {
+        // Check if day matches the class schedule AND falls in the requested month/year
+        if ($start->format('l') == $day_week && $start->format('n') == $sql_month && $start->format('Y') == $year) {
+            
+            // Map the exact text your JS expects for the Legend
+            $displayStatus = '';
+            if ($app['time_type'] == 'sick_leave') {
+                $displayStatus = 'Leave';
             } else {
                 $displayStatus = 'Excused';
             }
-        } else if ($rawStatus == 'absent') {
-            $displayStatus = 'Absent';
+
+            // Plot it on our map
+            $calendar_map[$start->format('Y-m-d')] = $displayStatus;
         }
+        $start->modify('+1 day');
+    }
+}
 
-        $attendance_days[] = [
-            'status' => $displayStatus,
-            'date' => $row['date']
-        ];
-    } 
+// 4. Fetch Actual Attendance (to catch unexcused Absents)
+$att_query = "SELECT date, attendance_status FROM attendance_id WHERE user_uid = ? AND MONTH(date) = ? AND YEAR(date) = ? AND schedule_id IN ($placeholders)";
+$stmt_att = $conn->prepare($att_query);
+$params_att = 'iii' . str_repeat('i', count($schedule_ids));
+$stmt_att->bind_param($params_att, $user_id, $sql_month, $year, ...$schedule_ids);
+$stmt_att->execute();
+$att_result = $stmt_att->get_result();
 
-    $finalResponse = [
-        "success" => true,
-        "data" => [
-            "subject_code" => $subject_code,
-            "attendance_days" => $attendance_days
-        ]
-    ];
-} else {
-    $finalResponse = [
-        "success" => true,
-        "data" => [
-            "subject_code" => $subject_code,
-            "attendance_days" => []
-        ]
+while ($att = $att_result->fetch_assoc()) {
+    $date = $att['date'];
+    $status = strtolower($att['attendance_status']);
+    
+    // Only mark absent if there isn't already a Leave/Excused override from the appeals table
+    if ($status == 'absent' && !isset($calendar_map[$date])) {
+        $calendar_map[$date] = 'Absent';
+    }
+}
+
+// 5. Format the map into the array the JavaScript expects
+$attendance_days = [];
+foreach ($calendar_map as $date => $status) {
+    $attendance_days[] = [
+        'status' => $status,
+        'date' => $date
     ];
 }
 
+// 6. Send it back to the frontend!
+$finalResponse = [
+    "success" => true,
+    "data" => [
+        "subject_code" => $subject_code,
+        "attendance_days" => $attendance_days
+    ]
+];
+
 echo json_encode($finalResponse);
 exit;
-
 ?>

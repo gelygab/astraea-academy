@@ -1,6 +1,23 @@
+<?php
+session_start();
+// Adjust the path to db.php if needed!
+require_once '../db.php'; 
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: facultylogin.php');
+    exit();
+}
+$user_uid = $_SESSION['uid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <script>
+        const CURRENT_USER_UID = "<?php echo $user_uid; ?>";
+    </script>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Dashboard - File for Leave</title>
@@ -11,7 +28,7 @@
 <body>
     <input type="file" id="pfpInput" style="display: none;" accept="image/*">
     <div class="background-container">
-        <img src="images/Flogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">

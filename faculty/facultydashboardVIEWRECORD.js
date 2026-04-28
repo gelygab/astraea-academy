@@ -6,16 +6,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (studentUid) {
         // 2. Fetch the specific student's data
-        fetch(`api_get_student_record.php?uid=${studentUid}`)
+        fetch(`api/api_get_full_record.php?uid=${studentUid}`)
             .then(response => response.json())
-            .then(student => {
-                if (student.error) {
+            .then(studentData=> {
+                console.log("Database sent this:", studentData);
+
+                let student = Array.isArray(studentData) ? studentData [0] : studentData;
+
+                if (!student || student.error) {
                     alert("Student not found!");
                     return;
                 }
 
-                // Translate Department ID to text (e.g., 3 -> BSCpE)
-                let programName = student.department_id;
+                // Unpack the different sections using the EXACT names from your console
+                let profile = student.profile || student; 
+                let stats = student.attendance_summary || {}; 
+                let excuses = student.excuse_history || [];
+
+                // --- PROFILE SECTION ---
+                let programName = profile.department_id;
                 if (programName == 1) programName = 'BSCE';
                 if (programName == 2) programName = 'BSChE';
                 if (programName == 3) programName = 'BSCpE';
@@ -24,40 +33,68 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (programName == 6) programName = 'BSME';
                 if (programName == 7) programName = 'BSMFGE';
                
-                // --- NEW: Add the correct suffix to the Year ---
                 let yearSuffix = "th";
-                if (student.student_year == '1' || student.student_year == 1) yearSuffix = "st";
-                if (student.student_year == '2' || student.student_year == 2) yearSuffix = "nd";
-                if (student.student_year == '3' || student.student_year == 3) yearSuffix = "rd";
+                if (profile.student_year == '1' || profile.student_year == 1) yearSuffix = "st";
+                if (profile.student_year == '2' || profile.student_year == 2) yearSuffix = "nd";
+                if (profile.student_year == '3' || profile.student_year == 3) yearSuffix = "rd";
                 
-                let formattedYear = `${student.student_year}${yearSuffix}`;
-                // ----------------------------------------------
+                let formattedYear = `${profile.student_year}${yearSuffix}`;
 
-                // 3. Inject the data into the HTML!
-                document.getElementById('studentName').textContent = `${student.first_name} ${student.last_name}`;
-                
-                // Use our new formattedYear here!
+                document.getElementById('studentName').textContent = `${profile.first_name} ${profile.last_name}`;
                 document.getElementById('studentProgram').textContent = `${formattedYear} Year - ${programName}`;
+                document.getElementById('studentUidDisplay').textContent = profile.user_uid || studentUid;
+                document.getElementById('studentContact').textContent = profile.student_contact || 'N/A';
+                document.getElementById('studentEmail').textContent = profile.student_email || 'N/A';
+                document.getElementById('studentAddress').textContent = profile.student_address || 'N/A';
+
+                // --- STATS SECTION ---
+                // Using the exact Capitalized names from your console output
+                document.getElementById('statTotal').textContent = stats.Present || '0';
+                document.getElementById('statLate').textContent = stats.Late || '0';
+                document.getElementById('statUndertime').textContent = stats.Undertime || '0';
+                document.getElementById('statAbsent').textContent = stats.Absent || '0';
+
+                // --- EXCUSE HISTORY SECTION ---
+                const excuseBody = document.getElementById('excuseBody');
                 
-                document.getElementById('studentUidDisplay').textContent = student.user_uid;
-                document.getElementById('studentContact').textContent = student.student_contact || 'N/A';
-                document.getElementById('studentEmail').textContent = student.student_email || 'N/A';
-                document.getElementById('studentAddress').textContent = student.student_address || 'N/A';
+                if (excuses.length > 0) {
+                    excuseBody.innerHTML = ''; // Clear the "No excuses found" message
+                    
+                    excuses.forEach(excuse => {
+                        const tr = document.createElement('tr');
+                        
+                        // Using the column names we saw in your PHP files earlier
+                        tr.innerHTML = `
+                            <td>${excuse.date_filed || excuse.start_date || 'N/A'}</td>
+                            <td><span style="text-transform: capitalize;">${(excuse.time_type || excuse.category || 'N/A').replace('_', ' ')}</span></td>
+                            <td><span style="text-transform: capitalize;">${excuse.status || 'Pending'}</span></td>
+                            <td>${excuse.comment || excuse.remarks || 'None'}</td>
+                        `;
+                        excuseBody.appendChild(tr);
+                    });
+                }
+          
             })
             .catch(error => console.error('Error fetching student record:', error));
     } else {
         document.getElementById('studentName').textContent = "Error: No Student Selected";
     }
 
-    // ---DOWNLOAD REPORT TRIGGER ---
+// --- DOWNLOAD REPORT TRIGGER ---
     const downloadBtn = document.getElementById('downloadReportBtn');
 
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
-            const selectedPeriod = document.getElementById('displayValue')?.textContent.trim().toLowerCase() || 'monthly';
+            // Grab the specific student's UID from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentUid = urlParams.get('uid');
 
-            // Redirect to PHP export file
-            window.location.href = `student-download_report.php?period=${selectedPeriod}`;
+            if (studentUid) {
+                // Redirect to the PHP export file in the STUDENT folder
+                window.location.href = `/astraea-academy/student/student-download_report.php?uid=${studentUid}`;
+            } else {
+                alert("Error: No student selected to download.");
+            }
         });
     }
 });

@@ -63,6 +63,27 @@
             ],
             "rate": 95,
             "prev_rate": 85
+
+            // Feedback Text
+        const feedbackTitle = 
+            presentRate >= 90 ? "Excellent!" :
+            presentRate >= 80 ? "Good Job!" :
+            presentRate >= 70 ? "Room for Improvement" : 
+            "Warning";
+
+        const feedbackDesc = 
+            presentRate >= 90 ? `Outstanding commitment to your studies! You have maintained a high attendance record for ${tfData.period_label.toLowerCase()}.` :
+            presentRate >= 80 ? `You're doing well, but try not to miss any more sessions for ${tfData.period_label.toLowerCase()}. Your current rate is ${presentRate}%.` :
+            presentRate >= 70 ? `Your attendance for ${tfData.period_label.toLowerCase()} is dipping at ${presentRate}%. Consistency is key to passing!` :
+            `Low attendance (${presentRate}%) may affect your grades. Please see your adviser regarding your records for ${tfData.period_label.toLowerCase()}.`;
+
+        setDynamicEl('feedbackTitle', feedbackTitle);
+        setDynamicEl('attendanceDescription', feedbackDesc);
+
+        const feedbackContainer = document.querySelector('.attendance-feedback');
+        if (feedbackContainer) feedbackContainer.classList.remove('loading');
+
+
         }
     }
 }

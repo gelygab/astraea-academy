@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchData() {
         try {
-            const response = await fetch('faculty_data.json');
+            // Reverted back to the live API instead of the static JSON file
+            const response = await fetch('api/api_get_faculty_details.php');
             if (!response.ok) throw new Error("JSON file missing or server not running");
             cachedData = await response.json();
 
@@ -41,22 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setDynamicEl('curr-enrolled', cc.enrolled);
                 setDynamicEl('curr-present', cc.present);
                 setDynamicEl('curr-pending', cc.pending === 0 ? "NONE" : cc.pending);
+
+                setDynamicEl('live-class-badge', cc.code);
             }
 
-            // LOAD LIVE FEED TABLE 
-            const feedBody = document.getElementById('feed-body');
-            if (feedBody) {
-                feedBody.innerHTML = common.live_feed.map(f => `
-                    <tr>
-                        <td class="col-name">${f.name}</td>
-                        <td class="col-time">${f.time}</td>
-                        <td><span class="status-pill ${f.status === 'On-Time' ? 'On-Time' : 'Late'}">${f.status}</span></td>
-                    </tr>
-                `).join('');
-                feedBody.classList.remove('loading');
-            }
-
-            // INITIALIZE DEFAULT VIEW
+            // INITIALIZE DEFAULT VIEW (This will now also draw the feed table!)
             updateDynamicSections('daily');
 
         } catch (error) {
@@ -67,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateDynamicSections(timeframe) {
         if (!cachedData || !cachedData.timeframes[timeframe]) return;
+
+        // 1. DEFINE tfData FIRST!
         const tfData = cachedData.timeframes[timeframe];
 
         // --- UPDATE TOP SUMMARY BOXES ---
@@ -118,22 +110,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const absentEl = document.getElementById('absentPercent');
         if (absentEl) {
             absentEl.textContent = absentRate + "%";
-            // Hide if 0, show if greater than 0
             absentEl.style.display = absentRate === 0 ? 'none' : 'block';
         }
 
-        // Feedback Text
+        // Feedback Text 
         const feedbackTitle = 
-            presentRate >= 90 ? "Excellent!" :
-            presentRate >= 80 ? "Good Job!" :
-            presentRate >= 70 ? "Room for Improvement" : 
-            "Warning";
-
+             presentRate >= 90 ? "Excellent!" :
+             presentRate >= 80 ? "Good Attendance!" :
+             presentRate >= 70 ? "Room for Improvement" : "Low Attendance Alert";
+             
         const feedbackDesc = 
-            presentRate >= 90 ? `Outstanding commitment to your studies! You have maintained a high attendance record for ${tfData.period_label.toLowerCase()}.` :
-            presentRate >= 80 ? `You're doing well, but try not to miss any more sessions for ${tfData.period_label.toLowerCase()}. Your current rate is ${presentRate}%.` :
-            presentRate >= 70 ? `Your attendance for ${tfData.period_label.toLowerCase()} is dipping at ${presentRate}%. Consistency is key to passing!` :
-            `Low attendance (${presentRate}%) may affect your grades. Please see your adviser regarding your records for ${tfData.period_label.toLowerCase()}.`;
+             presentRate >= 90 ? `Outstanding! Your classes have maintained a high attendance rate of  ${presentRate}% for ${tfData.period_label.toLowerCase()}.` :
+             presentRate >= 80 ? `Class attendance is stable at ${presentRate}% for ${tfData.period_label.toLowerCase()}. Keep monitoring for any sudden drops.` :
+             presentRate >= 70 ? `Class attendance is dipping to ${presentRate}% for ${tfData.period_label.toLowerCase()}. You may want to check in with frequently absent students.` : 
+             `Class attendance is currently at (${presentRate}%) for ${tfData.period_label.toLowerCase()}. Please review your records and remind students of the attendance policy.`;
 
         setDynamicEl('feedbackTitle', feedbackTitle);
         setDynamicEl('attendanceDescription', feedbackDesc);
@@ -141,6 +131,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const feedbackContainer = document.querySelector('.attendance-feedback');
         if (feedbackContainer) feedbackContainer.classList.remove('loading');
 
+        // --- UPDATE LIVE FEED TABLE (THE SMART SWITCH) ---
+        // The Live Feed should ALWAYS show the ongoing class, regardless of the dropdown!
+        let activeFeedArray = cachedData.common.feed_daily || [];
+
+        const feedBody = document.getElementById('feed-body');
+        if (feedBody) {
+            // Check if there are actually records to show
+            if (activeFeedArray.length > 0) {
+                feedBody.innerHTML = activeFeedArray.map(f => `
+                    <tr>
+                        <td class="col-name">${f.name}</td>
+                        <td class="col-time">${f.time}</td>
+                        <td><span class="status-pill ${f.status === 'On-Time' ? 'On-Time' : 'Late'}">${f.status}</span></td>
+                    </tr>
+                `).join('');
+            } else {
+                feedBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 20px;">No attendance records found for this view.</td></tr>`;
+            }
+            feedBody.classList.remove('loading');
+        }
     }
 
     // --- DROPDOWN MENU LOGIC ---
@@ -164,20 +174,65 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ---DOWNLOAD REPORT TRIGGER ---
-    const downloadBtn = document.getElementById('downloadReportBtn');
+// --- DOWNLOAD REPORT TRIGGER ---
+    // Using 'let' or removing the declaration if it's already at the top of the file
+    const dlBtn = document.querySelector('.download-btn') || document.getElementById('downloadBtn');
 
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', () => {
-            const selectedPeriod = document.getElementById('displayValue')?.textContent.trim().toLowerCase() || 'monthly';
+    if (dlBtn) {
+        dlBtn.onclick = (e) => {
+            e.preventDefault(); 
 
-            // Redirect to PHP export file
-            window.location.href = `faculty-download_report.php?period=${selectedPeriod}`;
-        });
+            // 1. Get the current period from the dropdown
+            let selectedPeriod = 'monthly';
+            const displayValue = document.getElementById('displayValue');
+            if (displayValue && displayValue.textContent) {
+                selectedPeriod = displayValue.textContent.trim().toLowerCase();
+            }
+
+            // 2. Grab the logged-in Faculty UID
+            const facultyUidEl = document.getElementById('uid-val');
+            const facultyUid = facultyUidEl ? facultyUidEl.textContent.trim() : '';
+
+            if (facultyUid) {
+                // 3. Point to the REAL faculty-download_report file!
+                const targetUrl = `faculty-download_report.php?uid=${facultyUid}&period=${selectedPeriod}`;
+                console.log("Downloading report from: ", targetUrl);
+                window.location.href = targetUrl;
+            } else {
+                alert("Error: Could not detect Faculty ID.");
+            }
+        };
     }
-    
+
 
     window.onclick = () => { if (menu) menu.style.display = 'none'; };
+
+    // --- DOWNLOAD REPORT TRIGGER ---
+    const downloadBtn = document.querySelector('.download-btn') || document.getElementById('downloadBtn');
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', (e) => {
+            e.preventDefault(); 
+
+            // 1. Get the current period from the dropdown (defaults to 'monthly')
+            let selectedPeriod = 'monthly';
+            const displayValue = document.getElementById('displayValue');
+            if (displayValue && displayValue.textContent) {
+                selectedPeriod = displayValue.textContent.trim().toLowerCase();
+            }
+
+            // 2. Grab the logged-in Faculty UID from the DOM
+            const facultyUidEl = document.getElementById('uid-val');
+            const facultyUid = facultyUidEl ? facultyUidEl.textContent.trim() : '';
+
+            if (facultyUid) {
+                // 3. Construct the URL and redirect to viewREPORT.php!
+        const targetUrl = `faculty-download_report.php?uid=${facultyUid}&period=${selectedPeriod}`; 
+            } else {
+                alert("Error: Could not detect Faculty ID.");
+            }
+        });
+    }
 
     fetchData();
 });
