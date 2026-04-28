@@ -50,22 +50,27 @@ document.addEventListener("DOMContentLoaded", () => {
                     // --- ATTENDANCE TABLE SECTION ---
                     const present = parseInt(stats.Present) || 0;
                     const absent = parseInt(stats.Absent) || 0;
-                    const totalDays = present + absent; 
                     
+                    // 1. FIX THE SCHOOL DAYS ROW (Static Academic Calendar)
+                    if(document.getElementById('school1')) document.getElementById('school1').textContent = 50;
+                    if(document.getElementById('school2')) document.getElementById('school2').textContent = 63;
+                    if(document.getElementById('school3')) document.getElementById('school3').textContent = 49;
+                    if(document.getElementById('schoolTotal')) document.getElementById('schoolTotal').textContent = 162;
+
+                    // 2. DYNAMIC PRESENT/ABSENT (Pulling real DB data)
                     if(document.getElementById('present1')) document.getElementById('present1').textContent = present;
                     if(document.getElementById('absent1')) document.getElementById('absent1').textContent = absent;
-                    if(document.getElementById('school1')) document.getElementById('school1').textContent = totalDays;
 
+                    // Zero out 2nd and 3rd Sem present/absent since DB doesn't split them yet
                     for(let i = 2; i <= 3; i++) {
                         if(document.getElementById('present'+i)) document.getElementById('present'+i).textContent = 0;
                         if(document.getElementById('absent'+i)) document.getElementById('absent'+i).textContent = 0;
-                        if(document.getElementById('school'+i)) document.getElementById('school'+i).textContent = 0;
                     }
 
+                    // Totals for Present/Absent
                     if(document.getElementById('presentTotal')) document.getElementById('presentTotal').textContent = present;
                     if(document.getElementById('absentTotal')) document.getElementById('absentTotal').textContent = absent;
-                    if(document.getElementById('schoolTotal')) document.getElementById('schoolTotal').textContent = totalDays;
-                }
+                }   
             })
             .catch(error => {
                 console.error("Failed to fetch database record:", error);
