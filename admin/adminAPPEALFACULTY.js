@@ -360,8 +360,7 @@ function viewSummary(appealId) {
 
     currentAppealId = appealId;
 
-
-    document.getElementById('summaryName').textContent = appeal.facultyName;
+document.getElementById('summaryName').textContent = appeal.facultyName;
     document.getElementById('summaryID').textContent = appeal.facultyId;
     document.getElementById('summaryCollege').textContent = appeal.collegeName || appeal.college;
     document.getElementById('summaryDepartment').textContent = appeal.departmentName || appeal.department;
@@ -372,6 +371,7 @@ function viewSummary(appealId) {
     document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
     document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
     document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summarySubjectAffected').textContent = appeal.subjectAffected || 'N/A';
     document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
     if (appeal.attachmentUrl) {
         document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
@@ -382,6 +382,7 @@ function viewSummary(appealId) {
         document.getElementById('summaryAttachment').style.pointerEvents = 'none';
         document.getElementById('summaryAttachment').style.color = '#666';
     }
+   
     document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'System';
 
 
@@ -413,6 +414,47 @@ function openUpdateStatus(appealId) {
     currentStatusEl.textContent = appeal.status;
     currentStatusEl.className = appeal.status;
 
+    
+  // //start edit
+    const warningBox = document.getElementById('statusConflictWarning');
+    const classList = document.getElementById('statusAffectedClassesList');
+    const conflictCount = document.getElementById('statusConflictCount');
+
+
+    if (appeal.status === 'pending'&& (appeal.type == 'leave' || appeal.type == 'excuse')) {
+
+
+        const affectedClasses = [
+            { name: 'Software Design', time: 'Mon 8:00 AM' },
+            { name: 'Engineering Management', time: 'Wed 10:00 AM' },
+            { name: 'Basic Electrical Eng.', time: 'Fri 1:00 PM' }
+        ];
+
+
+        conflictCount.textContent = affectedClasses.length;
+       
+        // Map the data into the HTML structure
+        classList.innerHTML = affectedClasses.map(cls => `
+            <div style="display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid rgba(133, 38, 44, 0.1); font-size: 13px; color: #6B4E3D; background: #fff;">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #85262C; font-weight: bold;">•</span> ${cls.name}
+                </span>
+                <span style="font-weight: 600; color: #4A3628;">(${cls.time})</span>
+            </div>
+        `).join('');
+
+
+        // Ensure the last item doesn't have a double border
+        if (classList.lastElementChild) {
+            classList.lastElementChild.style.borderBottom = 'none';
+        }
+
+
+        warningBox.style.display = 'block';
+    } else {
+        warningBox.style.display = 'none';
+    }
+    // //end edit
 
     openModal('updateStatusModal');
 }

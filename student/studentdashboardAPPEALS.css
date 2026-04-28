@@ -54,7 +54,7 @@ body {
 :root {
 --white: #ffffff;
 --black: #000000;
---main-pink: #ff87a3;
+--main-pink: #de677daa;
 --light-pink: #f4b6c2;
 --soft-pink: #ffd9e1;
 --softest-pink: #ffe9ee;
@@ -688,12 +688,7 @@ color: var(--dark-gray); margin: 0; }
 
 /*PINK HEADER BOX*/
 .elegant-pink-header {
-<<<<<<< HEAD
     padding: 30x 50px;
-=======
-    background: linear-gradient(135deg, var(--main-pink) 0%, var(--dark-pink) 100%);
-    padding: 35px 60px;
->>>>>>> c97e04263a5139994e55cf636d81417737a64f6d
     border-radius: 16px; 
     margin-top: 0;
     margin-bottom: 0.3rem;
@@ -702,18 +697,16 @@ color: var(--dark-gray); margin: 0; }
     overflow: hidden;
 }
 
-<<<<<<< HEAD
 .elegant-pink-header h3 {
-    color: #ffffff;
-    font-size: 2rem;
-    font-weight: 800;
-=======
-.elegant-pink-header h1 {
     color: var(--white);
     font-size: 2.5rem;
     font-weight: 700;
->>>>>>> c97e04263a5139994e55cf636d81417737a64f6d
     margin: 0;
     letter-spacing: 1px;
     text-shadow: 2px 3px 8px rgba(148, 66, 106, 0.6);
+}
+
+#detSubjectAffected {
+    color: #f57190 !important;
+    font-weight: 600;         
 }

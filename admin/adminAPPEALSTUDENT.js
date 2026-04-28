@@ -303,7 +303,7 @@ function viewSummary(appealId) {
     currentAppealId = appealId;
 
 
-    document.getElementById('summaryName').textContent = appeal.studentName;
+   document.getElementById('summaryName').textContent = appeal.studentName;
     document.getElementById('summaryID').textContent = appeal.studentId;
     document.getElementById('summaryDepartment').textContent = appeal.departmentName || appeal.department;
     document.getElementById('summaryYear').textContent = appeal.yearLabel;
@@ -315,6 +315,7 @@ function viewSummary(appealId) {
     document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
     document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
     document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summarySubjectAffected').textContent = appeal.subjectAffected || 'N/A';
     document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
     if (appeal.attachmentUrl) {
         document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
@@ -325,6 +326,7 @@ function viewSummary(appealId) {
         document.getElementById('summaryAttachment').style.pointerEvents = 'none';
         document.getElementById('summaryAttachment').style.color = '#666';
     }
+   
     document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'System';
 
 

@@ -171,6 +171,10 @@ $user_uid = $_SESSION['uid'];
                 <span class="label">Reason:</span>
                 <div class="reason-box" id="detReason"></div>
             </div>
+            <div class="reason-section">
+                <span class="label">Subject Affected:</span>
+                <div class="value" id="detSubjectAffected"></div>
+            </div>
         </div>
         <div class="summary-footer">
             <span class="updated-by">Status Updated By: <strong id="detUpdatedBy">Admin</strong></span>

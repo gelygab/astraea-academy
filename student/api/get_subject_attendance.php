@@ -53,25 +53,48 @@ if ($schedule_result->num_rows > 0) {
 $placeholders = implode(',', array_fill(0, count($schedule), '?'));
 
 // Fetch attendance records from schedule
-$attendance_query = "SELECT * FROM attendance_id 
-                    WHERE user_uid = ?  
-                    AND MONTH(date) = ? 
-                    AND YEAR(date) = ?
-                    AND schedule_id IN ($placeholders)";
+$attendance_query = "SELECT attendance_id.*, 
+                        appeals.status AS appeal_status,
+                        appeals.time_type
+                    FROM attendance_id 
+                    LEFT JOIN appeals ON attendance_id.user_uid = appeals.user_uid 
+                        AND attendance_id.schedule_id = appeals.schedule_id
+                        AND attendance_id.date BETWEEN appeals.start_date AND appeals.end_date
+                        AND appeals.status = 'approved'
+                    WHERE attendance_id.user_uid = ?  
+                    AND MONTH(attendance_id.date) = ? 
+                    AND YEAR(attendance_id.date) = ?
+                    AND attendance_id.schedule_id IN ($placeholders)";
 $stmt_attendance = $conn->prepare($attendance_query);
 $params = 'iii' . str_repeat('i', count($schedule));
-$stmt_attendance->bind_param($params, $user_id, $month, $year, ...$schedule);
+$sql_month = intval($month) + 1;
+$stmt_attendance->bind_param($params, $user_id, $sql_month, $year, ...$schedule);
 $stmt_attendance->execute();
 $attendance_result = $stmt_attendance->get_result();
 
 if ($attendance_result->num_rows > 0) {
     $attendance_days = [];
     while ($row = $attendance_result->fetch_assoc()) {
+        
+        $rawStatus = strtolower($row['attendance_status']);
+        $displayStatus = $row['attendance_status']; 
+
+        // Mapping para sa Legend
+        if ($row['appeal_status'] == 'approved') {
+            if ($row['time_type'] == 'sick_leave') {
+                $displayStatus = 'Leave'; 
+            } else {
+                $displayStatus = 'Excused';
+            }
+        } else if ($rawStatus == 'absent') {
+            $displayStatus = 'Absent';
+        }
+
         $attendance_days[] = [
-            'status' => $row['attendance_status'],
+            'status' => $displayStatus,
             'date' => $row['date']
         ];
-    }
+    } 
 
     $finalResponse = [
         "success" => true,
