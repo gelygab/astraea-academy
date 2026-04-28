@@ -133,17 +133,17 @@ const MOCK_SUBJECTS = [
     { code: 'ELE 0229', description: 'Basic Electrical and Electronics Engineering', present: 92, absence: 0, late: 0, excuse: 0 }
 ];
 
-// Calendar marked days
+// Calendar marked days 
 const MOCK_CALENDAR_DAYS = {
-    3: 'absent',
-    6: 'excused',
-    7: 'absent',
-    13: 'leave',
-    14: 'absent',
-    20: 'excused',
-    21: 'leave',
-    27: 'absent',
-    28: 'excused'
+    3: { status: 'absent' },
+    6: { status: 'excused', appealType: 'Sick Leave', dateApplied: 'March 5, 2026', reason: 'Flu and high fever', updatedBy: 'Alexandra Quero' },
+    7: { status: 'absent' },
+    13: { status: 'leave', appealType: 'Personal', dateApplied: 'March 10, 2026', reason: 'Family emergency', updatedBy: 'Alexandra Quero' },
+    14: { status: 'absent' },
+    20: { status: 'excused', appealType: 'Sick Leave', dateApplied: 'March 19, 2026', reason: 'Medical checkup', updatedBy: 'Alexandra Quero' },
+    21: { status: 'leave', appealType: 'Vacation', dateApplied: 'February 15, 2026', reason: 'Pre-approved travel', updatedBy: 'Alexandra Quero' },
+    27: { status: 'absent' },
+    28: { status: 'excused', appealType: 'Emergency', dateApplied: 'March 28, 2026', reason: 'Car break down', updatedBy: 'Alexandra Quero' }
 };
 
 // ==========================================
@@ -730,11 +730,24 @@ function renderCalendar() {
         </div>`;
     }
 
-    // Current month days with status indicators
+    // Current month days with status indicators and detailed click handlers
     for (let day = 1; day <= daysInMonth; day++) {
-        const status = MOCK_CALENDAR_DAYS[day];
-        const statusIndicator = status ? `<span class="status-indicator ${status}"></span>` : '';
-        const clickHandler = status ? `onclick="showAttendanceDetails(${day}, '${status}')"` : '';
+        const dayData = MOCK_CALENDAR_DAYS[day];
+        let statusIndicator = '';
+        let clickHandler = '';
+
+        if (dayData) {
+            const status = dayData.status;
+            statusIndicator = `<span class="status-indicator ${status}"></span>`;
+            
+            // Format the extra data cleanly for the onclick function
+            const appealType = dayData.appealType ? `'${dayData.appealType}'` : "'-'";
+            const dateApplied = dayData.dateApplied ? `'${dayData.dateApplied}'` : "'-'";
+            const reason = dayData.reason ? `'${dayData.reason}'` : "'-'";
+            const updatedBy = dayData.updatedBy ? `'${dayData.updatedBy}'` : "'-'";
+
+            clickHandler = `onclick="showAttendanceDetails(${day}, '${status}', ${appealType}, ${dateApplied}, ${reason}, ${updatedBy})"`;
+        }
 
         html += `<div class="calendar-day-cell" ${clickHandler}>
             <span class="day-number">${day}</span>
@@ -753,48 +766,57 @@ function renderCalendar() {
 
     daysContainer.innerHTML = html;
 }
-
-function changeMonth(direction) {
-    currentMonth += direction;
-    if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-    } else if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-    }
-    renderCalendar();
-}
-
 // ==========================================
 // ATTENDANCE MODAL
 // ==========================================
 
-function showAttendanceDetails(day, status) {
+function showAttendanceDetails(day, status, appealType = '-', dateApplied = '-', reason = '-', updatedBy = '-') {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
 
     const dateStr = `${monthNames[currentMonth]} ${day}, ${currentYear}`;
 
+    // 1. Populate core data (always visible)
     document.getElementById('modalFacultyName').textContent = 
         currentFaculty ? `Prof. ${currentFaculty.name}` : 'Prof. -';
     document.getElementById('modalDate').textContent = dateStr;
     document.getElementById('modalID').textContent = 
         currentFaculty ? currentFaculty.uid : '-';
 
-    const statusPill = document.getElementById('modalStatus');
-    statusPill.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-    statusPill.className = `detail-data status-pill ${status}`;
+    // 2. Select the parent rows of the extra details
+    const appealRow = document.getElementById('modalAppealType').parentElement;
+    const dateAppliedRow = document.getElementById('modalDateApplied').parentElement;
+    const reasonRow = document.getElementById('modalReason').parentElement;
+    const updatedByRow = document.getElementById('modalStatusUpdatedBy').parentElement;
 
+    // 3. Conditional display logic based on status
+    if (status.toLowerCase() === 'absent') {
+        // Hide extra rows for absent
+        appealRow.style.display = 'none';
+        dateAppliedRow.style.display = 'none';
+        reasonRow.style.display = 'none';
+        updatedByRow.style.display = 'none';
+    } else {
+        // Show extra rows for leave/excused (using 'flex' to match your CSS)
+        appealRow.style.display = 'flex';
+        dateAppliedRow.style.display = 'flex';
+        reasonRow.style.display = 'flex';
+        updatedByRow.style.display = 'flex';
+
+        // Populate the extra data
+        document.getElementById('modalAppealType').textContent = appealType;
+        document.getElementById('modalDateApplied').textContent = dateApplied;
+        document.getElementById('modalReason').textContent = reason;
+        document.getElementById('modalStatusUpdatedBy').textContent = updatedBy;
+    }
+    
+    // Open the modal
     document.getElementById('attendanceModal').classList.add('active');
 }
 
-function closeAttendanceModal(event) {
-    if (!event || event.target.id === 'attendanceModal' || event.target.classList.contains('modal-close-btn')) {
-        document.getElementById('attendanceModal').classList.remove('active');
-    }
+    function closeAttendanceModal() {
+    document.getElementById('attendanceModal').classList.remove('active');
 }
-
 // ==========================================
 // SIDEBAR NAVIGATION
 // ==========================================

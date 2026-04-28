@@ -68,7 +68,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url('images/ALogin_bg.gif') no-repeat center center fixed;
+    background: url('../images/ALogin_bg.gif') no-repeat center center fixed;
     background-size: cover;
     min-height: 100vh;
     color: var(--brown);
@@ -414,7 +414,7 @@ body {
 .filter-group label {
     font-size: 11px;
     font-weight: 600;
-    color: var(--brown);
+    color: var(--white);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }

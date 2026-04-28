@@ -73,36 +73,27 @@ function formatTimeType($type) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Dashboard - Student Records</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="facultydashboardSTUDENT.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Dashboard - Student Records</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="facultydashboardSTUDENT.css">
 </head>
 <body>
-<input type="file" id="pfpInput" style="display:none;" accept="image/*">
-<div class="background-container">
-    <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
-</div>
+  <input type="file" id="pfpInput" style="display: none;" accept="image/*">
 
-<div class="container">
-    <?php include 'faculty_sidebar.php'; ?>
-
-    <main class="class-list-dashboard">
-
-        <!-- ═══ HEADER BANNER ═══ -->
-        <div class="master-header-card">
-            <div class="floating-stars">
-                <span class="material-symbols-outlined star-1">auto_awesome</span>
-                <span class="material-symbols-outlined star-2">star</span>
-                <span class="material-symbols-outlined star-3">auto_awesome</span>
-                <span class="material-symbols-outlined star-4">star_border</span>
-                <span class="material-symbols-outlined star-5">star</span>
-            </div>
-            <div class="header-content">
-                <div class="icon-wrapper">
-                    <img src="../images/student records.png" alt="Student Records" class="header-icon">
+    <div class="container">
+      <?php include 'faculty_sidebar.php'; ?>
+        
+        <main class="class-list-dashboard">
+            <div class="master-header-card">
+                <div class="floating-stars">
+                    <span class="material-symbols-outlined star-1">auto_awesome</span>
+                    <span class="material-symbols-outlined star-2">star</span>
+                    <span class="material-symbols-outlined star-3">auto_awesome</span>
+                    <span class="material-symbols-outlined star-4">star_border</span>
+                    <span class="material-symbols-outlined star-5">star</span>
                 </div>
                 <div class="header-text-container">
                     <h1>Student Records</h1>
@@ -113,26 +104,9 @@ function formatTimeType($type) {
                     </div>
                 </div>
             </div>
+          </div>
         </div>
-
-        <!-- ═══ FILTER CARD ═══ -->
-        <div class="card filter-card">
-            <h2>Select Class</h2>
-            <div class="filter-controls">
-
-                <div class="input-group full-width">
-                    <label>Subject</label>
-                    <select id="subject-select" required>
-                        <option value="" disabled selected hidden>Select a subject</option>
-                        <?php foreach ($subjects as $s): ?>
-                            <option
-                                value="<?= $s['schedule_id'] ?>"
-                                data-code="<?= htmlspecialchars($s['subject_code']) ?>">
-                                <?= htmlspecialchars($s['subject_name']) ?> (<?= htmlspecialchars($s['subject_code']) ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+      </div>
 
                 <div class="filter-row">
                     <div class="input-group">
@@ -180,39 +154,139 @@ function formatTimeType($type) {
                                 </div>
                             </div>
                         </div>
-                        <h2 class="box-title" id="e-pending-title">Pending Requests</h2>
-                        <div id="e-pending-view"></div>
-                        <div id="e-pending-detail" style="display:none;">
-                            <div class="detail-card-layout">
-                                <div class="detail-top-actions"><button class="back-btn" id="e-pending-back-btn">Back</button></div>
-                                <div class="detail-content-row">
-                                    <div class="detail-left-col admin-style-details" id="e-pending-detail-info"></div>
-                                    <div class="detail-right-col">
-                                        <div class="comment-section">
-                                            <label><strong>Comment:</strong></label>
-                                            <textarea class="comment-area" id="e-pending-comment" placeholder="Add a comment..."></textarea>
-                                        </div>
-                                        <div class="detail-action-buttons right-aligned-buttons">
-                                            <button class="action-btn decline-btn e-trigger-decline">Decline</button>
-                                            <button class="action-btn approve-btn e-trigger-approve">Approve</button>
-                                        </div>
-                                    </div>
+                        <p class="apply-date">Applied on: March 2, 2026</p>
+                      </div>
+                  
+                      <div id="e-pending-detail" style="display: none;">
+                        <div class="detail-card-layout">
+                          <div class="detail-top-actions">
+                             <button class="back-btn" id="e-pending-back-btn">Back</button>
+                          </div>
+                          <div class="detail-content-row">
+                            <div class="detail-left-col admin-style-details">
+                              <div class="appeal-detail-section">
+                                <div class="detail-row">
+                                  <span class="detail-label">Student Name:</span>
+                                  <span class="detail-value student-name">[Student Name]</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Student ID:</span>
+                                  <span class="detail-value">2024-XXXXX</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">College:</span>
+                                  <span class="detail-value">College of Engineering</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Program:</span>
+                                  <span class="detail-value">BSCpE</span>
+                                </div>
+                                 <div class="detail-row">
+                                  <span class="detail-label">Year</span>
+                                  <span class="detail-value">2</span>
                                 </div>
                             </div>
                         </div>
+                      </div>
+
+                      <button class="review-btn e-review-btn full-width-btn">View Appeal Summary</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+                    <div id="e-approved-tab" class="tab-content" style="display: none;">
+                       <div class="tab-top-controls" id="e-approved-controls">
+                         <div class="search-container">
+                          <input type="text" class="search-input e-app-search" placeholder="Search Name...">
+                        </div>
+                         <div class="sort-dropdown-container">
+                           <button class="sort-btn e-sort-btn">Sort <span>⇌</span></button>
+                          <div class="sort-menu e-sort-menu" style="display: none;">
+                             <a href="#">Date of Absence: Newest to Oldest</a>
+                            <a href="#">Date of Absence: Oldest to Newest</a>
+                            <a href="#">Date Approved: Newest to Oldest</a>
+                             <a href="#">Date Approved: Oldest to Newest</a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    <!-- EXCUSE APPROVED -->
-                    <div id="e-approved-tab" class="tab-content" style="display:none;">
-                        <div class="tab-top-controls" id="e-approved-controls">
-                            <input type="text" class="search-input e-app-search" placeholder="Search Name...">
-                            <div class="sort-dropdown-container">
-                                <button class="sort-btn">Sort <span>⇌</span></button>
-                                <div class="sort-menu" style="display:none;">
-                                    <a href="#" data-sort="newest" data-view="e-approved-view" data-type="table">Newest to Oldest</a>
-                                    <a href="#" data-sort="oldest" data-view="e-approved-view" data-type="table">Oldest to Newest</a>
+                       <h2 class="box-title" id="e-approved-title">Approved Requests</h2>
+
+                      <div id="e-approved-view">
+                        <div class="table-wrapper">
+                          <table class="data-table">
+                             <thead>
+                               <tr>
+                                <th></th>
+                                 <th>Student Name</th>
+                                <th>Date of Absence</th>
+                                <th>Approval Date</th>
+                                 <th>Attachment</th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                               <tr class="approved-row">
+                                <td>1</td>
+                                <td>[Student Name]</td>
+                                 <td>March 2, 2026</td>
+                                <td>March 3, 2026</td>
+                                <td><a href="#" class="attachment-link">[File Name]</a></td>
+                               </tr>
+                            </tbody>
+                          </table>
+                         </div>
+                      </div>
+
+                      <div id="e-approved-detail" style="display: none;">
+                        <div class="detail-card-layout">
+                           <div class="detail-top-actions">
+                             <button class="back-btn" id="e-approved-back-btn">Back</button>
+                          </div>
+                          <div class="detail-content-row">
+                            <div class="detail-left-col admin-style-details">
+                              <div class="appeal-detail-section">
+                                <div class="detail-row">
+                                  <span class="detail-label">Student Name:</span>
+                                  <span class="detail-value student-name">[Student Name]</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Student ID:</span>
+                                  <span class="detail-value">2024-XXXXX</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">College:</span>
+                                  <span class="detail-value">College of Engineering</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Program:</span>
+                                  <span class="detail-value">BSCpE</span>
+                                </div>
+                                 <div class="detail-row">
+                                  <span class="detail-label">Year</span>
+                                  <span class="detail-value">2</span>
                                 </div>
                             </div>
+                             <div class="detail-right-col">
+                               <div class="comment-section">
+                                <label><strong>Comment:</strong></label>
+                                 <textarea readonly class="comment-area"></textarea>
+                               </div>
+                            </div>
+                          </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                    <div id="e-declined-tab" class="tab-content" style="display: none;">
+                       <div class="tab-top-controls" id="e-declined-controls">
+                        <div class="search-container">
+                           <input type="text" class="search-input e-dec-search" placeholder="Search Name...">
                         </div>
                         <h2 class="box-title" id="e-approved-title">Approved Requests</h2>
                         <div id="e-approved-view"></div>
@@ -264,7 +338,26 @@ function formatTimeType($type) {
                             </div>
                         </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            <!-- EXCUSE DECLINED -->
+            <div id="e-declined-tab" class="tab-content" style="display: none;">
+              <div class="tab-top-controls" id="e-declined-controls">
+                <div class="search-container">
+                  <input type="text" class="search-input e-dec-search" placeholder="Search Name...">
+                </div>
+
+                <div class="sort-dropdown-container">
+                  <button class="sort-btn e-sort-btn">Sort <span>⇌</span></button>
+                  <div class="sort-menu e-sort-menu" style="display: none;">
+                    <a href="#">Date of Absence: Newest to Oldest</a>
+                    <a href="#">Date of Absence: Oldest to Newest</a>
+                    <a href="#">Date Declined: Newest to Oldest</a>
+                    <a href="#">Date Declined: Oldest to Newest</a>
+                  </div>
                 </div>
             </div>
         </div>
@@ -281,13 +374,73 @@ function formatTimeType($type) {
 
                     <!-- LEAVE PENDING -->
                     <div id="l-pending-tab" class="tab-content">
-                        <div class="tab-top-controls" id="l-pending-controls">
-                            <input type="text" class="search-input l-search" placeholder="Search Name...">
-                            <div class="sort-dropdown-container">
-                                <button class="sort-btn">Sort <span>⇌</span></button>
-                                <div class="sort-menu" style="display:none;">
-                                    <a href="#" data-sort="newest" data-view="l-pending-view" data-type="card">Newest to Oldest</a>
-                                    <a href="#" data-sort="oldest" data-view="l-pending-view" data-type="card">Oldest to Newest</a>
+                      <div class="tab-top-controls" id="l-pending-controls">
+                        <div class="search-container">
+                          <input type="text" class="search-input l-search" placeholder="Search Name...">
+                         </div>
+                        <div class="sort-dropdown-container">
+                          <button class="sort-btn l-sort-btn">Sort <span>⇌</span></button>
+                          <div class="sort-menu l-sort-menu" style="display: none;">
+                            <a href="#">Date Applied: Newest to Oldest</a>
+                            <a href="#">Date Applied: Oldest to Newest</a>
+                          </div>
+                         </div>
+                      </div>
+                    </div>
+
+                      <h2 class="box-title" id="l-pending-title">Pending Requests</h2>
+
+                      <div id="l-pending-view">
+                         <div class="cards-grid">
+                          <div class="request-card">
+                            <div class="card-body">
+                                <div class="appeal-header">
+                                  <div class="appeal-title-group">
+                                  <span class="icon">📄</span> <h3 class="appeal-type">Emergency Leave</h3>
+                                </div>
+                                <p class="apply-date">Applied on: March 2, 2026</p> 
+                               </div>
+
+                              <div class="appeal-detail-section card-details">
+                                <div class="detail-row">
+                                   <span class="detail-label">Student Name:</span>
+                                  <span class="detail-value student-name">[Student Name]</span>
+                                </div>
+                                 <div class="detail-row">
+                                  <span class="detail-label">Student ID:</span>
+                                  <span class="detail-value">2024-XXXXX</span>
+                                 </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">College:</span>
+                                   <span class="detail-value">College of Engineering</span>
+                                </div>
+                                <div class="detail-row">
+                                   <span class="detail-label">Program:</span>
+                                  <span class="detail-value">BSCpE</span>
+                                </div>
+                               </div>
+
+                              <button class="review-btn l-review-btn full-width-btn">View Appeal Summary</button>
+                             </div>
+                          </div>
+                         </div>
+                      </div>
+                     
+                      <div id="l-pending-detail" style="display: none;">
+                         <div class="detail-card-layout">
+                          <div class="detail-top-actions">
+                            <button class="back-btn" id="l-pending-back-btn">Back</button>
+                          </div>
+                           <div class="detail-content-row">
+                            <div class="detail-left-col admin-style-details">
+                              <div class="appeal-detail-section">
+                                <div class="detail-row">
+                                  <span class="detail-label">Student Name:</span>
+                                  <span class="detail-value student-name">[Student Name]</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Student ID:</span>
+                                  <span class="detail-value">2024-XXXXX</span>
                                 </div>
                             </div>
                         </div>
@@ -312,6 +465,10 @@ function formatTimeType($type) {
                             </div>
                         </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
                     <!-- LEAVE APPROVED -->
                     <div id="l-approved-tab" class="tab-content" style="display:none;">
@@ -343,15 +500,118 @@ function formatTimeType($type) {
                         </div>
                     </div>
 
-                    <!-- LEAVE DECLINED -->
-                    <div id="l-declined-tab" class="tab-content" style="display:none;">
-                        <div class="tab-top-controls" id="l-declined-controls">
-                            <input type="text" class="search-input l-dec-search" placeholder="Search Name...">
-                            <div class="sort-dropdown-container">
-                                <button class="sort-btn">Sort <span>⇌</span></button>
-                                <div class="sort-menu" style="display:none;">
-                                    <a href="#" data-sort="newest" data-view="l-declined-view" data-type="table">Newest to Oldest</a>
-                                    <a href="#" data-sort="oldest" data-view="l-declined-view" data-type="table">Oldest to Newest</a>
+                     <div id="l-declined-tab" class="tab-content" style="display: none;">
+                      <div class="tab-top-controls" id="l-declined-controls">
+                        <div class="search-container">
+                          <input type="text" class="search-input l-dec-search" placeholder="Search Name...">
+                         </div>
+                        <div class="sort-dropdown-container">
+                          <button class="sort-btn l-sort-btn">Sort <span>⇌</span></button>
+                          <div class="sort-menu l-sort-menu" style="display: none;">
+                              <a href="#">Leave Duration: Newest to Oldest</a>
+                            <a href="#">Leave Duration: Oldest to Newest</a>
+                            <a href="#">Date Declined: Newest to Oldest</a>
+                               <a href="#">Date Declined: Oldest to Newest</a>
+                          </div>
+                        </div>
+                      </div>
+
+                       <h2 class="box-title" id="l-declined-title">Declined Requests</h2>
+
+                      <div id="l-declined-view">
+                        <div class="table-wrapper">
+                          <table class="data-table">
+                             <thead>
+                              <tr>
+                                <th></th>
+                                  <th>Student Name</th>
+                                <th>Leave Duration</th> 
+                                <th>Date Declined</th>
+                                  <th>Attachment</th> 
+                              </tr>
+                            </thead>
+                              <tbody>
+                               <tr class="declined-row l-declined-row">
+                                <td>1</td>
+                                  <td>[Student Name]</td>
+                                <td>March 2, 2026 - March 6, 2026</td> 
+                                <td>March 3, 2026</td>
+                                  <td><a href="#" class="attachment-link">No attached proof</a></td>
+                               </tr>
+                            </tbody>
+                           </table>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                      <div id="l-declined-detail" style="display: none;">
+                         <div class="detail-card-layout">
+                            <div class="detail-top-actions">
+                            <button class="back-btn" id="l-declined-back-btn">Back</button>
+                          </div>
+                             <div class="detail-content-row">
+                            <div class="detail-left-col admin-style-details">
+                              <div class="appeal-detail-section">
+                                 <div class="detail-row">
+                                  <span class="detail-label">Student Name:</span>
+                                  <span class="detail-value student-name">[Student Name]</span>
+                                 </div>
+                                <div class="detail-row">
+                                     <span class="detail-label">Student ID:</span>
+                                   <span class="detail-value">2024-XXXXX</span>
+                                </div>
+                                 <div class="detail-row">
+                                   <span class="detail-label">College:</span>
+                                  <span class="detail-value">College of Engineering</span>
+                                 </div>
+                                 <div class="detail-row">
+                                  <span class="detail-label">Program:</span>
+                                   <span class="detail-value">BSCpE</span>
+                                  </div>
+                                   <div class="detail-row">
+                                  <span class="detail-label">Year</span>
+                                  <span class="detail-value">2</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Block</span>
+                                  <span class="detail-value">2</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Date Applied:</span>
+                                   <span class="detail-value">March 2, 2026</span>
+                                </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Appeal Type:</span>
+                                  <span class="detail-value">Whole Day</span>
+                                 </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Start Date:</span>
+                                   <span class="detail-value">March 3, 2026</span>
+                                </div>
+                                <div class="detail-row">
+                                   <span class="detail-label">End Date:</span>
+                                  <span class="detail-value">March 5, 2026</span>
+                                </div>
+                               <div class="detail-row">
+                                  <span class="detail-label">Number of Days:</span>
+                                  <span class="detail-value">3</span>
+                                 </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Return on:</span>
+                                   <span class="detail-value">March 6, 2026</span>
+                                </div>
+                               <div class="detail-row attachment-row">
+                            <span class="detail-label">Attachment:</span>
+                            <a href="#" class="attachment-link">[File Name]</a> 
+                          </div>
+                          <div class="detail-row updated-by-row">
+                            <span class="detail-label">Status Updated by:</span>
+                            <span class="detail-value">Prof. Juan Dela Cruz</span>
+                          </div>
                                 </div>
                             </div>
                         </div>
@@ -376,12 +636,23 @@ function formatTimeType($type) {
                         </div>
                     </div>
 
+                    <div class="detail-right-col">
+                      <div class="comment-section">
+                        <label><strong>Comment:</strong></label>
+                        <textarea readonly class="comment-area"></textarea>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>
 
-    </main>
-</div>
+            <!-- LEAVE DECLINED -->
+            <div id="l-declined-tab" class="tab-content" style="display: none;">
+              <div class="tab-top-controls" id="l-declined-controls">
+                <div class="search-container">
+                  <input type="text" class="search-input l-dec-search" placeholder="Search Name...">
+                </div>
 
 <!-- MODALS -->
 <div id="modal-overlay" class="modal-overlay"></div>
@@ -391,45 +662,41 @@ function formatTimeType($type) {
         <p><strong>Attendance record has been updated to Excused.</strong></p>
         <button class="modal-btn e-back-pending">Back to Pending Requests</button>
     </div>
-</div>
-<div id="l-approve-modal" class="modal">
-    <div class="modal-header" style="background-color:#2F8C2F;">Leave Request Approved!</div>
-    <div class="modal-body">
-        <p><strong>Student will be marked as 'On Leave' for the specified dates.</strong></p>
-        <button class="modal-btn l-back-pending">Back to Pending Requests</button>
-    </div>
-</div>
-<div id="decline-success-modal" class="modal">
-    <div class="modal-header" style="background-color:#9C2727;">Request Declined!</div>
-    <div class="modal-body">
+
+              <div id="l-declined-detail" style="display: none;">
+                <div class="detail-card-layout">
+                  <div class="detail-top-actions">
+                    <button class="back-btn" id="l-declined-back-btn">Back</button>
+                  </div>
+
+    <div id="decline-success-modal" class="modal">
+      <div class="modal-header" style="background-color: #9C2727;">Request Declined!</div>
+        <div class="modal-body">
         <p><strong>The student will be marked as Absent.</strong></p>
         <button class="modal-btn reset-pending-btn">Back to Pending Requests</button>
     </div>
-</div>
-<div id="reeval-confirm-modal" class="modal">
-    <div class="modal-header" style="background-color:#C19321;">Update Appeal Status</div>
-    <div class="modal-body">
-        <p><strong>Are you sure? This will move the record back to Pending.</strong></p>
-        <div class="modal-action-row" style="justify-content:center; gap:15px;">
-            <button id="cancel-reeval-btn" class="modal-btn" style="background-color:#9C2727;color:#fff;">Cancel</button>
-            <button id="confirm-reeval-btn" class="modal-btn" style="background-color:#2F8C2F;color:#fff;">Confirm</button>
+  </div>
+
+    <div id="reeval-confirm-modal" class="modal">
+      <div class="modal-header" style="background-color: #C19321;">Update Appeal Status</div>
+      <div class="modal-body">
+        <p><strong>Are you sure you want to update this request? This will move the record back to the Pending tab.</strong></p>
+        <div class="modal-action-row" style="justify-content: center; gap: 15px;">
+          <button id="cancel-reeval-btn" class="modal-btn" style="background-color: #9C2727; color: #FFFFFF;">Cancel</button>
+          <button id="confirm-reeval-btn" class="modal-btn" style="background-color: #2F8C2F; color: #FFFFFF;">Confirm</button>
         </div>
     </div>
-</div>
-<div id="reeval-success-modal" class="modal">
-    <div class="modal-header" style="background-color:#C19321;">Update Appeal Status</div>
-    <div class="modal-body">
-        <p><strong>Success! Request moved back to Pending.</strong></p>
-        <button class="modal-btn reset-pending-btn" style="background-color:#E0E0E0;color:#333;">Back to Pending Requests</button>
-    </div>
-</div>
-<div id="loading-indicator" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2000;background:rgba(0,0,0,0.7);color:#fff;padding:20px 40px;border-radius:12px;font-size:16px;font-family:'Inter',sans-serif;">
-    Processing...
-</div>
+  </div>
 
-<script>
-    const departmentsData = <?= json_encode($departments) ?>;
-</script>
-<script src="facultydashboardSTUDENT.js"></script>
+    <div id="reeval-success-modal" class="modal">
+      <div class="modal-header" style="background-color: #C19321;">Update Appeal Status</div>
+      <div class="modal-body">
+          <p><strong>Success! Request moved back to Pending for further review.</strong></p>
+        <button class="modal-btn reset-pending-btn" style="background-color: #E0E0E0; color: #333333;">Back to Pending Request</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="facultydashboardSTUDENT.js"></script>
 </body>
 </html>

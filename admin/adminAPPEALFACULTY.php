@@ -169,7 +169,7 @@ $user_uid = $_SESSION['uid'];
         </main>
     </div>
 
-    <!-- Appeal Summary Modal -->
+     <!-- Appeal Summary Modal -->
     <div class="modal" id="summaryModal">
         <div class="modal-content summary-modal">
             <div class="modal-header">
@@ -222,19 +222,23 @@ $user_uid = $_SESSION['uid'];
                         <span class="detail-label">Return on:</span>
                         <span class="detail-value" id="summaryReturnDate">-</span>
                     </div>
-                    <div class="detail-row full-width">
-                        <span class="detail-label">Reason:</span>
-                        <p class="detail-text" id="summaryReason">-</p>
-                     <div class="detail-row full-width">
-                        <span class="detail-label">Attachment:</span>
+                     <div class="attachment-detail-row">
+                         <span class="detail-label">Attachment:</span>
                         <p class="detail-text" id="summaryAttachment">
-                            <a href="#" target="_blank" class="attachment-link">View Attachment</a>
+                            <a href="#" target="blank" class="attachment-link">View Attachment</a>
                         </p>
                     </div>
                     <div class="detail-row full-width">
-                        <span class="detail-label">Status Updated By:</span>
-                        <p class="detail-text" id="summaryUpdatedBy">-</p>
+                        <span class="detail-label">Reason:</span>
+                        <p class="detail-text" id="summaryReason">-</p>
                     </div>
+                    <div class="detail-row-subject-affected">
+                        <span class="detail-label">Subject Affected:</span>
+                        <span class="detail-value" id="summarySubjectAffected">-</span>
+                    </div>
+                    <div class="detail-row-footer">
+                        <span class="detail-label">Status Updated By:</span>
+                        <span class="detail-text" id="summaryUpdatedBy">-</span>
                     </div>
                 </div>
             </div>
@@ -254,6 +258,28 @@ $user_uid = $_SESSION['uid'];
                     <p class="current-status">Current Status: <span id="statusCurrent">-</span></p>
                 </div>
                 
+                
+                     <!-- Conflict Warning Section (hidden by default) -->
+                    <div id="statusConflictWarning" style="display: none; border: 1.5px solid #85262C; border-radius: 12px; padding: 15px; margin-bottom: 20px; background-color: #fff; box-shadow: 0 2px 10px rgba(133, 38, 44, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 10px; color: #b8252f; margin-bottom: 15px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <strong style="font-size: 14px;">Warning: This leave overlaps with <span id="statusConflictCount">0</span> of your handled subjects.</strong>
+                    </div>
+                    
+                    <div style="border: 2px solid #7a661a; border-radius: 8px; overflow: hidden;">
+                        <div style="background: #F8F9FA; padding: 10px 15px; border-bottom: 1px solid #9a801a; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; color: #4A3628; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <span>Affected Classes</span>
+                            <span>Time</span>
+                        </div>
+                        <div id="statusAffectedClassesList">
+                            </div>
+                    </div>
+                </div>
+
                 <div class="status-options">
                     <p class="options-label">Select New Status:</p>
                     <div class="status-buttons">

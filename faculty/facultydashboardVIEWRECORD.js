@@ -49,11 +49,15 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('studentName').textContent = "Error: No Student Selected";
     }
 
-    // --- DOWNLOAD RECORD LOGIC ---
-    const downloadBtn = document.getElementById('downloadBtn');
+    // ---DOWNLOAD REPORT TRIGGER ---
+    const downloadBtn = document.getElementById('downloadReportBtn');
+
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
-            window.print();
+            const selectedPeriod = document.getElementById('displayValue')?.textContent.trim().toLowerCase() || 'monthly';
+
+            // Redirect to PHP export file
+            window.location.href = `student-download_report.php?period=${selectedPeriod}`;
         });
     }
 });

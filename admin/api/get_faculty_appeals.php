@@ -11,15 +11,14 @@ if (!isset($user_id)) {
     exit;
 };
 
-$appeals_query = "SELECT student_id.user_uid,
-                    student_id.first_name, 
-                    student_id.last_name,
-                    student_id.student_year,
-                    student_id.student_block,
-                    student_id.department_id,
+$appeals_query = "SELECT teacher_id.user_uid,
+                    teacher_id.first_name,
+                    teacher_id.last_name,
+                    teacher_id.department_id,
+                    college_id.college_code,
+                    college_id.college_name,
                     department_id.department_code,
                     department_id.department_name,
-                    college_id.college_name,
                     appeals.time_type,
                     appeals.date_filed,
                     appeals.start_date,
@@ -31,11 +30,11 @@ $appeals_query = "SELECT student_id.user_uid,
                     appeals.comment,
                     appeals.status_updated_by,
                     appeals.id
-                FROM student_id
-                LEFT JOIN department_id ON student_id.department_id = department_id.department_id
+                FROM teacher_id
+                LEFT JOIN department_id ON teacher_id.department_id = department_id.department_id
                 LEFT JOIN college_id ON department_id.college_id = college_id.college_id
-                LEFT JOIN appeals ON student_id.user_uid = appeals.user_uid
-                GROUP BY appeals.time_type, appeals.status, department_id.department_name, student_id.student_year, student_id.student_block";
+                LEFT JOIN appeals ON teacher_id.user_Uid = appeals.user_uid
+                GROUP BY appeals.time_type, appeals.status, department_id.department_name, college_id.college_name";
 $stmt_appeals = $conn->prepare($appeals_query);
 $stmt_appeals->execute();
 $appeals_result = $stmt_appeals->get_result();
@@ -44,7 +43,7 @@ $appealData = [];
 if ($appeals_result->num_rows > 0) {
     while ($row = $appeals_result->fetch_assoc()) {
         if (!empty($row['date_filed'])) {
-
+            
             $type = $row['time_type'];
             if (in_array($row['time_type'], ['sick_leave', 'emergency_leave', 'leave_of_absence', 'other_leave'], true)) {
                 $type = 'leave';
@@ -54,12 +53,12 @@ if ($appeals_result->num_rows > 0) {
 
             $appealData[] = [
                 'id' => $row['id'],
-                'student_name' => $row['last_name'] . ', ' . $row['first_name'],
-                'student_id' => $row['user_uid'],
+                'faculty_name' => $row['last_name'] . ', ' . $row['first_name'],
+                'faculty_id' => $row['user_uid'],
+                'college_code' => $row['college_code'],
+                'college_name' => $row['college_name'],
                 'department_code' => $row['department_code'],
                 'department_name' => $row['department_name'],
-                'year' => $row['student_year'],
-                'block' => $row['student_block'],
                 'type' => $type,
                 'type_label' => $row['time_type'],
                 'date_applied' => $row['date_filed'],
@@ -85,6 +84,5 @@ $finalResponse = [
 
 echo json_encode($finalResponse);
 exit;
-// var_dump($appealData);
 
 ?>

@@ -12,9 +12,23 @@ if (!isset($user_id)) {
 
 // REMOVED: AND appeals.status = 'pending'
 // This query now fetches all records for the student regardless of status
-$sql = "SELECT appeals.*, teacher_id.first_name, teacher_id.last_name 
+$sql = "SELECT appeals.*, 
+            teacher_id.first_name, 
+            teacher_id.last_name, 
+            student_id.first_name, 
+            student_id.last_name, 
+            student_id.user_uid,
+            student_id.student_year,
+            student_id.student_block,
+            department_id.department_name,
+            college_id.college_name,
+            schedule_id.subject_name
         FROM appeals 
-        LEFT JOIN teacher_id ON appeals.status_updated_by = teacher_id.teacher_id 
+        LEFT JOIN teacher_id ON appeals.status_updated_by = teacher_id.teacher_id
+        LEFT JOIN student_id ON appeals.user_uid = student_id.user_uid
+        LEFT JOIN department_id ON student_id.department_id = department_id.department_id
+        LEFT JOIN college_id ON department_id.department_id = college_id.college_id
+        LEFT JOIN schedule_id ON appeals.schedule_id = schedule_id.schedule_id
         WHERE appeals.user_uid = ?";
 
 $stmt = $conn->prepare($sql);
@@ -34,6 +48,13 @@ if ($result->num_rows > 0) {
             $teacher_name = 'System';
         }
         $data[] = [
+                'student_name' => $row['last_name'] . ', ' . $row['first_name'],
+                'subject_name' => $row['subject_name'] ?? 'General Leave',
+                'year' => $row['student_year'],
+                'block' => $row['student_block'],
+                'student_id' => $row['user_uid'],
+                'college' => $row['college_name'],
+                'program' => $row['department_name'],
                 'id' => isset($row['id']) ? $row['id'] : (isset($row['appeal_id']) ? $row['appeal_id'] : uniqid()), 
                 'appeal_type' => $row['time_type'],
                 'date_filed' => $row['date_filed'],
