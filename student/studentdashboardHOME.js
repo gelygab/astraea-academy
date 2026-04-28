@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    baseUrl: '',
+    baseUrl: 'api/',
     
     endpoints: {
         getStudentData: 'get_student_attendance.php'

@@ -219,20 +219,21 @@ function submitForm() {
     const comment = document.getElementById('comment').value;
     const attachmentInput = document.getElementById('attachment');
 
-    
     // Validate
     if (!startDate || !endDate) {
         alert('Please select both start and end dates.');
         return;
     }
 
-    
+    // Clean up the " days" text to just send the integer to the database
+    const parsedNumDays = parseInt(numDays) || 0;
+
     // 1. Create a FormData object to bundle our data securely
     const formData = new FormData();
     formData.append('time_type', timeType);
     formData.append('start_date', startDate);
     formData.append('end_date', endDate);
-    formData.append('number_of_days', numDays);
+    formData.append('number_of_days', parsedNumDays); // Send the clean integer
     formData.append('return_on', returnDate);
     formData.append('comment', comment);
 
@@ -246,20 +247,22 @@ function submitForm() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json()) // CHANGE: Read the response as JSON!
     .then(data => {
-        // Show the success message directly from the PHP file
-        alert(data);
-        
-        // Reset form and the upload text display
-        document.getElementById('leaveForm').reset();
-        document.querySelector('.upload-text').textContent = 'Upload';
-        
-        // Show success message (placeholder for backend integration)
-        alert(`Leave Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
-
-        // Redirect back to home
-        window.location.href = 'studentdashboardHOME.php';
+        if (data.success) {
+            // Show the actual success message from PHP
+            alert("Success: " + data.message); 
+            
+            // Reset form and the upload text display
+            document.getElementById('leaveForm').reset();
+            document.querySelector('.upload-text').textContent = 'Upload';
+            
+            // Redirect back to home
+            window.location.href = 'studentdashboardHOME.php';
+        } else {
+            // If PHP sends an error (like no schedules found), show it cleanly!
+            alert("Error: " + data.message);
+        }
     })
     .catch(error => {
         console.error('Error:', error);

@@ -23,14 +23,14 @@ $user_uid = $_SESSION['uid'];?>
 </head>
 <body>
     <div class="background-container">
-        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Slogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
         <aside>
             <div class="top">
                 <div class="logo">
-                    <img src="images/AA_Logo.png" alt="Logo">
+                    <img src="../images/AA_Logo.png" alt="Logo">
                     <h1>Astraea Academy</h1>
                 </div>
             </div>
