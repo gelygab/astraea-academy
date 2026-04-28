@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --white: #ffffff;
+    --deep-midnight: #1a012c;
+    --darkpurple: #450070;
+    --purple: #691b9a;
+    --lightpurple: #682a98;
+    --lightpink: #f7c7ff;
+    --softpink: #fdf1ff;
+    --page-bg: var(--darkpurple);
+    --paper-bg: var(--softpink);
+    --paper-border: var(--lightpink);
+    --table-bg: var(--white);
+    --table-head-bg: var(--lightpink);
+    --table-head-text: var(--deep-midnight);
+    --table-body-text: var(--midnight-vortex);
+    --table-border: #1e0231;
+    --title-text: var(--lightpink);
+    --label-text: var(--lightpink);
+    --body-text: var(--white);
+    --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.28);
+}
+
+body.report-body {
+    background: var(--page-bg);
+    min-height: 100vh;
+    padding: 32px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.report-paper.document {
+    width: 8.5in;
+    min-height: 11in;
+    padding: 0.75in;
+    border-radius: 24px;
+    border: 1.5px solid var(--paper-border);
+    background: var(--paper-bg);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+}
+
+.faculty-card {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px;
+    margin-bottom: 34px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--lightpurple), var(--darkpurple));
+}
+
+.avatar {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar svg { width: 56px; color: var(--white); }
+
+.faculty-info h1 {
+    font-size: 2rem;
+    color: var(--title-text);
+    margin-bottom: 8px;
+}
+
+.faculty-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 10px;
+    color: var(--white);
+}
+
+.detail-item span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--lightpink);
+}
+
+.faculty-meta{
+    color: var(--white);
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--table-bg);
+    border: 4px solid var(--darkpurple);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.attendance-table th, .attendance-table td {
+    padding: 15px;
+    border: 1px solid rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.attendance-table thead { background: var(--table-head-bg); color: var(--table-head-text); }
+
+.total { background: var(--lightpink); font-weight: 800; color: var(--deep-midnight); }
+
+.footer-btn-container {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+}
+
+.download-btn {
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    padding: 14px 36px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.download-btn:hover {
+    background: var(--btn-hover);
+    transform: translateY(-2px);
+}
+
+.report-footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+@media print {
+    body { background: none; padding: 0; }
+    .footer-btn-container { display: none; }
+    .report-paper { box-shadow: none; border: none; }
+}

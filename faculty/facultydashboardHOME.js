@@ -174,6 +174,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+// --- DOWNLOAD REPORT TRIGGER ---
+    // Using 'let' or removing the declaration if it's already at the top of the file
+    const dlBtn = document.querySelector('.download-btn') || document.getElementById('downloadBtn');
+
+    if (dlBtn) {
+        dlBtn.onclick = (e) => {
+            e.preventDefault(); 
+
+            // 1. Get the current period from the dropdown
+            let selectedPeriod = 'monthly';
+            const displayValue = document.getElementById('displayValue');
+            if (displayValue && displayValue.textContent) {
+                selectedPeriod = displayValue.textContent.trim().toLowerCase();
+            }
+
+            // 2. Grab the logged-in Faculty UID
+            const facultyUidEl = document.getElementById('uid-val');
+            const facultyUid = facultyUidEl ? facultyUidEl.textContent.trim() : '';
+
+            if (facultyUid) {
+                // 3. Point to the REAL faculty-download_report file!
+                const targetUrl = `faculty-download_report.php?uid=${facultyUid}&period=${selectedPeriod}`;
+                console.log("Downloading report from: ", targetUrl);
+                window.location.href = targetUrl;
+            } else {
+                alert("Error: Could not detect Faculty ID.");
+            }
+        };
+    }
+
+
     window.onclick = () => { if (menu) menu.style.display = 'none'; };
 
     // --- DOWNLOAD REPORT TRIGGER ---
@@ -196,9 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (facultyUid) {
                 // 3. Construct the URL and redirect to viewREPORT.php!
-                const targetUrl = `viewREPORT.php?uid=${facultyUid}&period=${selectedPeriod}`;
-                console.log("Downloading report from: ", targetUrl);
-                window.location.href = targetUrl;
+        const targetUrl = `faculty-download_report.php?uid=${facultyUid}&period=${selectedPeriod}`; 
             } else {
                 alert("Error: Could not detect Faculty ID.");
             }

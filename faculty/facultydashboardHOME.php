@@ -42,7 +42,7 @@ $user_uid = $_SESSION['uid'];
                                 <li>Monthly</li>
                             </ul>
                         </div>
-                        <button class="download-btn">
+                        <button class="download-btn" id="downloadReportBtn">
                             <span class="material-symbols-outlined">download</span> Download
                         </button>
                     </div> 
