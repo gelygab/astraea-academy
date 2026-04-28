@@ -179,7 +179,7 @@ function populateDetails(appeal) {
             link.href = appeal.attachment_url;
             link.textContent = appeal.attachment_name || "View Attachment";
             link.style.pointerEvents = 'auto'; 
-            link.style.color = '#9e05c0'; 
+            link.style.color = '#94426A'; 
             link.style.textDecoration = 'underline';
         } else {
            

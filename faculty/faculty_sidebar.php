@@ -86,7 +86,7 @@
                 </a>
             </div>
         </div>
-        
+
     </div> <div class="sidebar-footer">
         <a href="facultylogout.php" class="logout">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
