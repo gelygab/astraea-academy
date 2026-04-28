@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    baseUrl: 'api/',
+    baseUrl: '',
     
     endpoints: {
         getStudentData: 'get_student_attendance.php'
@@ -98,6 +98,19 @@ async function loadDashboard() {
         });
 
         document.onclick = () => menu.classList.remove('show');
+
+        // --- DOWNLOAD TRIGGER  ---
+        const downloadBtn = document.getElementById('downloadReportBtn');
+        if (downloadBtn) {
+            
+            downloadBtn.onclick = () => {
+                const displayValue = document.getElementById('displayValue');
+                const selectedPeriod = displayValue ? displayValue.textContent.trim().toLowerCase() : 'monthly';
+
+                console.log("Downloading report for:", selectedPeriod);
+                window.location.href = `student-download_report.php?period=${selectedPeriod}`;
+            };
+        }
 
     } catch (error) {
         console.error("Initialization Error:", error);

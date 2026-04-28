@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0; padding: 0; outline: 0; border: 0;
+    text-decoration: none; box-sizing: border-box;
+}
+
+a { color: var(--white); }
+img { display: block; width: 100%; }
+h1 { font-size: 0.98rem; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 0.67rem; }
+
+:root {
+--white: #ffffff;
+--black: #000000;
+--main-pink: #ff87a3;
+--light-pink: #f4b6c2;
+--soft-pink: #ffd9e1;
+--peachy-pink: #f57190;
+--dark-pink: #e85f7f;
+--light-cream: #ffe4e1;
+--cream: #ffd4c4;
+--very-darkpink: #c4536d;
+--main-pink-glass: #ffbccc96;
+--peach: #ffd4c4;
+--acid-gray: #666;
+--dark-gray: #333;              
+}
+
+/* Base Body Styles */
+body.report-body {
+    background: var(--dark-pink); 
+    margin: 0;
+    padding: 0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+/* Background Image Fix */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+}
+
+.background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Page Setup */
+.report-paper.document {
+    background: var(--soft-pink); 
+    border: 1.5px solid var(--light-pink);
+    width: 8.5in;
+    min-height: 11in;
+    padding: 0.75in;
+    border-radius: 24px; 
+    position: relative;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    color: white;
+    margin: 40px 0 60px 0; 
+    backdrop-filter: blur(10px);
+}
+
+.footer-btn-container {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+}
+
+.download-btn {
+    background: var(--soft-pink);
+    color: var(--dark-gray);
+    padding: 14px 36px;
+    border-radius: 999px;
+    border: 2px solid var(--dark-pink);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05) ;
+}
+
+.download-btn:hover {
+    background: var(--dark-pink);
+    transform: translateY(-2px);
+}
+
+/* Student Card Design */
+.student-card {
+    display: flex;
+    gap: 30px;
+    background: var(--dark-pink);
+    padding: 30px;
+    border-radius: 25px;
+    border: 1px solid rgba(247, 199, 255, 0.2);
+    margin-bottom: 40px;
+}
+
+.avatar {    
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.avatar svg{
+    width: 60px;
+    height: 60px;
+    color: var(--white);
+}
+
+.student-info h1 {
+    font-size: 2rem;
+    color: var(--white) ;
+    margin-bottom: 5px;
+}
+
+.student-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.detail-item span {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--acid-gray);
+    font-weight: 700;
+}
+
+/* Table Styling */
+.table-title {
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+    color: var(--dark-pink);
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--light-pink);
+    border-radius: 15px;
+    border: 4px solid var(--white);
+    overflow: hidden;
+}
+
+.attendance-table th, .attendance-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid rgba(247, 199, 255, 0.1);
+}
+
+.attendance-table th{
+    color: var(--dark-gray);
+}
+
+
+.total {
+    background: var(--main-pink);
+    font-weight: 800;
+    color: var(--dark-gray);
+}
+
+.attendance-table td{
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.attendance-table thead {
+    background: var(--main-pink);
+    color: #1a012c;
+}
+
+.footer-btn-container {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+}
+
+.download-btn {
+    background: var(--soft-pink);
+    color: var(--dark-gray);
+    padding: 14px 36px;
+    border-radius: 999px;
+    border-color: var(--dark-pink);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.download-btn:hover {
+    background: var(--btn-hover);
+    transform: translateY(-2px);
+}
+
+.report-footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+/* PRINT / PDF OVERRIDES */
+@media print {
+
+    body { background: none; padding: 0; }
+    .footer-btn-container { display: none; }
+    .report-paper { box-shadow: none; border: none; }
+    @page {
+        size: letter;
+        margin: 0;
+    }
+}
