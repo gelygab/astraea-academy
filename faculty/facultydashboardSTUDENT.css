@@ -1049,3 +1049,67 @@ aside .sidebar .nav-dropdown .submenu {
     font-weight: 700;  
     color: #3e2723;    
 }
+
+.warning-banner {
+    background-color: #ffffff; 
+    border: 2px solid #9C2727;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(156, 39, 39, 0.2); 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    z-index: 10; 
+    position: relative;
+}
+
+.warning-icon { 
+    color: #9C2727; 
+    font-size: 24px; 
+    font-weight: bold;
+    flex-shrink: 0; 
+}
+
+.warning-text { 
+    line-height: 1.5; 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #9C2727; 
+    margin: 0;
+}
+
+.affected-classes-box { 
+    background-color: #ffffff; 
+    border: 3px solid #620e2c; 
+    border-radius: 15px; 
+    overflow: hidden; 
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.affected-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.affected-table thead {
+    background-color: #620e2c; 
+}
+
+.affected-table th { 
+    padding: 15px 25px; 
+    text-align: left; 
+    font-weight: 700; 
+    color: #ffffff; 
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.affected-table td { 
+    padding: 15px 25px; 
+    font-weight: 600; 
+    color: #222222; 
+    border-bottom: 1px solid #f0f0f0; 
+}
