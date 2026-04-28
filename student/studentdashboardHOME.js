@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    baseUrl: 'api/',
+    baseUrl: '../faculty/', // This tells it to step out of 'student' and into 'faculty'
     
     endpoints: {
         getStudentData: 'get_student_attendance.php'
@@ -102,13 +102,23 @@ async function loadDashboard() {
         // --- DOWNLOAD TRIGGER  ---
         const downloadBtn = document.getElementById('downloadReportBtn');
         if (downloadBtn) {
-            
-            downloadBtn.onclick = () => {
+            downloadBtn.onclick = (e) => {
+                e.preventDefault(); // Stop any default button actions
+                
                 const displayValue = document.getElementById('displayValue');
                 const selectedPeriod = displayValue ? displayValue.textContent.trim().toLowerCase() : 'monthly';
 
-                console.log("Downloading report for:", selectedPeriod);
-                window.location.href = `student-download_report.php?period=${selectedPeriod}`;
+                // Grab the UID right off the page!
+                const uidElement = document.getElementById('uid-val');
+                const studentUid = uidElement ? uidElement.innerText.trim() : '';
+
+                if (studentUid) {
+                    console.log("Downloading report for:", selectedPeriod, "UID:", studentUid);
+                    // Pass BOTH the uid and the period to the report file
+                    window.location.href = `student-download_report.php?uid=${studentUid}&period=${selectedPeriod}`;
+                } else {
+                    alert("Error: Student UID not found on the page.");
+                }
             };
         }
 
