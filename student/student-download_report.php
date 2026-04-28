@@ -91,6 +91,6 @@
     </div>
   </div>
 
-  <script src="student-download_report.js"></script>
+  <script src="student-download_report.js?v=999"></script>
 </body>
 </html>

@@ -1,13 +1,83 @@
 <?php 
     $current_page = basename($_SERVER['PHP_SELF']); 
 ?>
+
+<style>
+    /* --- ULTIMATE SIDEBAR OVERRIDE --- */
+    aside { overflow-x: hidden !important; display: flex !important; flex-direction: column !important; }
+    aside a, .sidebar-footer a {
+        display: flex !important; align-items: center !important; gap: 15px !important;
+        white-space: nowrap !important; text-decoration: none !important;
+    }
+    aside .nav-text, aside h1, aside h3 { opacity: 0 !important; visibility: hidden !important; }
+    aside:hover .nav-text, aside:hover h1, aside:hover h3 { opacity: 1 !important; visibility: visible !important; }
+    aside svg { width: 24px !important; height: 24px !important; min-width: 24px !important; flex-shrink: 0 !important; }
+    aside .logo img, aside .logo svg { width: 35px !important; height: 35px !important; min-width: 35px !important; margin: 0 !important;}
+</style>
+
+
 <aside>
     <div class="top">
         <div class="logo">
-            <img src="images/AA_Logo.png" alt="Logo">
+            <img src="../images/AA_Logo.png" alt="Logo">
             <h1>Astraea Academy</h1>
         </div>
     </div>
+
+    
+<style>
+    /* =========================================================
+       THE ULTIMATE OVERRIDE: FORCES ALL TABS TO USE NEW SIDEBAR
+       ========================================================= */
+    
+    /* 1. Stop the sidebar from bleeding and force it into a column */
+    aside {
+        overflow-x: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* 2. Force every link into a perfect, straight row */
+    aside a, .sidebar-footer a {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        white-space: nowrap !important; /* Stops text from wrapping/clumping */
+        text-decoration: none !important;
+        height: 3.5rem !important; /* Gives the links breathing room */
+        padding-left: 1.5rem !important;
+    }
+
+    /* 3. Hide the text completely when the sidebar is closed */
+    aside .nav-text, aside h1, aside h3 {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        display: inline-block !important;
+        margin: 0 !important;
+    }
+
+    /* 4. Show the text ONLY when hovering over the sidebar */
+    aside:hover .nav-text, aside:hover h1, aside:hover h3 {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* 5. Lock the icons to the exact right size */
+    aside svg {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* 6. Lock the logo size */
+    aside .logo img, aside .logo svg {
+        width: 35px !important;
+        height: 35px !important;
+        min-width: 35px !important;
+        margin: 0 !important;
+    }
+</style>
 
     <div class="sidebar">
         <h3>MAIN MENU</h3>

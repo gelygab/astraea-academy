@@ -1,78 +1,69 @@
-/* =========================
-   PLACEHOLDER DATA SOURCE
-========================== */
-const facultyData = {
-  name: "Ryan Justine Mondero",
-  course: "Computer Engineering",
-  uid: "2024-0999-123",
-  email: "rj.mondero@university",
-};
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Grab parameters from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const period = urlParams.get('period') || 'monthly'; // default to monthly
 
-const attendanceData = {
-  semesters: [
-    { schoolDays: 50, presentDays: 48 },
-    { schoolDays: 63, presentDays: 63 },
-    { schoolDays: 49, presentDays: 48 }
-  ]
-};
+    // 2. Fetch from your existing API
+    fetch(`api/api_get_faculty_details.php`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Real DB Data received:", data);
 
-/* =========================
-   POPULATE FACULTY INFO
-========================== */
-function loadFacultyInfo(data) {
-  document.getElementById("facultyName").textContent = data.name;
-  document.getElementById("course").textContent = data.course;
-  document.getElementById("uid").textContent = data.uid;
-  document.getElementById("email").textContent = data.email;
-}
+            // Unpack the data
+            const faculty = data.common.faculty_details;
+            const timeframeData = data.timeframes[period.toLowerCase()];
 
-/* =========================
-   CALCULATE ATTENDANCE
-========================== */
-function loadAttendance(data) {
-  let totalSchool = 0;
-  let totalPresent = 0;
-  let totalAbsent = 0;
+            if (faculty) {
+                // --- PROFILE SECTION ---
+                if (document.getElementById("facultyName")) document.getElementById("facultyName").textContent = faculty.name;
+                if (document.getElementById("course")) document.getElementById("course").textContent = faculty.department || faculty.college;
+                if (document.getElementById("uid")) document.getElementById("uid").textContent = faculty.uid;
+                if (document.getElementById("email")) document.getElementById("email").textContent = faculty.email;
+            }
 
-  data.semesters.forEach((semester, index) => {
-    const school = semester.schoolDays;
-    const present = semester.presentDays;
-    const absent = school - present;
+            if (timeframeData) {
+                // --- ATTENDANCE TABLE SECTION ---
+                let present = 0;
+                let absent = 0;
 
-    // Use index + 1 to match school1, school2, etc.
-    const schoolEl = document.getElementById(`school${index + 1}`);
-    const presentEl = document.getElementById(`present${index + 1}`);
-    const absentEl = document.getElementById(`absent${index + 1}`);
+                // Extract real numbers from the API's summary array
+                timeframeData.summary.forEach(item => {
+                    const label = item.label.toLowerCase();
+                    if (label.includes("attendance")) {
+                        // Format is usually "Present / Total" (e.g., "48 / 50")
+                        if (typeof item.value === 'string' && item.value.includes('/')) {
+                            present = parseInt(item.value.split('/')[0]) || 0;
+                        } else {
+                            present = parseInt(item.value) || 0;
+                        }
+                    }
+                    if (label.includes("absent")) {
+                        absent = parseInt(item.value) || 0;
+                    }
+                });
 
-    if(schoolEl) schoolEl.textContent = school;
-    if(presentEl) presentEl.textContent = present;
-    if(absentEl) absentEl.textContent = absent;
+                // 1. FIX THE SCHOOL DAYS ROW (Static Academic Calendar)
+                if (document.getElementById('school1')) document.getElementById('school1').textContent = 50;
+                if (document.getElementById('school2')) document.getElementById('school2').textContent = 63;
+                if (document.getElementById('school3')) document.getElementById('school3').textContent = 49;
+                if (document.getElementById('schoolTotal')) document.getElementById('schoolTotal').textContent = 162;
 
-    totalSchool += school;
-    totalPresent += present;
-    totalAbsent += absent;
-  });
+                // 2. DYNAMIC PRESENT/ABSENT (Pulling real DB data)
+                if (document.getElementById('present1')) document.getElementById('present1').textContent = present;
+                if (document.getElementById('absent1')) document.getElementById('absent1').textContent = absent;
 
-  document.getElementById("schoolTotal").textContent = totalSchool;
-  document.getElementById("presentTotal").textContent = totalPresent;
-  document.getElementById("absentTotal").textContent = totalAbsent;
-}
+                // Zero out 2nd and 3rd Sem present/absent since DB doesn't split them yet
+                for (let i = 2; i <= 3; i++) {
+                    if (document.getElementById(`present${i}`)) document.getElementById(`present${i}`).textContent = 0;
+                    if (document.getElementById(`absent${i}`)) document.getElementById(`absent${i}`).textContent = 0;
+                }
 
-/* =========================
-   INIT
-========================== */
-window.onload = () => {
-    loadFacultyInfo(facultyData);
-    loadAttendance(attendanceData);
-};
-
-/* =========================
-   DYNAMIC UPDATES
-========================== */
-function updateAttendance(newData) {
-  loadAttendance(newData);
-}
-
-function updateFaculty(newFacultyData) {
-  loadFacultyInfo(newFacultyData);
-}
+                // Fill the TOTAL column with real DB data
+                if (document.getElementById('presentTotal')) document.getElementById('presentTotal').textContent = present;
+                if (document.getElementById('absentTotal')) document.getElementById('absentTotal').textContent = absent;
+            }
+        })
+        .catch(error => {
+            console.error("Failed to fetch database record:", error);
+        });
+});
