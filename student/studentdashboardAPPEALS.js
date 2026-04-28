@@ -112,8 +112,12 @@ function createAppealCard(appeal) {
                     <span class="value">${escapeHtml(appeal.college || 'N/A')}</span>
                 </div>
                 <div class="appeal-detail-row">
-                    <span class="label">Program</span>
+                    <span class="label">Department</span>
                     <span class="value">${escapeHtml(appeal.program || appeal.department || 'N/A')}</span>
+                </div>
+                <div class="appeal-detail-row">
+                    <span class="label">Subject Affected</span>
+                    <span class="value">${escapeHtml(appeal.subject_name || appeal.department || 'N/A')}</span>
                 </div>
             </div>
 
@@ -159,20 +163,29 @@ function populateDetails(appeal) {
     };
 
     setSafeText('detName', appeal.student_name);
-setSafeText('detId', appeal.student_id);
-setSafeText('detCollege', appeal.college);
-setSafeText('detDept', appeal.program);
-setSafeText('detYear', appeal.year);
-setSafeText('detBlock', appeal.block);
-setSafeText('detType', typeDisplayName);
-setSafeText('detDate', formatDate(appeal.date_filed));
-setSafeText('detStartDate', formatDate(appeal.start_date));
-setSafeText('detEndDate', formatDate(appeal.end_date));
-setSafeText('detNumDays', appeal.num_days);
-setSafeText('detReturn', formatDate(appeal.return_date));
-setSafeText('detReason', appeal.comment);
-setSafeText('detUpdatedBy', appeal.updated_by);
-    
+    setSafeText('detId', appeal.student_id);
+    setSafeText('detCollege', appeal.college);
+    setSafeText('detDept', appeal.program);
+    setSafeText('detYear', appeal.year);
+    setSafeText('detBlock', appeal.block);
+    setSafeText('detType', typeDisplayName);
+    setSafeText('detDate', formatDate(appeal.date_filed));
+    setSafeText('detStartDate', formatDate(appeal.start_date));
+    setSafeText('detEndDate', formatDate(appeal.end_date));
+    setSafeText('detNumDays', appeal.num_days);
+    setSafeText('detReturn', formatDate(appeal.return_date));
+    setSafeText('detReason', appeal.comment);
+    setSafeText('detUpdatedBy', appeal.updated_by);
+    setSafeText('detSubjectAffected', appeal.subject_name);
+
+    const statusText = appeal.status.toLowerCase();
+    if (statusText === 'pending') {
+        setSafeText('detUpdatedBy', 'Pending Review (System)');
+    } else {
+        // Kung approved/rejected na, ipakita ang pangalan ng Prof
+        setSafeText('detUpdatedBy', appeal.updated_by || 'System');
+    }
+
     const badge = document.getElementById('detStatusBadge');
     if (badge) {
         badge.className = `status-badge ${statusConfig.badgeClass}`;
@@ -200,6 +213,12 @@ setSafeText('detUpdatedBy', appeal.updated_by);
             link.style.textDecoration = 'none'; 
         }
     }
+}
+
+function formatYearLabel(year) {
+    const y = String(year);
+    const suffix = { '1': 'st', '2': 'nd', '3': 'rd', '4': 'th' };
+    return `${y}${suffix[y] || 'th'} Year`;
 }
 
 function showLoading(show) {

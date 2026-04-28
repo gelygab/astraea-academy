@@ -54,7 +54,7 @@ body {
 :root {
 --white: #ffffff;
 --black: #000000;
---main-pink: #ff87a3;
+--main-pink: #de677daa;
 --light-pink: #f4b6c2;
 --soft-pink: #ffd9e1;
 --peachy-pink: #f57190;
@@ -252,7 +252,7 @@ aside:hover .nav-icon {
   align-items: stretch;
   min-height: 100vh; 
   margin-left: var(--sidebar-collapsed);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -265,7 +265,7 @@ aside:hover ~ .student-dashboard {
 
 /* FORM CARD */
 .form-card {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   width: 100%;
   max-width: 1000px;
   background-color: var(--soft-pink);
@@ -279,7 +279,7 @@ aside:hover ~ .student-dashboard {
 }
 
 .form-header {
-  background: var(--main-pink); 
+  background: #c05468aa;
   color: var(--white);
   padding: 20px; 
   width: 100%;

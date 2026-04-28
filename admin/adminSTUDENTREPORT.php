@@ -35,7 +35,7 @@ $user_uid = $_SESSION['uid'];
                 <p class="nav-label">MAIN MENU</p>
 
 
-                <a href="admindashboardHOME.html" class="nav-item">
+                <a href="admindashboardHOME.php" class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -58,14 +58,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminSTUDENTREPORT.html" class="nav-subitem active">
+                        <a href="adminSTUDENTREPORT.php" class="nav-subitem active">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminFACULTYREPORT.html" class="nav-subitem">
+                        <a href="adminFACULTYREPORT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
@@ -88,14 +88,14 @@ $user_uid = $_SESSION['uid'];
                         </svg>
                     </button>
                     <div class="nav-submenu">
-                        <a href="adminAPPEALSTUDENT.html" class="nav-subitem">
+                        <a href="adminAPPEALSTUDENT.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <span class="nav-text">Student</span>
                         </a>
-                        <a href="adminAPPEALFACULTY.html" class="nav-subitem">
+                        <a href="adminAPPEALFACULTY.php" class="nav-subitem">
                             <svg class="sub-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>

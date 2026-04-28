@@ -98,15 +98,8 @@ $user_uid = $_SESSION['uid'];
 
             <div class="elegant-pink-header">
                 
-                <div class="floating-stars">
-                    <span class="star-1">✦</span>
-                    <span class="star-2">✧</span>
-                    <span class="star-3">✦</span>
-                    <span class="star-4">✧</span>
-                    <span class="star-5">✦</span>
-                </div>
-
-                <h1>Student Appeal History</h1>
+    
+                <h3>Student Appeal History</h3>
             </div>
 
 
@@ -177,6 +170,10 @@ $user_uid = $_SESSION['uid'];
             <div class="reason-section">
                 <span class="label">Reason:</span>
                 <div class="reason-box" id="detReason"></div>
+            </div>
+            <div class="reason-section">
+                <span class="label">Subject Affected:</span>
+                <div class="value" id="detSubjectAffected"></div>
             </div>
         </div>
         <div class="summary-footer">

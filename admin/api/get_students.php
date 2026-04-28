@@ -11,7 +11,6 @@ if (!isset($user_id)) {
     exit;
 };
 
-
 $student_query = "SELECT student_id.user_uid,
                     student_id.user_type,
                     student_id.first_name,
