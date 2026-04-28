@@ -63,15 +63,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         return_on,
                         attachment, 
                         status, 
-                        date_filed) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        date_filed,
+                        schedule_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issssssssss", $user_id, $user_type, $time_type, $comment, $excuse_startdate, $excuse_enddate, $number_of_days, $return_on, $supporting_document, $excuse_status, $date_filed);
 
-    if($stmt->execute()) {
-        echo "Success! Excuse Application submitted to the database!";
+    $current_start = new DateTime($excuse_startdate);
+    $current_end = new DateTime($excuse_enddate);
+    $daysList = [];
+    while ($current_start <= $current_end) {
+        $daysList[] = $current_start->format('l');
+        $current_start->modify('+1 day');
+    }
+
+    $student_query = "SELECT student_year, student_block FROM student_id WHERE user_uid = ? LIMIT 1";
+    $stmt_student = $conn->prepare($student_query);
+    $stmt_student->bind_param("i", $user_id);
+    $stmt_student->execute();
+    $student_data = $stmt_student->get_result()->fetch_assoc();
+
+    $year = $student_data['student_year'] ?? '';
+    $block = $student_data['student_block'] ?? '';
+
+    $schedule_user = [];
+    $schedule_query = "SELECT * FROM schedule_id WHERE student_year = ? AND student_block = ?";
+    $stmt_schedule = $conn->prepare($schedule_query);
+    $stmt_schedule->bind_param("ii", $year, $block);
+    $stmt_schedule->execute();
+    $schedule_result = $stmt_schedule->get_result();
+
+    if ($schedule_result->num_rows > 0) {
+        while ($row = $schedule_result->fetch_assoc()) {
+            $schedule_user[] = $row;
+        }
+    }
+
+    $inserted_count = 0;
+    $current_schedule_id = null;
+
+    $stmt->bind_param("issssssssssi", $user_id, $user_type, $time_type, $comment, $excuse_startdate, $excuse_enddate, $number_of_days, $return_on, $supporting_document, $excuse_status, $date_filed, $current_schedule_id);
+
+    foreach ($schedule_user as $schedule) {
+        if (in_array($schedule['day_week'], $daysList)) {
+            $current_schedule_id = $schedule['schedule_id'];
+
+            if ($stmt->execute()) {
+                $inserted_count++;
+             }
+        }   
+    }
+    if ($inserted_count > 0) {
+        echo json_encode(['success' => true, 'message' => "Successfully filed excuse for $inserted_count subjects."]);
     } else {
-        echo "Database Error: " . $stmt->error; 
+        echo json_encode(['success' => false, 'message' => "No matching schedules found for the selected dates."]);
     }
 }
 ?>

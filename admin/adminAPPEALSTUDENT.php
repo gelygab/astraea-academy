@@ -179,7 +179,7 @@ $user_uid = $_SESSION['uid'];
         </main>
     </div>
 
-    <!-- Appeal Summary Modal -->
+       <!-- Appeal Summary Modal -->
     <div class="modal" id="summaryModal">
         <div class="modal-content summary-modal">
             <div class="modal-header">
@@ -212,10 +212,6 @@ $user_uid = $_SESSION['uid'];
                         <span class="detail-label">Appeal Type:</span>
                         <span class="detail-value" id="summaryType">-</span>
                     </div>
-                      <div class="detail-row">
-                        <span class="detail-label">Status:</span>
-                        <span class="detail-value status-badge" id="summaryStatus">-</span>
-                    </div>
                     <div class="detail-row">
                         <span class="detail-label">Date Applied:</span>
                         <span class="detail-value" id="summaryDate">-</span>
@@ -236,25 +232,34 @@ $user_uid = $_SESSION['uid'];
                         <span class="detail-label">Return on:</span>
                         <span class="detail-value" id="summaryReturnDate">-</span>
                     </div>
+                    <div class="attachment-detail-row">
+                         <span class="detail-label">Attachment:</span>
+                        <p class="detail-text" id="summaryAttachment">
+                            <a href="#" target="blank" class="attachment-link">View Attachment</a>
+                        </p>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value status-badge" id="summaryStatus">-</span>
+                    </div>
                     <div class="detail-row full-width">
                         <span class="detail-label">Reason:</span>
                         <p class="detail-text" id="summaryReason">-</p>
                     </div>
-                      <div class="detail-row full-width">
-                        <span class="detail-label">Attachment:</span>
-                        <p class="detail-text" id="summaryAttachment">
-                            <a href="#" target="_blank" class="attachment-link">View Attachment</a>
-                        </p>
+                      <div class="detail-row-subject-affected">
+                        <span class="detail-label">Subject Affected:</span>
+                        <span class="detail-value" id="summarySubjectAffected">-</span>
                     </div>
-                    <div class="detail-row full-width">
+                    <div class="detail-row-footer">
                         <span class="detail-label">Status Updated By:</span>
-                        <p class="detail-text" id="summaryUpdatedBy">-</p>
+                        <span class="detail-text" id="summaryUpdatedBy">-</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+   
+
     <!-- Update Status Modal -->
     <div class="modal" id="updateStatusModal">
         <div class="modal-content status-modal">

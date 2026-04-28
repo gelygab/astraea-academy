@@ -1,8 +1,5 @@
-// ============================================================
-// adminAPPEALFACULTY.js — VERSION 1: Testing/Mock Data
-// ============================================================
-// Uses hardcoded mock data with College & Department fields.
-// Test the UI immediately without a backend.
+ // ============================================================
+// adminAPPEALFACULTY.js — VERSION 2: Production 
 // ============================================================
 
 // Sidebar Navigation Toggle
@@ -12,174 +9,199 @@ function toggleNavGroup(button) {
 }
 
 let currentAppealId = null;
+let appealsData = [];          // Populated from API
+let departmentsData = [];      // Populated from API
 
 // ============================================================
-// COLLEGE & DEPARTMENT CASCADING DATA
+// CONFIGURATION — Update these with your actual API endpoints
 // ============================================================
-const COLLEGE_DEPARTMENTS = {
-    engineering: {
-        name: 'College of Engineering',
-        departments: [
-            { value: 'civil', label: 'Civil Engineering' },
-            { value: 'chemical', label: 'Chemical Engineering' },
-            { value: 'computer', label: 'Computer Engineering' },
-            { value: 'electrical', label: 'Electrical Engineering' },
-            { value: 'electronics', label: 'Electronics Engineering' },
-            { value: 'mechanical', label: 'Mechanical Engineering' },
-            { value: 'manufacturing', label: 'Manufacturing Engineering' }
-        ]
-    },
-    education: {
-        name: 'College of Education',
-        departments: [
-            { value: 'early-childhood', label: 'Early Childhood Education' },
-            { value: 'elementary', label: 'Elementary Education' },
-            { value: 'physical', label: 'Physical Education' },
-            { value: 'secondary', label: 'Secondary Education' },
-            { value: 'special-needs', label: 'Special Needs Education' }
-        ]
-    },
-    chass: {
-        name: 'College of Humanities, Arts, and Social Sciences',
-        departments: [
-            { value: 'communications', label: 'Communications' },
-            { value: 'social-work', label: 'Social Work' },
-            { value: 'psychology', label: 'Psychology' }
-        ]
+const API_CONFIG = {
+    baseUrl: 'api/',  // Change to your backend base URL
+    endpoints: {
+        appeals: 'get_faculty_appeals.php',
+        colleges: 'get_faculty_colleges.php',
+        departments: 'get_faculty_departments.php',
+        updateStatus: 'update_faculty_appeal_status.php'
     }
 };
 
 // ============================================================
-// MOCK DATA — 5 FACULTY APPEALS WITH COLLEGE & DEPARTMENT
-// ============================================================
-const appealsData = [
-    {
-        id: '1',
-        facultyName: 'Dela Cruz, Juan',
-        facultyId: '55555',
-        college: 'engineering',
-        collegeName: 'College of Engineering',
-        department: 'civil',
-        departmentName: 'Civil Engineering',
-        type: 'leave',
-        typeLabel: 'Emergency Leave',
-        dateApplied: 'March 2, 2026',
-        status: 'pending',
-        reason: 'Family emergency — need to attend to sick family member in the province. Will be unavailable for 3 days.'
-    },
-    {
-        id: '2',
-        facultyName: 'Santos, Maria',
-        facultyId: '55556',
-        college: 'education',
-        collegeName: 'College of Education',
-        department: 'elementary',
-        departmentName: 'Elementary Education',
-        type: 'leave',
-        typeLabel: 'Sick Leave',
-        dateApplied: 'March 5, 2026',
-        status: 'pending',
-        reason: 'High fever and flu symptoms, advised by doctor to rest for 5 days. Medical certificate attached.'
-    },
-    {
-        id: '3',
-        facultyName: 'Reyes, Pedro',
-        facultyId: '55557',
-        college: 'chass',
-        collegeName: 'College of Humanities, Arts, and Social Sciences',
-        department: 'psychology',
-        departmentName: 'Psychology',
-        type: 'excuse',
-        typeLabel: 'Leave of Absence',
-        dateApplied: 'February 22, 2026',
-        status: 'approved',
-        reason: 'Attending professional development conference on Behavioral Psychology in Manila. Approved by department head.'
-    },
-    {
-        id: '4',
-        facultyName: 'Garcia, Ana',
-        facultyId: '55558',
-        college: 'engineering',
-        collegeName: 'College of Engineering',
-        department: 'computer',
-        departmentName: 'Computer Engineering',
-        type: 'excuse',
-        typeLabel: 'Medical Appointment',
-        dateApplied: 'March 8, 2026',
-        status: 'rejected',
-        reason: 'Regular dental check-up, not urgent. Requested only 2 hours but insufficient justification provided.'
-    },
-    {
-        id: '5',
-        facultyName: 'Lopez, Jose',
-        facultyId: '55559',
-        college: 'education',
-        collegeName: 'College of Education',
-        department: 'physical',
-        departmentName: 'Physical Education',
-        type: 'leave',
-        typeLabel: 'Personal Leave',
-        dateApplied: 'March 10, 2026',
-        status: 'approved',
-        reason: 'Family wedding out of town in Cebu. Will make up for missed classes upon return.'
-    }
-];
-
-// ============================================================
 // INITIALIZATION
 // ============================================================
-document.addEventListener('DOMContentLoaded', function() {
-    setupCollegeDepartmentCascade();
-    setupFilterListeners();
-    loadAppeals();
+document.addEventListener('DOMContentLoaded', async function() {
+    await initializeApp();
 });
+
+async function initializeApp() {
+    try {
+        // 1. Load colleges & departments for cascading dropdowns
+        await loadColleges();
+        await loadDepartments();
+
+        // 2. Setup event listeners
+        setupFilterListeners();
+
+        // 3. Load appeals from backend
+        await loadAppealsFromAPI();
+
+    } catch (error) {
+        console.error('Failed to initialize app:', error);
+        showErrorMessage('Failed to load data. Please refresh the page.');
+    }
+}
+
+// ============================================================
+// API FETCH HELPERS
+// ============================================================
+async function apiFetch(endpoint, options = {}) {
+    const url = API_CONFIG.baseUrl + endpoint;
+    const defaultOptions = {
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': 'Bearer ' + getAuthToken(), // Uncomment when auth is ready
+        }
+    };
+
+    const response = await fetch(url, { ...defaultOptions, ...options });
+
+    if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+// ============================================================
+// LOAD COLLEGES & DEPARTMENTS (for cascading dropdowns)
+// ============================================================
+async function loadColleges() {
+    // --- OPTION A: Fetch from API ---
+    const result = await apiFetch(API_CONFIG.endpoints.colleges);
+    populateCollegeDropdown(result.data);
+    
+}
+
+async function loadDepartments() {
+    const result = await apiFetch(API_CONFIG.endpoints.departments);
+    populateDepartmentDropdown(result.data);
+}
+
+function populateDepartmentDropdown(departmentsData) {
+    const deptSelect = document.getElementById('department');
+    if (!deptSelect) return;
+
+    deptSelect.innerHTML = '<option value="">All Departments</option>';
+
+    departmentsData.forEach(dept => {
+        const option = document.createElement('option');
+        option.value = dept.value;
+        option.textContent = dept.label;
+        deptSelect.appendChild(option);
+    });
+}
+
+
+function populateCollegeDropdown(colleges) {
+    const collegeSelect = document.getElementById('college');
+    if (!collegeSelect) return;
+
+    // Keep "All Colleges" option, add dynamic ones
+    collegeSelect.innerHTML = '<option value="">All Colleges</option>';
+
+    colleges.forEach(college => {
+        const option = document.createElement('option');
+        option.value = college.value;
+        option.textContent = college.label;
+        collegeSelect.appendChild(option);
+    });
+}
 
 // ============================================================
 // COLLEGE → DEPARTMENT CASCADE
 // ============================================================
-function setupCollegeDepartmentCascade() {
-    const collegeSelect = document.getElementById('college');
-    const departmentSelect = document.getElementById('department');
+// function setupCollegeDepartmentCascade() {
+//     const collegeSelect = document.getElementById('college');
+//     const departmentSelect = document.getElementById('department');
 
-    if (!collegeSelect || !departmentSelect) return;
+//     if (!collegeSelect || !departmentSelect) return;
 
-    collegeSelect.addEventListener('change', function() {
-        const selectedCollege = this.value;
+//     collegeSelect.addEventListener('change', function() {
+//         const selectedCollege = this.value;
 
-        // Clear existing options except "All Departments"
-        departmentSelect.innerHTML = '<option value="">All Departments</option>';
+//         // Clear existing options except "All Departments"
+//         departmentSelect.innerHTML = '<option value="">All Departments</option>';
 
-        if (selectedCollege && COLLEGE_DEPARTMENTS[selectedCollege]) {
-            const departments = COLLEGE_DEPARTMENTS[selectedCollege].departments;
-            departments.forEach(dept => {
-                const option = document.createElement('option');
-                option.value = dept.value;
-                option.textContent = dept.label;
-                departmentSelect.appendChild(option);
-            });
-        }
+//         if (selectedCollege && departmentsData[selectedCollege]) {
+//             const departments = departmentsData[selectedCollege];
+//             departments.forEach(dept => {
+//                 const option = document.createElement('option');
+//                 option.value = dept.value;
+//                 option.textContent = dept.label;
+//                 departmentSelect.appendChild(option);
+//             });
+//         }
 
-        // Trigger filter update when college changes
-        applyFilters();
-    });
+//         applyFilters();
+//     });
 
-    // Also trigger filter when department changes
-    departmentSelect.addEventListener('change', applyFilters);
+//     departmentSelect.addEventListener('change', applyFilters);
+// }
+
+// ============================================================
+// LOAD APPEALS FROM API
+// ============================================================
+async function loadAppealsFromAPI() {
+    // --- Replace with your actual API call ---
+    const result = await apiFetch(API_CONFIG.endpoints.appeals);
+    appealsData = normalizeAppealData(result.data);
+
+    renderAppeals(appealsData);
+}
+
+// ============================================================
+// DATA NORMALIZATION (adapt API response to frontend format)
+// ============================================================
+function normalizeAppealData(apiData) {
+    // Adjust field names based on your API response structure
+    return apiData.map(item => ({
+        id: item.id || item.appeal_id,
+        facultyName: item.faculty_name || item.name,
+        facultyId: item.faculty_id || item.employee_id,
+        college: item.college_code || item.college,
+        collegeName: item.college_name || item.college,
+        department: item.department_code || item.department,
+        departmentName: item.department_name || item.department,
+        type: item.appeal_type || item.type,
+        typeLabel: item.type_label || formatTypeLabel(item.appeal_type || item.type),
+        dateApplied: item.date_applied || item.date,
+        startDate: item.start_date,
+        endDate: item.end_date,
+        numDays: item.num_days,
+        returnDate: item.return_date,
+        status: item.status,
+        reason: item.reason,
+        attachmentName: item.attachment,
+        updatedBy: item.updated_by
+    }));
+}
+
+function formatTypeLabel(type) {
+    if (!type) return '';
+    return type.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 // ============================================================
 // FILTER LISTENERS
 // ============================================================
 function setupFilterListeners() {
-    const typeFilter = document.getElementById('appealType');
-    const statusFilter = document.getElementById('appealStatus');
+    const filters = ['appealType', 'appealStatus', 'department', 'college'];
 
-    if (typeFilter) {
-        typeFilter.addEventListener('change', applyFilters);
-    }
-    if (statusFilter) {
-        statusFilter.addEventListener('change', applyFilters);
-    }
+    filters.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', applyFilters);
+        }
+    });
 }
 
 // ============================================================
@@ -203,12 +225,8 @@ function applyFilters() {
 }
 
 // ============================================================
-// LOAD & RE  NDER APPEALS
+// RENDER APPEALS
 // ============================================================
-function loadAppeals() {
-    renderAppeals(appealsData);
-}
-
 function renderAppeals(appeals) {
     const grid = document.getElementById('appealsGrid');
     if (!grid) return;
@@ -281,6 +299,7 @@ function renderAppeals(appeals) {
     `).join('');
 }
 
+
 // ============================================================
 // TYPE ICONS
 // ============================================================
@@ -330,16 +349,18 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+
 // ============================================================
 // VIEW SUMMARY MODAL
 // ============================================================
 function viewSummary(appealId) {
-    const appeal = appealsData.find(a => a.id === appealId);
+    const appeal = appealsData.find(a => String(a.id) === String(appealId));
     if (!appeal) return;
+
 
     currentAppealId = appealId;
 
-    document.getElementById('summaryName').textContent = appeal.facultyName;
+document.getElementById('summaryName').textContent = appeal.facultyName;
     document.getElementById('summaryID').textContent = appeal.facultyId;
     document.getElementById('summaryCollege').textContent = appeal.collegeName || appeal.college;
     document.getElementById('summaryDepartment').textContent = appeal.departmentName || appeal.department;
@@ -350,6 +371,7 @@ function viewSummary(appealId) {
     document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
     document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
     document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summarySubjectAffected').textContent = appeal.subjectAffected || 'N/A';
     document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
     if (appeal.attachmentUrl) {
         document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
@@ -360,46 +382,116 @@ function viewSummary(appealId) {
         document.getElementById('summaryAttachment').style.pointerEvents = 'none';
         document.getElementById('summaryAttachment').style.color = '#666';
     }
-    document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'N/A';
+   
+    document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'System';
 
-    
+
+   
     const statusEl = document.getElementById('summaryStatus');
     statusEl.textContent = appeal.status;
     statusEl.className = 'detail-value status-badge ' + appeal.status;
 
+
     openModal('summaryModal');
 }
+
 
 // ============================================================
 // UPDATE STATUS MODAL
 // ============================================================
 function openUpdateStatus(appealId) {
-    const appeal = appealsData.find(a => a.id === appealId);
+    const appeal = appealsData.find(a => String(a.id) === String(appealId));
     if (!appeal) return;
+
 
     currentAppealId = appealId;
 
+
     document.getElementById('statusFacultyName').textContent = appeal.facultyName;
+
 
     const currentStatusEl = document.getElementById('statusCurrent');
     currentStatusEl.textContent = appeal.status;
     currentStatusEl.className = appeal.status;
 
+    
+  // //start edit
+    const warningBox = document.getElementById('statusConflictWarning');
+    const classList = document.getElementById('statusAffectedClassesList');
+    const conflictCount = document.getElementById('statusConflictCount');
+
+
+    if (appeal.status === 'pending'&& (appeal.type == 'leave' || appeal.type == 'excuse')) {
+
+
+        const affectedClasses = [
+            { name: 'Software Design', time: 'Mon 8:00 AM' },
+            { name: 'Engineering Management', time: 'Wed 10:00 AM' },
+            { name: 'Basic Electrical Eng.', time: 'Fri 1:00 PM' }
+        ];
+
+
+        conflictCount.textContent = affectedClasses.length;
+       
+        // Map the data into the HTML structure
+        classList.innerHTML = affectedClasses.map(cls => `
+            <div style="display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid rgba(133, 38, 44, 0.1); font-size: 13px; color: #6B4E3D; background: #fff;">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #85262C; font-weight: bold;">•</span> ${cls.name}
+                </span>
+                <span style="font-weight: 600; color: #4A3628;">(${cls.time})</span>
+            </div>
+        `).join('');
+
+
+        // Ensure the last item doesn't have a double border
+        if (classList.lastElementChild) {
+            classList.lastElementChild.style.borderBottom = 'none';
+        }
+
+
+        warningBox.style.display = 'block';
+    } else {
+        warningBox.style.display = 'none';
+    }
+    // //end edit
+
     openModal('updateStatusModal');
 }
 
-function updateStatus(newStatus) {
-    if (!currentAppealId) return;
 
-    const appeal = appealsData.find(a => a.id === currentAppealId);
-    if (!appeal) return;
+async function updateStatus(newStatus) {
+    try {
+        const url = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.updateStatus}?appealId=${currentAppealId}`
+        if (!currentAppealId) return;
+        const response = await fetch (url, {
+            method: 'POST',
+            body: JSON.stringify({ id: currentAppealId, status: newStatus }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+        
+        if(!response.ok) throw new Error ("Fetch failed");
+        const data = await response.json();
+        console.log(data);
 
-    // Update the data
-    appeal.status = newStatus;
+        const appeal = appealsData.find(a => String(a.id) === String(currentAppealId));
+        if (!appeal) return;
 
-    // Re-render with current filters
-    applyFilters();
+        // Update the data
+        appeal.status = newStatus;
 
-    // Close modal
-    closeModal('updateStatusModal');
+        // Re-render with current filters
+        applyFilters();
+
+        // Close modal
+        closeModal('updateStatusModal');
+        location.reload(); 
+
+    } catch (error) {
+        console.error("Fetching admin profile failed: ", error);
+    }
 }
+

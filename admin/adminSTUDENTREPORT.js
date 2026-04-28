@@ -123,7 +123,7 @@ async function fetchStudentSubjects(studentId) {
         }
 
         const data = await response.json();
-        return data.success ? data.subjects : [];
+        return data.success ? data.data : [];
     } catch (error) {
         console.error('Error fetching subjects:', error);
         return [];
@@ -168,6 +168,8 @@ async function fetchStudentProfile(studentId) {
                 'Content-Type': 'application/json',
             }
         });
+
+        console.log(studentId);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -235,7 +237,8 @@ function backToStudentTeamRecords() {
 }
 
 async function showStudentRecord(studentData) {
-     currentStudent = studentData; //EDITTTT
+    console.log(studentData); 
+    currentStudent = studentData; //EDITTTT
 // start edit
    
     let lastName = '', firstName = ''; 
@@ -278,7 +281,7 @@ async function showStudentRecord(studentData) {
             // Set fallback percentages 
             ['presentPercentage', 'latePercentage', 'absencePercentage', 'excusePercentage'].forEach(id => {
                 const el = document.getElementById(id); 
-                if (el) el.textContent = '0%'; T
+                if (el) el.textContent = '0%'; 
             }); 
         } 
     } catch (chartError) { 
@@ -550,10 +553,11 @@ function renderStudents(students) {
 
 function viewRecord(student) {
      //EDITTTT
-    showStudentRecord(student);
     if (typeof student === 'string') { 
         student = JSON.parse(student); 
     }
+
+    showStudentRecord(student);
 }
 
 // ==========================================

@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../db.php';
+
+if (!isset($_SESSION['uid'])) {
+    header('Location: studentlogin.php');
+    exit();
+}
+$user_uid = $_SESSION['uid'];?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
