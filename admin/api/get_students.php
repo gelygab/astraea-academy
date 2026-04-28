@@ -11,6 +11,10 @@ if (!isset($user_id)) {
     exit;
 };
 
+$year_filter = $_GET['year'] ?? null;
+$block_filter = $_GET['block'] ?? null; 
+$dept_filter = $_GET['department'] ?? null;
+
 $student_query = "SELECT student_id.user_uid,
                     student_id.user_type,
                     student_id.first_name,
@@ -26,9 +30,37 @@ $student_query = "SELECT student_id.user_uid,
                     LEFT JOIN department_id ON student_id.department_id = department_id.department_id
                     LEFT JOIN attendance_id ON student_id.user_uid = attendance_id.user_uid
                     LEFT JOIN appeals ON student_id.user_uid = appeals.user_uid
-                    GROUP BY department_id.department_name, student_id.student_year, student_id.student_block";
+                    WHERE 1=1";
+
+$params = [];
+$types = "";
+
+if ($dept_filter && $dept_filter !== 'All') {
+    // Papalitan natin ang '=' ng 'LIKE' at lalagyan ng wildcards (%)
+    $student_query .= " AND department_id.department_name LIKE CONCAT('%', ?, '%')";
+    $params[] = $dept_filter;
+    $types .= "s";
+}
+if ($year_filter && $year_filter !== 'All') {
+    $student_query .= " AND student_id.student_year = ?";
+    $params[] = $year_filter;
+    $types .= "s";
+}
+
+if ($block_filter && $block_filter !== 'All' && $block_filter !== 'All Blocks') {
+    $student_query .= " AND student_id.student_block = ?";
+    $params[] = $block_filter;
+    $types .= "s";
+}
+
+$student_query .= " GROUP BY student_id.user_uid, department_id.department_name, student_id.student_year, student_id.student_block";
 
 $stmt_student = $conn->prepare($student_query);
+
+if (!empty($params)) {
+    $stmt_student->bind_param($types, ...$params);
+}
+
 $stmt_student->execute();
 $student_result = $stmt_student->get_result();
 $studentsCount = [];

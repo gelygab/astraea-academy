@@ -1,11 +1,7 @@
 <?php
 session_start();
 date_default_timezone_set('Asia/Manila');
-<<<<<<<< HEAD:student/api/get_student_attendance.php
 require_once '../../db.php';
-========
-require_once '../db.php';
->>>>>>>> main:faculty/get_student_attendance.php
 
 header('Content-Type: application/json');
 

@@ -1,24 +1,11 @@
 // ==========================================
-// Astraea Academy Faculty Report - PRODUCTION VERSION
+// Astraea Academy Faculty Report - Version 1 (With Placeholders)
 // ==========================================
 
 // ==========================================
-// GLOBAL VARIABLES & STATE
+// HIERARCHICAL DATA STRUCTURE
 // ==========================================
 
-let currentFaculty = null;
-let currentMonth = new Date().getMonth(); // Automatically sets to current month
-let currentYear = new Date().getFullYear(); // Automatically sets to current year
-let currentSubject = null;
-
-let allFaculty = [];
-let filteredFaculty = [];
-let departmentChart = null;
-let reasonChart = null;
-let donutCharts = {};
-let calendarDaysData = {}; // Stores calendar data fetched from the database
-
-// Configuration for hierarchical departments
 const COLLEGE_DEPARTMENTS = {
     'engineering': {
         name: 'College of Engineering',
@@ -52,144 +39,146 @@ const COLLEGE_DEPARTMENTS = {
     }
 };
 
-//facultylist get_faculty.php
-//facultyprofile get_faculty_profile.php
-//faculty calendar get_faculty_calendar.php
+// ==========================================
+// MOCK DATA - 5 Professors Across Different Colleges/Departments
+// ==========================================
 
-const API_CONFIG = {
-    baseUrl: 'api/',
-    endpoints: {
-        getFacultyList: 'get_faculty.php',
-        getFacultyProfile: 'get_faculty_profile.php',
-        getFacultyCalendar: 'get_faculty_calendar.php'
+const MOCK_FACULTY = [
+    { 
+        uid: '55555', 
+        name: 'Holmes, Sherlock', 
+        college: 'engineering',
+        collegeName: 'College of Engineering',
+        department: 'computer', 
+        departmentName: 'Computer Engineering',
+        attendance: 92,
+        present: 46,
+        late: 2,
+        absence: 2,
+        excuse: 0,
+        absentReasons: { sick: 1, personal: 1, emergency: 0, other: 0 }
+    },
+    { 
+        uid: '55556', 
+        name: 'Moriarty, Williams', 
+        college: 'engineering',
+        collegeName: 'College of Engineering',
+        department: 'electrical', 
+        departmentName: 'Electrical Engineering',
+        attendance: 88,
+        present: 44,
+        late: 3,
+        absence: 3,
+        excuse: 0,
+        absentReasons: { sick: 2, personal: 0, emergency: 1, other: 0 }
+    },
+    { 
+        uid: '55557', 
+        name: 'Watsons, John', 
+        college: 'education',
+        collegeName: 'College of Education',
+        department: 'secondary', 
+        departmentName: 'Secondary Education',
+        attendance: 95,
+        present: 47,
+        late: 1,
+        absence: 1,
+        excuse: 1,
+        absentReasons: { sick: 0, personal: 0, emergency: 0, other: 1 }
+    },
+    { 
+        uid: '55558', 
+        name: 'Holmes, Mycroft', 
+        college: 'chass',
+        collegeName: 'Humanities, Arts, and Social Sciences',
+        department: 'psychology', 
+        departmentName: 'Psychology',
+        attendance: 85,
+        present: 42,
+        late: 4,
+        absence: 3,
+        excuse: 1,
+        absentReasons: { sick: 1, personal: 1, emergency: 1, other: 0 }
+    },
+    { 
+        uid: '55559', 
+        name: 'Moriarty, Albert', 
+        college: 'engineering',
+        collegeName: 'College of Engineering',
+        department: 'chemical', 
+        departmentName: 'Chemical Engineering',
+        attendance: 90,
+        present: 45,
+        late: 2,
+        absence: 2,
+        excuse: 1,
+        absentReasons: { sick: 1, personal: 0, emergency: 0, other: 1 }
     }
+];
+
+// Faculty profile data (for individual view)
+const MOCK_FACULTY_PROFILES = {
+    '55555': { lastName: 'HOLMES,', firstName: 'Sherlock', college: 'College of Engineering', department: 'Computer Engineering' },
+    '55556': { lastName: 'MORIARTY,', firstName: 'Williams', college: 'College of Engineering', department: 'Electrical Engineering' },
+    '55557': { lastName: 'WATSONS,', firstName: 'John', college: 'College of Education', department: 'Secondary Education' },
+    '55558': { lastName: 'HOLMES,', firstName: 'Mycroft', college: 'Humanities, Arts, and Social Sciences', department: 'Psychology' },
+    '55559': { lastName: 'MORIARTY,', firstName: 'Albert', college: 'College of Engineering', department: 'Chemical Engineering' }
 };
+
+// Subject attendance data
+const MOCK_SUBJECTS = [
+    { code: 'CET 0221', description: 'Engineering Management', present: 92, absence: 0, late: 5, excuse: 0 },
+    { code: 'CPE 0222', description: 'Software Design', present: 92, absence: 0, late: 2, excuse: 0 },
+    { code: 'CPE 0223', description: 'Fundamentals of Electronic Circuits', present: 90, absence: 2, late: 2, excuse: 0 },
+    { code: 'ELE 0229', description: 'Basic Electrical and Electronics Engineering', present: 92, absence: 0, late: 0, excuse: 0 }
+];
+
+// Calendar marked days 
+const MOCK_CALENDAR_DAYS = {
+    3: { status: 'absent' },
+    6: { status: 'excused', appealType: 'Sick Leave', dateApplied: 'March 5, 2026', reason: 'Flu and high fever', updatedBy: 'Alexandra Quero' },
+    7: { status: 'absent' },
+    13: { status: 'leave', appealType: 'Personal', dateApplied: 'March 10, 2026', reason: 'Family emergency', updatedBy: 'Alexandra Quero' },
+    14: { status: 'absent' },
+    20: { status: 'excused', appealType: 'Sick Leave', dateApplied: 'March 19, 2026', reason: 'Medical checkup', updatedBy: 'Alexandra Quero' },
+    21: { status: 'leave', appealType: 'Vacation', dateApplied: 'February 15, 2026', reason: 'Pre-approved travel', updatedBy: 'Alexandra Quero' },
+    27: { status: 'absent' },
+    28: { status: 'excused', appealType: 'Emergency', dateApplied: 'March 28, 2026', reason: 'Car break down', updatedBy: 'Alexandra Quero' }
+};
+
+// ==========================================
+// GLOBAL VARIABLES
+// ==========================================
+
+let currentFaculty = null;
+let currentMonth = 2; // March (0-indexed)
+let currentYear = 2026;
+let currentSubject = { code: 'CET 0221', name: 'Engineering Management' };
+let allFaculty = [...MOCK_FACULTY];
+let filteredFaculty = [...MOCK_FACULTY];
+let departmentChart = null;
+let reasonChart = null;
+let donutCharts = {};
 
 // ==========================================
 // INITIALIZATION
 // ==========================================
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
-async function initializeApp() {
+function initializeApp() {
     setupCollegeDepartmentCascade();
     setupFilterListeners();
-    
-    // Fetch initial data from backend
-    await fetchAndLoadFacultyList();
-}
-
-function showLoading(show) {
-    isLoading = show;
-    const grid = document.getElementById('facultyGrid');
-    if (!grid) return;
-
-    if (show) {
-        grid.innerHTML = '<div class="loading-spinner">Loading faculty records...></div>'
-    }
-}
-
-function showError(message) {
-    const grid = document.getElementById('facultyGrid');
-    if (grid) {
-        grid.innerHTML = `<div class="error-message">${message}</div>`;
-    }
+    loadFaculty(filteredFaculty);
+    updateStatistics(filteredFaculty);
+    initDepartmentChart();
+    initReasonChart();
 }
 
 // ==========================================
-// API FETCH FUNCTIONS (Plug in your backend here)
-// ==========================================
-
-async function fetchAndLoadFacultyList() {
-    const grid = document.getElementById('facultyGrid');
-    grid.innerHTML = '<div class="loading-spinner">Loading faculty records...</div>';
-
-    try {
-        // TODO: Replace with your actual API endpoint to get all faculty
-        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyList}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("API Response: ", data);
-
-        if (data.success && Array.isArray(data.faculty)) {
-            allFaculty = data.faculty;
-            filteredFaculty = [...allFaculty];
-            renderFaculty(filteredFaculty);
-            updateStatistics(filteredFaculty);
-            applyFilters();
-        }else {
-            console.error('Invalid data format received:', data);
-            showError('Failed to load faculty data');
-        }
-        
-    } catch (error) {
-        console.error("Error fetching faculty list:", error);
-        grid.innerHTML = '<div class="error-message">Failed to load data. Please try again later.</div>';
-    } finally {
-        showLoading(false);
-    }
-}
-
-async function loadFacultyList(faculty) {
-    renderFaculty(faculty);
-}
-
-async function fetchFacultyProfile(uid) {
-    try {
-        // TODO: Replace with actual API call to get specific faculty profile and subjects
-        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyProfile}?facultyId=${uid}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-        
-        return null; 
-    } catch (error) {
-        console.error("Error fetching profile:", error);
-        return null;
-    }
-}
-
-async function fetchFacultyCalendar(uid, subjectCode, month, year) {
-    try {
-        // TODO: Replace with actual API call to get attendance for a specific subject and month
-        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyCalendar}?subject=${subjectCode}&month=${month}&year=${year}`);
-        const data = await response.json();
-        return data.days; 
-        
-        /* Expected backend return format example:
-        {
-            3: { status: 'absent' },
-            6: { status: 'excused', appealType: 'Sick Leave', dateApplied: 'March 5', reason: 'Flu', updatedBy: 'Admin' }
-        }
-        */
-        return {}; 
-    } catch (error) {
-        console.error("Error fetching calendar:", error);
-        return {};
-    }
-}
-
-// ==========================================
-// HIERARCHICAL FILTERING
+// HIERARCHICAL FILTERING (College & Department)
 // ==========================================
 
 function setupCollegeDepartmentCascade() {
@@ -198,18 +187,27 @@ function setupCollegeDepartmentCascade() {
 
     if (!collegeSelect || !departmentSelect) return;
 
+    // Initial population of department dropdown
     populateDepartmentDropdown('', departmentSelect);
 
+    // College change handler
     collegeSelect.addEventListener('change', function() {
-        populateDepartmentDropdown(this.value, departmentSelect);
+        const selectedCollege = this.value;
+
+        // Update department dropdown based on selected college
+        populateDepartmentDropdown(selectedCollege, departmentSelect);
+
+        // Apply filters immediately
         applyFilters();
     });
 }
 
 function populateDepartmentDropdown(collegeValue, departmentSelect) {
+    // Clear existing options except "All Departments"
     departmentSelect.innerHTML = '<option value="">All Departments</option>';
 
     if (!collegeValue || !COLLEGE_DEPARTMENTS[collegeValue]) {
+        // If no college selected, show all departments grouped
         Object.entries(COLLEGE_DEPARTMENTS).forEach(([key, college]) => {
             const optgroup = document.createElement('optgroup');
             optgroup.label = college.name;
@@ -222,6 +220,7 @@ function populateDepartmentDropdown(collegeValue, departmentSelect) {
             departmentSelect.appendChild(optgroup);
         });
     } else {
+        // Show only departments for selected college
         const college = COLLEGE_DEPARTMENTS[collegeValue];
         college.departments.forEach(dept => {
             const option = document.createElement('option');
@@ -245,22 +244,30 @@ function setupFilterListeners() {
 function applyFilters() {
     const collegeValue = document.getElementById('college')?.value || '';
     const departmentValue = document.getElementById('department')?.value || '';
+    const schoolYear = document.getElementById('schoolYear')?.value || '';
+    const semester = document.getElementById('semester')?.value || '';
 
+    // Filter faculty based on selected criteria
     filteredFaculty = allFaculty.filter(faculty => {
         let matchesCollege = true;
         let matchesDepartment = true;
 
-        if (collegeValue) matchesCollege = faculty.college === collegeValue;
-        if (departmentValue) matchesDepartment = faculty.department === departmentValue;
+        // College filter
+        if (collegeValue) {
+            matchesCollege = faculty.college === collegeValue;
+        }
+
+        // Department filter
+        if (departmentValue) {
+            matchesDepartment = faculty.department === departmentValue;
+        }
 
         return matchesCollege && matchesDepartment;
     });
 
-    renderFaculty(filteredFaculty);
+    // Update all components
+    loadFaculty(filteredFaculty);
     updateStatistics(filteredFaculty);
-    
-    if(!departmentChart) initDepartmentChart();
-    if(!reasonChart) initReasonChart();
     updateCharts(filteredFaculty);
 }
 
@@ -270,17 +277,22 @@ function applyFilters() {
 
 function updateStatistics(faculty) {
     const totalEmployees = faculty.length;
+
+    // Calculate total absences across all filtered students
     const totalAbsent = faculty.reduce((sum, f) => sum + (f.absence || 0), 0);
+
+    // Calculate average attendance rate
     const avgAttendance = totalEmployees > 0 
         ? faculty.reduce((sum, f) => sum + (f.attendance || 0), 0) / totalEmployees 
         : 0;
 
-    const totalPresent = totalEmployees - totalAbsent;
-    const productivity = (totalEmployees > 0 && totalEmployees > totalAbsent) ? ((totalPresent / totalEmployees) * 100).toFixed(1) : '0.0';
+    // Productivity = average attendance rate
+    const productivity = avgAttendance.toFixed(1);
 
-    const avgAbsences = totalEmployees > 0 ? (totalAbsent / totalEmployees) : 0;
-    const absenteeism = Math.min((avgAbsences * 100), 100).toFixed(1);
+    // Absenteeism = 100 - productivity
+    const absenteeism = (100 - avgAttendance).toFixed(1);
 
+    // Update DOM with animation
     animateValue('totalEmployees', parseInt(document.getElementById('totalEmployees')?.textContent || 0), totalEmployees, 500);
     animateValue('totalAbsent', parseInt(document.getElementById('totalAbsent')?.textContent || 0), totalAbsent, 500);
 
@@ -309,7 +321,9 @@ function animateValue(elementId, start, end, duration) {
         let remaining = Math.max((endTime - now) / duration, 0);
         let value = Math.round(end - (remaining * range));
         element.textContent = value + (elementId === 'productivity' || elementId === 'absenteeism' ? '%' : '');
-        if (value === end) clearInterval(timer);
+        if (value === end) {
+            clearInterval(timer);
+        }
     }
 
     timer = setInterval(run, stepTime);
@@ -320,8 +334,11 @@ function animateValue(elementId, start, end, duration) {
 // MAIN REPORT VIEW - FACULTY LIST
 // ==========================================
 
+function loadFaculty(faculty) {
+    renderFaculty(faculty);
+}
+
 function getInitials(name) {
-    if(!name) return 'PR';
     return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 }
 
@@ -329,84 +346,44 @@ function renderFaculty(faculty) {
     const grid = document.getElementById('facultyGrid');
     if (!grid) return;
 
-
     if (faculty.length === 0) {
         grid.innerHTML = '<div class="no-results" style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(107, 78, 61, 0.6);">No faculty found matching the selected filters.</div>';
         return;
     }
 
-
-    // Define the scale for the bars (usually 100 for percentage-based data)
-    const maxValue = 100;
-
-
-    grid.innerHTML = faculty.map(member => {
-        // Prepare the data object for the viewRecord function to match your student report's logic
-        const facultyDataString = decodeURIComponent(encodeURIComponent(JSON.stringify(member)));
-
-
-        return `
-        <div class="faculty-card-item">
-            <div class="faculty-card-header-row">
-                <div class="faculty-info-block">
-                    <span class="faculty-uid-text">UID: ${member.uid}</span>
-                    <span class="faculty-name-text">Prof. ${member.name}</span>
-                    <span class="faculty-dept-text" style="font-size: 11px; color: rgba(107, 78, 61, 0.6); margin-top: 2px;">
-                        ${member.departmentName || 'Unknown Department'}
-                    </span>
+    grid.innerHTML = faculty.map(member => `
+        <div class="faculty-card">
+            <div class="faculty-header">
+                <div class="faculty-avatar">${getInitials(member.name)}</div>
+                <div class="faculty-info">
+                    <h4>Prof. ${member.name}</h4>
+                    <p>${member.departmentName}</p>
+                    <p style="font-size: 11px; color: rgba(107, 78, 61, 0.5);">${member.collegeName}</p>
                 </div>
-               
-                <button class="btn-view-record-gold" onclick="viewRecord('${member.uid}')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
+            </div>
+            <div class="attendance-bar-container">
+                <div class="attendance-bar-header">
+                    <span>Attendance Rate</span>
+                    <span>${member.attendance}%</span>
+                </div>
+                <div class="attendance-bar">
+                    <div class="attendance-bar-fill" style="width: ${member.attendance}%"></div>
+                </div>
+            </div>
+            <div class="faculty-actions">
+                <button class="btn-primary" onclick="viewRecord('${member.uid}')">
                     View Record
                 </button>
             </div>
-
-
-            <div class="horizontal-chart-container">
-                <div class="bar-chart-row">
-                    <span class="bar-chart-label">Absence</span>
-                    <div class="bar-chart-track">
-                        <div class="bar-chart-fill attendance" style="width: ${(member.absence / maxValue) * 100}%"></div>
-                    </div>
-                    <span class="bar-chart-value">${member.absence || 0}</span>
-                </div>
-
-
-                <div class="bar-chart-row">
-                    <span class="bar-chart-label">Leave</span>
-                    <div class="bar-chart-track">
-                        <div class="bar-chart-fill absence" style="width: ${(member.leave / maxValue) * 100}%"></div>
-                    </div>
-                    <span class="bar-chart-value">${member.leave || 0}</span>
-                </div>
-
-
-                <div class="bar-chart-row">
-                    <span class="bar-chart-label">Excused</span>
-                    <div class="bar-chart-track">
-                        <div class="bar-chart-fill late" style="width: ${(member.excuse / maxValue) * 100}%"></div>
-                    </div>
-                    <span class="bar-chart-value">${member.excuse || 0}</span>
-                </div>
-            </div>
         </div>
-        `;
-    }).join('');
+    `).join('');
 }
 
-async function viewRecord(uid) {
-    const basicInfo = allFaculty.find(f => f.uid === uid);
-    if (!basicInfo) return;
-
-    currentFaculty = basicInfo;
-    
-    // Fetch detailed profile and subjects from backend
-    const profileData = await fetchFacultyProfile(uid);
-    showFacultyRecord(basicInfo, profileData);
+function viewRecord(uid) {
+    const faculty = allFaculty.find(f => f.uid === uid);
+    if (faculty) {
+        showFacultyRecord(faculty);
+    }
 }
 
 // ==========================================
@@ -417,14 +394,42 @@ function initDepartmentChart() {
     const ctx = document.getElementById('departmentChart');
     if (!ctx) return;
 
+    const data = calculateDepartmentData(filteredFaculty);
+
     departmentChart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: [], datasets: [{ label: 'Average Attendance Rate (%)', data: [], backgroundColor: 'rgba(212, 168, 67, 0.8)', borderColor: '#D4A843', borderWidth: 1, borderRadius: 6 }] },
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Average Attendance Rate (%)',
+                data: data.values,
+                backgroundColor: 'rgba(212, 168, 67, 0.8)',
+                borderColor: '#D4A843',
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
         options: {
-            responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
             scales: {
-                y: { beginAtZero: true, max: 100, ticks: { callback: function(value) { return value + '%'; } } },
-                x: { ticks: { font: { size: 10 } } }
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 10 }
+                    }
+                }
             }
         }
     });
@@ -434,66 +439,92 @@ function initReasonChart() {
     const ctx = document.getElementById('reasonChart');
     if (!ctx) return;
 
+    const data = calculateReasonData(filteredFaculty);
+
     reasonChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: ['Sick Leave', 'Personal', 'Emergency', 'Others'],
-            datasets: [{ data: [0,0,0,0], backgroundColor: ['#eac35a', '#d2bf44', '#D69E2E', '#bca025'], borderColor: '#FFFFFF', borderWidth: 2 }]
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#eac35a',
+                    '#d2bf44',
+                    '#D69E2E',
+                    '#bca025'
+                ],
+                borderColor: '#FFFFFF',
+                borderWidth: 2
+            }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15,
+                        font: { size: 11 }
+                    }
+                }
+            }
+        }
     });
 }
 
 function updateCharts(faculty) {
+    // Update Department Chart
     if (departmentChart) {
         const deptData = calculateDepartmentData(faculty);
         departmentChart.data.labels = deptData.labels;
         departmentChart.data.datasets[0].data = deptData.values;
         departmentChart.update();
     }
+
+    // Update Reason Chart
     if (reasonChart) {
-        reasonChart.data.datasets[0].data = calculateReasonData(faculty);
+        const reasonData = calculateReasonData(faculty);
+        reasonChart.data.datasets[0].data = reasonData;
         reasonChart.update();
     }
 }
 
 function calculateDepartmentData(faculty) {
+    // Group faculty by department and calculate average attendance
     const deptMap = {};
+
     faculty.forEach(f => {
-        if (!deptMap[f.departmentName]) deptMap[f.departmentName] = { total: 0, count: 0 };
+        if (!deptMap[f.departmentName]) {
+            deptMap[f.departmentName] = { total: 0, count: 0 };
+        }
         deptMap[f.departmentName].total += f.attendance;
         deptMap[f.departmentName].count += 1;
     });
+
     const labels = Object.keys(deptMap);
-    const values = labels.map(label => Math.round(deptMap[label].total / deptMap[label].count));
+    const values = labels.map(label => {
+        const dept = deptMap[label];
+        return Math.round(dept.total / dept.count);
+    });
+
     return { labels, values };
 }
 
 function calculateReasonData(faculty) {
+    // Sum up all absent reasons
     const totals = { sick: 0, personal: 0, emergency: 0, other: 0 };
-    
-    faculty.forEach(f => {
-        if (Array.isArray(f.absentReasons)) {
-            f.absentReasons.forEach(reason => {
-                const type = reason.type.toLowerCase();
-                const count = parseInt(reason.count) || 0;
 
-                if (type === 'sick_leave' || type === 'medical_appointment') {
-                    totals.sick += count;
-                } 
-                else if (type === 'personal_emergency' || type === 'leave_of_absence') {
-                    totals.personal += count;
-                } 
-                else if (type === 'emergency_leave' || type === 'emergency') {
-                    totals.emergency += count;
-                } 
-                else {
-                    totals.other += count;
-                }
-            });
+    faculty.forEach(f => {
+        if (f.absentReasons) {
+            totals.sick += f.absentReasons.sick || 0;
+            totals.personal += f.absentReasons.personal || 0;
+            totals.emergency += f.absentReasons.emergency || 0;
+            totals.other += f.absentReasons.other || 0;
         }
     });
-    
+
     return [totals.sick, totals.personal, totals.emergency, totals.other];
 }
 
@@ -512,53 +543,54 @@ function showView(viewId) {
     }
 }
 
-function showMainReport() { showView('mainReportView'); }
-function backToFacultyTeamRecords() { showView('mainReportView'); }
-function backToFacultyRecord() { showView('facultyRecordView'); }
+function showMainReport() {
+    showView('mainReportView');
+}
 
-function showFacultyRecord(basicInfo, profileData) {
-    let lastName = "-";
-    let firstName = "-";
-    
-    if (profileData && profileData.lastName) {
-        lastName = profileData.lastName;
-        firstName = profileData.firstName;
-    } else if (basicInfo.name) {
-        const parts = basicInfo.name.split(',');
-        lastName = parts[0] ? parts[0] + ',' : '';
-        firstName = parts[1] ? parts[1].trim() : '';
-    }
+function backToFacultyTeamRecords() {
+    showView('mainReportView');
+}
 
-    document.getElementById('profileLastName').textContent = lastName;
-    document.getElementById('profileFirstName').textContent = firstName;
-    document.getElementById('profileCollege').textContent = basicInfo.collegeName || '-';
-    document.getElementById('profileDepartment').textContent = basicInfo.departmentName || '-';
+function showFacultyRecord(facultyData) {
+    currentFaculty = facultyData;
 
-    initDonutCharts(basicInfo);
-    
-    const subjects = profileData && profileData.subjects ? profileData.subjects : [];
-    loadSubjectTable(subjects);
+    const profile = MOCK_FACULTY_PROFILES[facultyData.uid] || {
+        lastName: facultyData.name.split(',')[0] + ',',
+        firstName: facultyData.name.split(',')[1] || '',
+        college: facultyData.collegeName,
+        department: facultyData.departmentName
+    };
+
+    // Update profile display
+    document.getElementById('profileLastName').textContent = profile.lastName;
+    document.getElementById('profileFirstName').textContent = profile.firstName;
+    document.getElementById('profileCollege').textContent = profile.college;
+    document.getElementById('profileDepartment').textContent = profile.department;
+
+    // Initialize donut charts with faculty-specific data
+    initDonutCharts(facultyData);
+
+    // Load subject table
+    loadSubjectTable();
 
     showView('facultyRecordView');
 }
 
-async function showCalendarView(subjectCode, subjectName) {
-    currentSubject = { code: subjectCode, name: subjectName };
-    document.getElementById('calendarSubjectTitle').textContent = `${subjectCode} ${subjectName}`;
-    
-    currentMonth = new Date().getMonth();
-    currentYear = new Date().getFullYear();
-
-    await loadAndRenderCalendar();
+function showCalendarView(subjectCode = null) {
+    if (subjectCode) {
+        const subject = MOCK_SUBJECTS.find(s => s.code === subjectCode);
+        if (subject) {
+            currentSubject = { code: subject.code, name: subject.description };
+        }
+    }
+    document.getElementById('calendarSubjectTitle').textContent = 
+        currentSubject.code + ' ' + currentSubject.name;
+    renderCalendar();
     showView('calendarView');
 }
 
-async function loadAndRenderCalendar() {
-    if(!currentFaculty || !currentSubject) return;
-    
-    // Fetch real calendar data for this month
-    calendarDaysData = await fetchFacultyCalendar(currentFaculty.uid, currentSubject.code, currentMonth + 1, currentYear);
-    renderCalendar();
+function backToFacultyRecord() {
+    showView('facultyRecordView');
 }
 
 // ==========================================
@@ -566,15 +598,19 @@ async function loadAndRenderCalendar() {
 // ==========================================
 
 function initDonutCharts(facultyData) {
+    // Destroy existing charts
     Object.keys(donutCharts).forEach(key => {
-        if (donutCharts[key]) donutCharts[key].destroy();
+        if (donutCharts[key]) {
+            donutCharts[key].destroy();
+        }
     });
     donutCharts = {};
 
-    const present = facultyData.present || 0;
-    const late = facultyData.late || 0;
-    const absence = facultyData.absence || 0;
-    const excuse = facultyData.excuse || 0;
+    // Use faculty-specific data or calculate from attendance
+    const present = facultyData.present || Math.round((facultyData.attendance / 100) * 50);
+    const late = facultyData.late || 2;
+    const absence = facultyData.absence || 3;
+    const excuse = facultyData.excuse || 2;
 
     const chartConfigs = [
         { id: 'presentChart', value: present, labelId: 'presentPercentage' },
@@ -608,11 +644,25 @@ function initDonutCharts(facultyData) {
                     cutout: '70%'
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, tooltip: { enabled: false } }, animation: { animateRotate: true, duration: 1000 } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                animation: {
+                    animateRotate: true,
+                    duration: 1000
+                }
+            }
         });
 
+        // Update percentage text
         const labelEl = document.getElementById(config.labelId);
-        if (labelEl) labelEl.textContent = config.value + '%';
+        if (labelEl) {
+            labelEl.textContent = config.value + '%';
+        }
     });
 }
 
@@ -620,26 +670,20 @@ function initDonutCharts(facultyData) {
 // SUBJECT TABLE
 // ==========================================
 
-function loadSubjectTable(subjects) {
+function loadSubjectTable() {
     const tbody = document.getElementById('subjectTableBody');
     if (!tbody) return;
 
-    if (!subjects || subjects.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No subjects found</td></tr>';
-        document.getElementById('totalSubjects').textContent = '0';
-        return;
-    }
-
-    tbody.innerHTML = subjects.map(subject => `
+    tbody.innerHTML = MOCK_SUBJECTS.map(subject => `
         <tr>
             <td>${subject.code}</td>
             <td>${subject.description}</td>
-            <td>${subject.present || 0}</td>
-            <td>${subject.absence || 0}</td>
-            <td>${subject.late || 0}</td>
-            <td>${subject.excuse || 0}</td>
+            <td>${subject.present}</td>
+            <td>${subject.absence}</td>
+            <td>${subject.late}</td>
+            <td>${subject.excuse}</td>
             <td>
-                <button class="btn-view-calendar-small" onclick="showCalendarView('${subject.code}', '${subject.description}')">
+                <button class="btn-view-calendar-small" onclick="showCalendarView('${subject.code}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -652,12 +696,15 @@ function loadSubjectTable(subjects) {
         </tr>
     `).join('');
 
+    // Update total subjects
     const totalEl = document.getElementById('totalSubjects');
-    if (totalEl) totalEl.textContent = subjects.length;
+    if (totalEl) {
+        totalEl.textContent = MOCK_SUBJECTS.length;
+    }
 }
 
 // ==========================================
-// CALENDAR VIEW (Reads from API fetched data)
+// CALENDAR VIEW
 // ==========================================
 
 function renderCalendar() {
@@ -685,8 +732,7 @@ function renderCalendar() {
 
     // Current month days with status indicators and detailed click handlers
     for (let day = 1; day <= daysInMonth; day++) {
-        // Read from the fetched calendarDaysData object instead of the mock data
-        const dayData = calendarDaysData[day];
+        const dayData = MOCK_CALENDAR_DAYS[day];
         let statusIndicator = '';
         let clickHandler = '';
 
@@ -694,7 +740,7 @@ function renderCalendar() {
             const status = dayData.status;
             statusIndicator = `<span class="status-indicator ${status}"></span>`;
             
-            // Safely format the extra data strings
+            // Format the extra data cleanly for the onclick function
             const appealType = dayData.appealType ? `'${dayData.appealType}'` : "'-'";
             const dateApplied = dayData.dateApplied ? `'${dayData.dateApplied}'` : "'-'";
             const reason = dayData.reason ? `'${dayData.reason}'` : "'-'";
@@ -720,19 +766,6 @@ function renderCalendar() {
 
     daysContainer.innerHTML = html;
 }
-
-async function changeMonth(direction) {
-    currentMonth += direction;
-    if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-    } else if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-    }
-    await loadAndRenderCalendar();
-}
-
 // ==========================================
 // ATTENDANCE MODAL
 // ==========================================
@@ -743,52 +776,47 @@ function showAttendanceDetails(day, status, appealType = '-', dateApplied = '-',
 
     const dateStr = `${monthNames[currentMonth]} ${day}, ${currentYear}`;
 
+    // 1. Populate core data (always visible)
     document.getElementById('modalFacultyName').textContent = 
         currentFaculty ? `Prof. ${currentFaculty.name}` : 'Prof. -';
     document.getElementById('modalDate').textContent = dateStr;
     document.getElementById('modalID').textContent = 
         currentFaculty ? currentFaculty.uid : '-';
 
-    // Toggle specific rows based on status
+    // 2. Select the parent rows of the extra details
     const appealRow = document.getElementById('modalAppealType').parentElement;
     const dateAppliedRow = document.getElementById('modalDateApplied').parentElement;
     const reasonRow = document.getElementById('modalReason').parentElement;
     const updatedByRow = document.getElementById('modalStatusUpdatedBy').parentElement;
 
+    // 3. Conditional display logic based on status
     if (status.toLowerCase() === 'absent') {
+        // Hide extra rows for absent
         appealRow.style.display = 'none';
         dateAppliedRow.style.display = 'none';
         reasonRow.style.display = 'none';
         updatedByRow.style.display = 'none';
     } else {
+        // Show extra rows for leave/excused (using 'flex' to match your CSS)
         appealRow.style.display = 'flex';
         dateAppliedRow.style.display = 'flex';
         reasonRow.style.display = 'flex';
         updatedByRow.style.display = 'flex';
 
+        // Populate the extra data
         document.getElementById('modalAppealType').textContent = appealType;
         document.getElementById('modalDateApplied').textContent = dateApplied;
         document.getElementById('modalReason').textContent = reason;
         document.getElementById('modalStatusUpdatedBy').textContent = updatedBy;
     }
-
+    
+    // Open the modal
     document.getElementById('attendanceModal').classList.add('active');
 }
 
-function closeAttendanceModal(event) {
-    const modal = document.getElementById('attendanceModal');
-    if (!modal) return;
-
-    if (!event) {
-        modal.classList.remove('active');
-        return;
-    }
-
-    if (event.target.id === 'attendanceModal') {
-        modal.classList.remove('active');
-    }
+    function closeAttendanceModal() {
+    document.getElementById('attendanceModal').classList.remove('active');
 }
-
 // ==========================================
 // SIDEBAR NAVIGATION
 // ==========================================
@@ -805,7 +833,6 @@ function toggleNavGroup(button) {
 document.querySelector('.logout')?.addEventListener('click', function(e) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out?')) {
-        window.location.href = '/login'; // Adjust to real logout endpoint
+        window.location.href = '/login';
     }
 });
-

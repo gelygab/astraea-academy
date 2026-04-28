@@ -29,7 +29,7 @@ $totalDays = 90;
 
 $excuse_query = "SELECT appeals.user_uid,
                     appeals.status, 
-                    appeals.time_type 
+                    appeals.time_type, 
                     appeals.start_date, 
                     appeals.end_date
                 FROM appeals
@@ -50,12 +50,8 @@ $subjects_query = "SELECT schedule_id.subject_code,
                         schedule_id.schedule_id,
                         student_id.user_uid,
                             SUM(CASE WHEN attendance_id.attendance_status = 'Present' THEN 1 ELSE 0 END) as present_count,
-                            SUM(CASE 
-                                WHEN attendance_id.attendance_status = 'Absent' 
-                                AND (appeals.status IS NULL OR appeals.status != 'approved') THEN 1 ELSE 0 END) as absent_count,
-                            SUM(CASE
-                                WHEN attendance_id.attendance_status = 'Absent'
-                                AND (appeals.status = 'approved'THEN 1 ELSE 0 END) as excuse_count
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Absent' AND appeals.status IS NULL OR appeals.status != 'approved' THEN 1 ELSE 0 END) as absent_count,
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Absent' AND appeals.status = 'approved' THEN 1 ELSE 0 END) as excuse_count
                     FROM schedule_id
                     LEFT JOIN student_id ON schedule_id.student_year = student_id.student_year AND schedule_id.student_block = student_id.student_block
                     LEFT JOIN attendance_id ON student_id.user_uid = attendance_id.user_uid AND attendance_id.schedule_id = schedule_id.schedule_id
@@ -67,7 +63,7 @@ $subjects_query = "SELECT schedule_id.subject_code,
                         schedule_id.subject_name, 
                         schedule_id.student_year,
                         schedule_id.student_block,
-                        student_id.user_uid.
+                        student_id.user_uid,
                         schedule_id.schedule_id";
 $stmt_subjects = $conn->prepare($subjects_query);
 $stmt_subjects->bind_param("i", $studentId);

@@ -347,35 +347,15 @@ function applyFilters() {
     const semester = document.getElementById('semester')?.value || '';
     
     // Filter students based on selected criteria
-    filteredStudents = allStudents.filter(student => {
-        let matchesDepartment = true;
-        let matchesYear = true;
-        let matchesBlock = true;
-        
-        // Department filter
-        if (departmentValue !== '') {
-            matchesDepartment = student.department === departmentValue;
-        }
-        
-        // Year filter
-        if (yearValue) {
-            // Use year property if available, otherwise infer from UID
-            const studentYear = student.year || student.uid?.charAt(0);
-            matchesYear = String(studentYear) === yearValue;
-        }
-        
-        // Block filter
-        if (blockValue) {
-            const studentBlock = student.block || student.uid?.charAt(1);
-            matchesBlock = String(studentBlock) === blockValue;
-        }
-        
-        return matchesDepartment && matchesYear && matchesBlock;
+    fetchFilteredStudents({ 
+        department: departmentValue, 
+        year: yearValue, 
+        block: blockValue 
     });
     
     // Re-render students and statistics
-    loadStudents(filteredStudents);
-    updateStatistics(filteredStudents);
+    // loadStudents(filteredStudents);
+    // updateStatistics(filteredStudents);
     
     // Optional: Send filter params to backend for server-side filtering
     // fetchFilteredStudents({ department: departmentValue, year: yearValue, block: blockValue });
@@ -390,7 +370,7 @@ async function fetchFilteredStudents(filters) {
     try {
         const queryParams = new URLSearchParams();
         Object.entries(filters).forEach(([key, value]) => {
-            if (value) queryParams.append(key, value);
+            if (value && value !== 'All' && !value.includes('All ')) queryParams.append(key, value);
         });
         
         const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getStudents}?${queryParams}`, {
