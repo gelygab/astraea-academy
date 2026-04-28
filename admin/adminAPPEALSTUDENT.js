@@ -282,6 +282,10 @@ function renderAppeals(appeals) {
                     <span class="label">Block</span>
                     <span class="value">${appeal.block}</span>
                 </div>
+                  <div class="appeal-detail-row">
+                    <span class="label">Subject Affected</span>
+                    <span class="value">${appeal.subjectAffected}</span>
+                </div>
             </div>
             <div class="appeal-actions">
                 <button class="btn-primary" onclick="viewSummary('${appeal.id}')">
@@ -362,6 +366,7 @@ function viewSummary(appealId) {
     document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
     document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
     document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
+    document.getElementById('summarySubjectAffected').textContent = appeal.subjectAffected || 'N/A';
     document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
     if (appeal.attachmentUrl) {
         document.getElementById('summaryAttachment').href = appeal.attachmentUrl;
@@ -372,6 +377,7 @@ function viewSummary(appealId) {
         document.getElementById('summaryAttachment').style.pointerEvents = 'none';
         document.getElementById('summaryAttachment').style.color = '#666';
     }
+    
     document.getElementById('summaryUpdatedBy').textContent = appeal.updatedBy || 'N/A';
 
     const statusEl = document.getElementById('summaryStatus');

@@ -484,7 +484,7 @@ body {
 }
 
 .appeal-details {
-    margin-bottom: 16px;
+    margin-bottom: 16px;                                          
 }
 
 .appeal-detail-row {
@@ -574,9 +574,15 @@ body {
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
+
+.modal-content::-webkit-scrollbar { width: 6px; }
+.modal-content::-webkit-scrollbar-track { background: transparent; }
+.modal-content::-webkit-scrollbar-thumb { background: #d1d1d1; border-radius: 10px; }
 
 .modal-header {
     display: flex;
@@ -607,19 +613,43 @@ body {
 
 .modal-body {
     padding: 24px;
+    flex: 1;
 }
 
 .appeal-detail-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
-    padding: 12px 0;
+    padding: 8px 0;
     border-bottom: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.detail-row-subject-affected {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.detail-row-subject-affected span, 
+.detail-row-subject-affected p {
+    justify-content: space-between;
+    color: var(--dark-gold) !important;
+    font-weight: 600; 
+}
+
+.attachment-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.1);
+    color: var(--light-gold);
+    text-decoration: underline;
 }
 
 .detail-row:last-child {
@@ -650,6 +680,26 @@ body {
     padding: 12px;
     background: rgba(212, 168, 67, 0.05);
     border-radius: 8px;
+}
+
+.detail-row-footer {
+    padding: 16px 24px; 
+    background: var(--light-gold); 
+    text-align: right; 
+    font-size: 0.9rem;
+    color: var(--dark-brown); 
+    margin: 0 -24px -24px -24px; 
+    border-radius: 0 0 var(--border-radius) var(--border-radius); 
+    width: calc(100% + 48px); 
+    display: block;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+} 
+
+.appeal-detail-section .detail-row:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 /* Update Status Modal */
