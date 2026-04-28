@@ -39,9 +39,8 @@ $user_uid = $_SESSION['uid'];
                 <div class="profile-header-actions">
                     <button class="btn-back" onclick="window.location.href='facultydashboardCLASSLIST.php'">◀ Back</button>
                     <div class="right-actions">
-                       
-                        <button class="btn-download" id="downloadBtn">
-                            <span class="material-symbols-outlined">file_download</span> Download
+                        <button class="download-btn" id="downloadReportBtn">
+                            <span class="material-symbols-outlined">download</span> Download
                         </button>
                     </div>
                 </div>

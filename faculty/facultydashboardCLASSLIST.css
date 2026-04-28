@@ -546,7 +546,7 @@ aside:hover ~ .class-list-dashboard {
     font-size: 0.9rem;
 }
 
-.btn-download {
+.download-btn {
     background: var(--neon-purple);
     color: var(--white);
     height: 40px;    

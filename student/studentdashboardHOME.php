@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../db.php';
+require_once 'db.php';
 
 if (!isset($_SESSION['uid'])) {
     header('Location: studentlogin.php');
@@ -23,29 +23,73 @@ $user_uid = $_SESSION['uid'];?>
 </head>
 <body>
     <div class="background-container">
-        <img src="../images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <div class="container">
         <aside>
             <div class="top">
                 <div class="logo">
-                    <img src="../images/AA_Logo.png" alt="Logo">
+                    <img src="images/AA_Logo.png" alt="Logo">
                     <h1>Astraea Academy</h1>
                 </div>
             </div>
 
-            <div class="sidebar">
-                <h3>MAIN MENU</h3>
-                <a href="studentdashboardHOME.php" class="active"><span class="material-symbols-outlined">star</span><h2>Home</h2></a>
-                <a href="studentdashboardSCHED.php"><span class="material-symbols-outlined">star</span><h2>View Schedule</h2></a>
-                <a href="studentdashboardLEAVE.php"><span class="material-symbols-outlined">star</span><h2>Apply for Leave</h2></a>
-                <a href="studentdashboardEXCUSE.php"><span class="material-symbols-outlined">star</span><h2>Request an Excuse</h2></a>
-                <a href="studentdashboardAPPEALS.php"><span class="material-symbols-outlined">star</span><h2>View Pending Appeals</h2></a>
+            <div class="sidebar-nav">
+                <p class="nav-label">MAIN MENU</p>
+                
+                <a href="studentdashboardHOME.php" class="active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span class="nav-text">Home</span>
+                </a>
 
-                <div class="below">
-                    <h3>SETTINGS</h3>
-                    <a href="logout.php"><span class="material-symbols-outlined">star</span><h2>Log Out</h2></a>
+                <a href="studentdashboardSCHED.php">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span class="nav-text">View Schedule</span>
+                </a>
+
+                <a href="studentdashboardLEAVE.php">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <polyline points="16 11 18 13 22 9"></polyline>
+                    </svg>
+                    <span class="nav-text">Apply for Leave</span>
+                </a>
+
+                <a href="studentdashboardEXCUSE.php">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    <span class="nav-text">Request an Excuse</span>
+                </a>
+
+                <a href="studentdashboardAPPEALS.php">
+                   <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span class="nav-text">View Pending Appeals</span> 
+                </a>
+
+                <div class="sidebar-footer">
+                    <a href="studentlogout.php">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span class="nav-text">Log Out</span>
+                    </a>
                 </div>
             </div>
         </aside>
@@ -53,7 +97,6 @@ $user_uid = $_SESSION['uid'];?>
         <main class="student-dashboard">
             <section class="card student-card">
                 <div class="card-header">
-                    <h3>Student Details</h3>
                     <div class="header-controls">
                         <div class="dropdown-pill" id="customDropdown">
                             <div class="selected-wrapper">
@@ -66,16 +109,21 @@ $user_uid = $_SESSION['uid'];?>
                                  <li data-value="monthly">Monthly</li>
                              </ul>
                         </div>
-                        <button class="download-btn" onclick="downloadData()">
+                        <button class="download-btn" id="downloadReportBtn">
                             <span class="material-symbols-outlined">download</span> Download
                         </button>
                     </div>
                 </div>
 
                 <div class="student-info-flex">
-                    <div class="pfp-circle"></div>
+                    <div class="pfp-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    </div>
                     <div class="info-details"> 
-                        <h2 id="studentName">Loading...</h2>
+                        <h2 id="studentName" class="stylized-name loading">Loading...</h2>
                         <div id="studentDetailsGrid" class="details-grid">
                             <p><strong>UID:</strong><br><span id="uid-val">...</span></p>
                             <p><strong>Contact:</strong><br><span id="contact-val">...</span></p>
@@ -84,9 +132,9 @@ $user_uid = $_SESSION['uid'];?>
                         </div>
                     </div>
                 </div>
-
-                <div id="attendanceGrid" class="attendance-grid"></div>
             </section>
+
+            <div id="attendanceGrid" class="attendance-grid" style="min-height: 100px;"></div>
 
             <div class="main-grid-layout">
                 <div class="left-column">
@@ -137,7 +185,7 @@ $user_uid = $_SESSION['uid'];?>
                     <div class="right-column-2">
                         <section class="card extra-card">
                             <h2>Astraea Academy</h2>
-                            <p style="color: #ffe4e1; font-size: 1.2rem; margin-top: 10px;">Ad astra, Per Sapientiam</p>
+                            <p style="color: var(--white); font-size: 2.5rem; font-weight: 700; margin-top: 10px;">Ad astra, Per Sapientiam</p>
                         </section>
                     </div>
                 </div>

@@ -80,11 +80,21 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('studentName').textContent = "Error: No Student Selected";
     }
 
-    // --- DOWNLOAD RECORD LOGIC ---
-    const downloadBtn = document.getElementById('downloadBtn');
+// --- DOWNLOAD REPORT TRIGGER ---
+    const downloadBtn = document.getElementById('downloadReportBtn');
+
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
-            window.print();
+            // Grab the specific student's UID from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentUid = urlParams.get('uid');
+
+            if (studentUid) {
+                // Redirect to the PHP export file in the STUDENT folder
+                window.location.href = `/astraea-academy/student/student-download_report.php?uid=${studentUid}`;
+            } else {
+                alert("Error: No student selected to download.");
+            }
         });
     }
 });

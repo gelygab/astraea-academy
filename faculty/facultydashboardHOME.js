@@ -176,5 +176,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.onclick = () => { if (menu) menu.style.display = 'none'; };
 
+    // --- DOWNLOAD REPORT TRIGGER ---
+    const downloadBtn = document.querySelector('.download-btn') || document.getElementById('downloadBtn');
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', (e) => {
+            e.preventDefault(); 
+
+            // 1. Get the current period from the dropdown (defaults to 'monthly')
+            let selectedPeriod = 'monthly';
+            const displayValue = document.getElementById('displayValue');
+            if (displayValue && displayValue.textContent) {
+                selectedPeriod = displayValue.textContent.trim().toLowerCase();
+            }
+
+            // 2. Grab the logged-in Faculty UID from the DOM
+            const facultyUidEl = document.getElementById('uid-val');
+            const facultyUid = facultyUidEl ? facultyUidEl.textContent.trim() : '';
+
+            if (facultyUid) {
+                // 3. Construct the URL and redirect to viewREPORT.php!
+                const targetUrl = `viewREPORT.php?uid=${facultyUid}&period=${selectedPeriod}`;
+                console.log("Downloading report from: ", targetUrl);
+                window.location.href = targetUrl;
+            } else {
+                alert("Error: Could not detect Faculty ID.");
+            }
+        });
+    }
+
     fetchData();
 });
