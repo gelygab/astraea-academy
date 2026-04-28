@@ -221,8 +221,10 @@ function submitForm() {
 
     // 2. Disable the button visually
     const submitBtn = document.querySelector('.submit-btn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+    }
 
     // 3. Grab all the values from the form
     const timeType = document.getElementById('timeType').value;
@@ -236,17 +238,22 @@ function submitForm() {
     // 4. Validate (make sure dates are filled)
     if (!startDate || !endDate) {
         alert('Please select both start and end dates.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit';
+        }
         isSubmitting = false;
         return;
     }
+
+    // FIX: Clean up the " days" text to just send the integer to the database
+    const parsedNumDays = parseInt(numDays) || 0;
     
     const formData = new FormData();
     formData.append('time_type', timeType);
     formData.append('start_date', startDate);
     formData.append('end_date', endDate);
-    formData.append('number_of_days', numDays);
+    formData.append('number_of_days', parsedNumDays); // Send the clean integer
     formData.append('return_on', returnDate);
     formData.append('comment', comment);
 
@@ -258,26 +265,34 @@ function submitForm() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json()) // FIX: Read the response as JSON!
     .then(data => {
-        // Show the success message directly from the PHP file
-        alert(data);
-        
-        // Reset form and the upload text display
-        document.getElementById('excuseForm').reset();
-        document.querySelector('.upload-text').textContent = 'Upload';
-        
-        // Show success message (placeholder for backend integration)
-        alert(`Excuse Request Submitted!\n\nType: ${timeType}\nFrom: ${startDate}\nTo: ${endDate}\nDays: ${numDays}\nReturn: ${returnDate}`);
-        
-        // Redirect back to home
-        window.location.href = 'studentdashboardHOME.php';
+        if (data.success) {
+            alert("Success: " + data.message); 
+            
+            document.getElementById('excuseForm').reset();
+            const uploadText = document.querySelector('.upload-text');
+            if (uploadText) uploadText.textContent = 'Upload';
+            
+            window.location.href = 'studentdashboardHOME.php';
+        } else {
+            alert("Error: " + data.message);
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+            }
+            isSubmitting = false;
+        }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('An error occurred while submitting your excuse request.');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit';
+        }
+        isSubmitting = false;
     });
-
 }
 
 // Handle file upload display

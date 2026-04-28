@@ -5,37 +5,45 @@ require_once '../../db.php';
 
 header('Content-Type: application/json');
 
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
-if (!isset($user_id)) {
+$user_id = intval($_GET['uid'] ?? $_SESSION['uid'] ?? 0);
+if (!$user_id) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
-};
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // 2. Map time_type and comment into the leave_reason column
-    $time_type = $_POST['time_type'] ?? ''; 
-    $comment = $_POST['comment'] ?? ''; 
+    
+    // 1. Smartly map the incoming time_type to match your DB ENUM exactly
+    $raw_time_type = strtolower($_POST['time_type'] ?? '');
+    $time_type = 'sick_leave'; // Default fallback
+    if (strpos($raw_time_type, 'emergency') !== false) {
+        $time_type = 'emergency_leave';
+    } else if (strpos($raw_time_type, 'absence') !== false) {
+        $time_type = 'leave_of_absence';
+    } else {
+        $time_type = 'sick_leave';
+    }
 
-    $leave_status = 'Pending'; 
+    $comment = $_POST['comment'] ?? ''; 
+    // ENUM must be exact lowercase to match your DB screenshot!
+    $leave_status = 'pending'; 
     $date_filed = date("Y-m-d"); 
 
-    // 3. Grab ALL the dates and the number of days!
+    // 2. Grab dates and ensure number_of_days is an integer
     $start_date_raw = $_POST['start_date'] ?? '';
     $end_date_raw = $_POST['end_date'] ?? '';
-    $return_on_raw = $_POST['return_on'] ?? ''; // Grab the return date
-    $number_of_days = $_POST['number_of_days'] ?? ''; // Grab the number of days
+    $return_on_raw = $_POST['return_on'] ?? ''; 
+    $number_of_days = intval($_POST['number_of_days'] ?? 0); 
 
     // Format dates to MySQL standard
     $leave_startdate = date("Y-m-d", strtotime($start_date_raw));
     $leave_enddate = date("Y-m-d", strtotime($end_date_raw));
-
-    // Only format return_on if it's not empty, otherwise leave it null
     $return_on = !empty($return_on_raw) ? date("Y-m-d", strtotime($return_on_raw)) : null;
 
-    // 4. Handle attachment with a short file name to fit in VARCHAR(30)
+    // 3. Handle attachment with a short file name to fit in VARCHAR(255)
     $supporting_document = null;
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = 'uploads/';
+        $upload_dir = '../uploads/'; // Make sure this path points to your actual uploads folder
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
@@ -50,6 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $user_type = 'Student';
+    
+    // 4. Prepare the SQL Statement
     $sql = "INSERT INTO appeals (
                         user_uid,
                         user_type, 
@@ -66,9 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
-    // get the days from leave_startdate to leave_enddate 
-    // then check if those days overlaps with the any of the days from the schedule_id of the student
-
+    // 5. Get the days from leave_startdate to leave_enddate 
     $current_start = new DateTime($leave_startdate);
     $current_end = new DateTime($leave_enddate);
     $daysList = [];
@@ -77,6 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $current_start->modify('+1 day');
     }
 
+    // 6. Fetch student year and block
     $student_query = "SELECT student_year, student_block FROM student_id WHERE user_uid = ? LIMIT 1";
     $stmt_student = $conn->prepare($student_query);
     $stmt_student->bind_param("i", $user_id);
@@ -86,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $year = $student_data['student_year'] ?? '';
     $block = $student_data['student_block'] ?? '';
 
+    // 7. Match schedule to year and block
     $schedule_user = [];
     $schedule_query = "SELECT * FROM schedule_id WHERE student_year = ? AND student_block = ?";
     $stmt_schedule = $conn->prepare($schedule_query);
@@ -101,7 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $inserted_count = 0;
     $current_schedule_id = null;
-    $stmt->bind_param("issssssssssi", 
+    
+    // UPDATED BIND STRING: i (int), s (string). Matches your DB column types perfectly!
+    $stmt->bind_param("isssssissssi", 
             $user_id, $user_type, $time_type, $comment, 
             $leave_startdate, $leave_enddate, $number_of_days, 
             $return_on, $supporting_document, $leave_status, 
@@ -116,8 +128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
              }
         }   
     }
+    
     if ($inserted_count > 0) {
-        echo json_encode(['success' => true, 'message' => "Successfully filed leave for $inserted_count subjects."]);
+        echo json_encode(['success' => true, 'message' => "Successfully filed leave for $inserted_count subjects!"]);
     } else {
         echo json_encode(['success' => false, 'message' => "No matching schedules found for the selected dates."]);
     }
