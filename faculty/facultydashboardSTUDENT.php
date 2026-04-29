@@ -2,12 +2,12 @@
 session_start();
 include '../db.php';
 
-if (!isset($_SESSION['user_uid'])) {
+if (!isset($_SESSION['uid'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$faculty_uid = $_SESSION['user_uid'];
+$faculty_uid = $_SESSION['uid'];
 
 // ─────────────────────────────────────────────
 // GET FACULTY'S teacher_id

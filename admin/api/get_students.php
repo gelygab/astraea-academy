@@ -36,7 +36,6 @@ $params = [];
 $types = "";
 
 if ($dept_filter && $dept_filter !== 'All') {
-    // Papalitan natin ang '=' ng 'LIKE' at lalagyan ng wildcards (%)
     $student_query .= " AND department_id.department_name LIKE CONCAT('%', ?, '%')";
     $params[] = $dept_filter;
     $types .= "s";

@@ -11,6 +11,9 @@ if (!isset($user_id)) {
     exit;
 };
 
+$dept_filter = $_GET['department'] ?? null;
+$coll_filter = $_GET['college'] ?? null;
+
 $teacher_query = "SELECT teacher_id.user_uid,
                     teacher_id.first_name,
                     teacher_id.last_name,
@@ -21,9 +24,10 @@ $teacher_query = "SELECT teacher_id.user_uid,
                             FROM (
                                 SELECT user_uid, time_type, COUNT(*) as reason_count 
                                 FROM appeals 
-                                WHERE status = 'rejected' 
+                                WHERE status = 'approved' 
                                 GROUP BY user_uid, time_type) AS sub_appeals 
                             WHERE sub_appeals.user_uid = teacher_id.user_uid) AS absent_reasons_with_count,
+                        COUNT(DISTINCT CASE WHEN attendance_id.attendance_status = 'Present' THEN attendance_id.attendance_id ELSE NULL END) AS present_count,
                         COUNT(DISTINCT CASE WHEN attendance_id.attendance_status = 'Absent' THEN attendance_id.attendance_id ELSE NULL END) AS absence_count,
                         COUNT(DISTINCT CASE WHEN appeals.time_type IN ('sick_leave', 'emergency_leave', 'leave_of_absence', 'other_leave') AND appeals.status = 'approved' THEN appeals.id ELSE NULL END) AS leave_count,
                         COUNT(DISTINCT CASE WHEN appeals.time_type IN ('extracurricular_activity', 'medical_appointment', 'personal_emergency', 'other_excuse') AND appeals.status = 'approved' THEN appeals.id ELSE NULL END) AS excuse_count
@@ -33,8 +37,32 @@ $teacher_query = "SELECT teacher_id.user_uid,
                     LEFT JOIN schedule_id ON teacher_id.teacher_id = schedule_id.teacher_id 
                     LEFT JOIN attendance_id ON teacher_id.user_uid = attendance_id.user_uid AND attendance_id.schedule_id = schedule_id.schedule_id
                     LEFT JOIN appeals ON teacher_id.user_uid = appeals.user_uid AND appeals.status = 'approved'
-                    GROUP BY department_id.department_name, college_id.college_name";
+                    -- GROUP BY department_id.department_name, college_id.college_name
+                    WHERE 1=1";
+
+$params = [];
+$types = "";
+
+if ($dept_filter && $dept_filter !== 'All') {
+    $teacher_query .= " AND department_id.department_name LIKE CONCAT('%', ?, '%')";
+    $params[] = $dept_filter;
+    $types .= "s";
+}
+
+if ($coll_filter && $coll_filter !== 'All') {
+    $teacher_query .= " AND college_id.college_name LIKE CONCAT('%', ?, '%')";
+    $params[] = $coll_filter;
+    $types .= "s";
+}
+
+$teacher_query .= " GROUP BY teacher_id.user_uid, department_id.department_name";
+
 $stmt_teacher = $conn->prepare($teacher_query);
+
+if (!empty($params)) {
+    $stmt_teacher->bind_param($types, ...$params);
+}
+
 $stmt_teacher->execute();
 $teacher_result = $stmt_teacher->get_result();
 $teachersCount = [];
@@ -70,6 +98,7 @@ if ($teacher_result->num_rows > 0) {
             'name' => $row['last_name'] . ', ' . $row['first_name'],
             'collegeName' => $row['college_name'],
             'departmentName' => $row['department_name'],
+            'attendance' => $row['present_count'],
             'absence' => $row['absence_count'],
             'leave' => $row['leave_count'],
             'excuse' => $row['excuse_count'],

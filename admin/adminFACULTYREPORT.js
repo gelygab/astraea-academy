@@ -45,7 +45,7 @@ const COLLEGE_DEPARTMENTS = {
     'chass': {
         name: 'College of Humanities, Arts, and Social Sciences',
         departments: [
-            { value: 'communications', label: 'Communications' },
+            { value: 'mass communication', label: 'Mass Communication' },
             { value: 'social-work', label: 'Social Work' },
             { value: 'psychology', label: 'Psychology' }
         ]
@@ -76,9 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initializeApp() {
     setupCollegeDepartmentCascade();
     setupFilterListeners();
-    
+    initDepartmentChart();
+    initReasonChart();
     // Fetch initial data from backend
     await fetchAndLoadFacultyList();
+    updateCharts(filteredFaculty);
 }
 
 function showLoading(show) {
@@ -103,8 +105,7 @@ function showError(message) {
 // ==========================================
 
 async function fetchAndLoadFacultyList() {
-    const grid = document.getElementById('facultyGrid');
-    grid.innerHTML = '<div class="loading-spinner">Loading faculty records...</div>';
+    showLoading(true);
 
     try {
         // TODO: Replace with your actual API endpoint to get all faculty
@@ -135,7 +136,7 @@ async function fetchAndLoadFacultyList() {
         
     } catch (error) {
         console.error("Error fetching faculty list:", error);
-        grid.innerHTML = '<div class="error-message">Failed to load data. Please try again later.</div>';
+        showError();
     } finally {
         showLoading(false);
     }
@@ -159,9 +160,10 @@ async function fetchFacultyProfile(uid) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        console.log('Profile API response:', data);
+        return data.success ? data : null;
         
-        return null; 
     } catch (error) {
         console.error("Error fetching profile:", error);
         return null;
@@ -171,17 +173,28 @@ async function fetchFacultyProfile(uid) {
 async function fetchFacultyCalendar(uid, subjectCode, month, year) {
     try {
         // TODO: Replace with actual API call to get attendance for a specific subject and month
-        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyCalendar}?subject=${subjectCode}&month=${month}&year=${year}`);
+        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyCalendar}?facultyId=${uid}&subject=${encodeURIComponent(subjectCode)}&month=${month}&year=${year}`);
         const data = await response.json();
-        return data.days; 
+        const days = {};
+        data.data.attendance_days.forEach(entry => {
+            const day = parseInt(entry.date.split('-')[2]);
+            days[day] = {
+                status: entry.status.toLowerCase(),
+                appealType: entry.appealType || null,
+                dateApplied: entry.dateApplied || null,
+                reason: entry.reason || null,
+                updatedBy: entry.updatedBy || null
+            };
+        });
+        return days; 
         
         /* Expected backend return format example:
         {
             3: { status: 'absent' },
             6: { status: 'excused', appealType: 'Sick Leave', dateApplied: 'March 5', reason: 'Flu', updatedBy: 'Admin' }
         }
-        */
-        return {}; 
+        // */
+        // return {}; 
     } catch (error) {
         console.error("Error fetching calendar:", error);
         return {};
@@ -246,23 +259,53 @@ function applyFilters() {
     const collegeValue = document.getElementById('college')?.value || '';
     const departmentValue = document.getElementById('department')?.value || '';
 
-    filteredFaculty = allFaculty.filter(faculty => {
-        let matchesCollege = true;
-        let matchesDepartment = true;
-
-        if (collegeValue) matchesCollege = faculty.college === collegeValue;
-        if (departmentValue) matchesDepartment = faculty.department === departmentValue;
-
-        return matchesCollege && matchesDepartment;
+    fetchFilteredFaculty({
+        department: departmentValue,
+        college: collegeValue
     });
-
-    renderFaculty(filteredFaculty);
-    updateStatistics(filteredFaculty);
-    
-    if(!departmentChart) initDepartmentChart();
-    if(!reasonChart) initReasonChart();
-    updateCharts(filteredFaculty);
 }
+
+async function fetchFilteredFaculty(filters) {
+    showLoading(true);
+
+    try {
+        const queryParams = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value && value !== 'All' && !value.includes('All ')) queryParams.append(key, value);
+        });
+
+        const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.getFacultyList}?${queryParams}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("API Response: ", data);
+
+        if (data.success && Array.isArray(data.faculty)) {
+            allFaculty = data.faculty;
+            filteredFaculty = [...allFaculty];
+            renderFaculty(filteredFaculty);
+            updateStatistics(filteredFaculty);
+        }else {
+            console.error('Invalid data format received:', data);
+            showError('Failed to load faculty data');
+        }
+        
+    } catch (error) {
+        console.error("Error fetching faculty list:", error);
+        grid.innerHTML = '<div class="error-message">Failed to load data. Please try again later.</div>';
+    } finally {
+        showLoading(false);
+    }
+}
+
 
 // ==========================================
 // DYNAMIC STATISTICS
@@ -404,9 +447,27 @@ async function viewRecord(uid) {
 
     currentFaculty = basicInfo;
     
-    // Fetch detailed profile and subjects from backend
     const profileData = await fetchFacultyProfile(uid);
-    showFacultyRecord(basicInfo, profileData);
+
+    if (response && response.success) {
+        const profileData = response.data;
+        const subjects = profileData.subjects || [];
+
+        let totals = {
+            present: 0,
+            late: 0,
+            absence: 0,
+            excuse: 0
+        };
+
+        subjects.forEach(sub => {
+            totals.present += Number(sub.present) || 0;
+            totals.late += Number(sub.late) || 0;
+            totals.absence += Number(sub.absence) || 0;
+            totals.excuse += Number(sub.excuse) || 0;
+        });
+
+    showFacultyRecord(basicInfo, profileData, totals);
 }
 
 // ==========================================
@@ -460,12 +521,16 @@ function updateCharts(faculty) {
 function calculateDepartmentData(faculty) {
     const deptMap = {};
     faculty.forEach(f => {
-        if (!deptMap[f.departmentName]) deptMap[f.departmentName] = { total: 0, count: 0 };
-        deptMap[f.departmentName].total += f.attendance;
-        deptMap[f.departmentName].count += 1;
+        const deptName = f.departmentName || 'Unknown';
+        if (!deptMap[deptName]) deptMap[deptName] = { present: 0, total: 0 };
+        deptMap[deptName].present += parseInt(f.attendance) || 0;
+        deptMap[deptName].total += (parseInt(f.attendance) || 0) + (parseInt(f.absence) || 0);
     });
     const labels = Object.keys(deptMap);
-    const values = labels.map(label => Math.round(deptMap[label].total / deptMap[label].count));
+    const values = labels.map(label => {
+        const dept = deptMap[label];
+        return dept.total > 0 ? Math.round((dept.present / dept.total) * 100) : 0;
+    });
     return { labels, values };
 }
 
@@ -493,7 +558,7 @@ function calculateReasonData(faculty) {
             });
         }
     });
-    
+    console.log(faculty.map(f => f.absentReasons));
     return [totals.sick, totals.personal, totals.emergency, totals.other];
 }
 
@@ -520,15 +585,16 @@ function showFacultyRecord(basicInfo, profileData) {
     let lastName = "-";
     let firstName = "-";
     
-    if (profileData && profileData.lastName) {
-        lastName = profileData.lastName;
-        firstName = profileData.firstName;
+    if (profileData && profileData.data && profileData.data.lastName) {
+        lastName = profileData.data.lastName;
+        firstName = profileData.data.firstName;
     } else if (basicInfo.name) {
         const parts = basicInfo.name.split(',');
         lastName = parts[0] ? parts[0] + ',' : '';
         firstName = parts[1] ? parts[1].trim() : '';
-    }
+    };
 
+    console.log('profileData: ', profileData);
     document.getElementById('profileLastName').textContent = lastName;
     document.getElementById('profileFirstName').textContent = firstName;
     document.getElementById('profileCollege').textContent = basicInfo.collegeName || '-';
@@ -536,7 +602,7 @@ function showFacultyRecord(basicInfo, profileData) {
 
     initDonutCharts(basicInfo);
     
-    const subjects = profileData && profileData.subjects ? profileData.subjects : [];
+    const subjects = profileData && profileData.data.subjects ? profileData.data.subjects : [];
     loadSubjectTable(subjects);
 
     showView('facultyRecordView');
@@ -558,6 +624,7 @@ async function loadAndRenderCalendar() {
     
     // Fetch real calendar data for this month
     calendarDaysData = await fetchFacultyCalendar(currentFaculty.uid, currentSubject.code, currentMonth + 1, currentYear);
+    console.log('Calendar Data: ', calendarDaysData);
     renderCalendar();
 }
 
@@ -571,16 +638,25 @@ function initDonutCharts(facultyData) {
     });
     donutCharts = {};
 
-    const present = facultyData.present || 0;
-    const late = facultyData.late || 0;
-    const absence = facultyData.absence || 0;
-    const excuse = facultyData.excuse || 0;
+    const present = Number(facultyData.present) || 0;
+    const late = Number(facultyData.late) || 0;
+    const absence = Number(facultyData.absence) || 0;
+    const excuse = Number(facultyData.excuse) || 0;
+
+    const total = present + late + absence + excuse;
+
+    
+    // EDITED MATH CALCULCATIONS
+    const presentPct = total > 0 ? Math.round((present / total) * 100) : 0;
+    const latePct = total > 0 ? Math.round((late / total) * 100) : 0;
+    const absencePct = total > 0 ? Math.round((absence / total) * 100) : 0;
+    const excusePct = total > 0 ? Math.round((excuse / total) * 100) : 0;
 
     const chartConfigs = [
-        { id: 'presentChart', value: present, labelId: 'presentPercentage' },
-        { id: 'lateChart', value: late, labelId: 'latePercentage' },
-        { id: 'absenceChart', value: absence, labelId: 'absencePercentage' },
-        { id: 'excuseChart', value: excuse, labelId: 'excusePercentage' }
+        { id: 'presentChart', value: presentPct, labelId: 'presentPercentage' },
+        { id: 'lateChart', value: latePct, labelId: 'latePercentage' },
+        { id: 'absenceChart', value: absencePct, labelId: 'absencePercentage' },
+        { id: 'excuseChart', value: excusePct, labelId: 'excusePercentage' }
     ];
 
     const chartColors = {

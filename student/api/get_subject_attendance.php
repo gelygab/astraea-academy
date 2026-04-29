@@ -78,11 +78,12 @@ while ($app = $appeals_result->fetch_assoc()) {
             
             // Map the exact text your JS expects for the Legend
             $displayStatus = '';
-            if ($app['time_type'] == 'sick_leave') {
-                $displayStatus = 'Leave';
+            if (in_array($app['time_type'], ['sick_leave', 'emergency_leave', 'leave_of_absence', 'other_leave'])) {
+                $displayStatus = 'leave';
             } else {
-                $displayStatus = 'Excused';
+                $displayStatus = 'excused';
             }
+
 
             // Plot it on our map
             $calendar_map[$start->format('Y-m-d')] = $displayStatus;
