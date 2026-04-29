@@ -1,5 +1,156 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // ==========================================
+    // DYNAMIC DROPDOWN LOGIC
+    // ==========================================
+    const subjectSelect = document.getElementById('subject-select');
+    const programSelect = document.getElementById('program-select');
+    const blockSelect = document.getElementById('block-select');
+    
+    let fetchedSchedules = []; // This remembers the blocks for the chosen program
+
+    if (subjectSelect) {
+        // When a Subject is chosen...
+        subjectSelect.addEventListener('change', () => {
+            const subjectCode = subjectSelect.value;
+            
+            // Lock and reset the next dropdowns
+            programSelect.innerHTML = '<option value="" disabled selected hidden>Loading...</option>';
+            programSelect.disabled = true;
+            blockSelect.innerHTML = '<option value="" disabled selected hidden>Select program first</option>';
+            blockSelect.disabled = true;
+
+            // Ask the PHP API for the Programs and Blocks
+            const formData = new FormData();
+            formData.append('subject_code', subjectCode);
+
+            fetch('api/api_student_filter.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    programSelect.innerHTML = '<option value="" disabled selected hidden>Error loading programs</option>';
+                    return;
+                }
+
+                // Save schedules memory for the Block dropdown
+                fetchedSchedules = data.schedules; 
+
+                // Populate and unlock the Program dropdown
+                programSelect.innerHTML = '<option value="" disabled selected hidden>Select program</option>';
+                data.depts.forEach(dept => {
+                    const opt = document.createElement('option');
+                    opt.value = dept.department_id;
+                    opt.textContent = `${dept.department_name} (${dept.department_code})`;
+                    programSelect.appendChild(opt);
+                });
+                programSelect.disabled = false;
+            })
+            .catch(err => {
+                console.error("Network Error:", err);
+                programSelect.innerHTML = '<option value="" disabled selected hidden>Network Error</option>';
+            });
+        });
+    }
+
+    if (programSelect) {
+        // When a Program is chosen...
+        programSelect.addEventListener('change', () => {
+            const deptId = programSelect.value;
+            
+            // Filter our saved memory for just the blocks that match this program
+            const filteredBlocks = fetchedSchedules.filter(s => s.department_id == deptId);
+            
+            // Populate and unlock the Block dropdown
+            blockSelect.innerHTML = '<option value="" disabled selected hidden>Select block</option>';
+            filteredBlocks.forEach(sc => {
+                const opt = document.createElement('option');
+                opt.value = sc.schedule_id;
+                opt.textContent = `Block ${sc.student_block} (Year ${sc.student_year})`;
+                blockSelect.appendChild(opt);
+            });
+            blockSelect.disabled = false;
+        });
+    }
+
+
+    if (blockSelect) {
+        // When a Block is chosen, fetch the appeals!
+        blockSelect.addEventListener('change', () => {
+            const scheduleId = blockSelect.value;
+            
+            const formData = new FormData();
+            formData.append('schedule_id', scheduleId);
+
+            fetch('api/api_student_fetch.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Render the pending cards using your exact HTML layout
+                    renderPendingCards('e', data.excuse.filter(a => a.status === 'pending'));
+                    renderPendingCards('l', data.leave.filter(a => a.status === 'pending'));
+                    
+                    // Re-attach the click listeners so the "View Appeal Summary" buttons work
+                    setupViewToggles('e');
+                    setupViewToggles('l');
+                }
+            })
+            .catch(err => console.error("Fetch Error:", err));
+        });
+    }
+
+    // This function injects YOUR exact HTML structure into the grid
+    function renderPendingCards(prefix, appeals) {
+        const view = document.getElementById(`${prefix}-pending-view`);
+        if (!view) return;
+        
+        if (appeals.length === 0) {
+            view.innerHTML = '<p style="text-align:center; padding: 30px; color: #888;">No pending requests found.</p>';
+            return;
+        }
+
+        let html = '<div class="cards-grid">';
+        appeals.forEach(a => {
+            // Format the type (e.g. "sick_leave" -> "Sick Leave")
+            const typeText = a.time_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            html += `
+            <div class="request-card" data-appeal='${JSON.stringify(a).replace(/'/g, "&#39;")}'>
+                <div class="card-body">
+                    <div class="appeal-header">
+                        <div class="appeal-title-group">
+                            <span class="icon">📄</span> <h3 class="appeal-type">${typeText}</h3>
+                        </div>
+                        <p class="apply-date">Applied on: ${a.date_filed}</p> 
+                    </div>
+                    <div class="appeal-detail-section card-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Student Name:</span>
+                            <span class="detail-value student-name">${a.first_name} ${a.last_name}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Student ID:</span>
+                            <span class="detail-value">${a.user_uid}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Year & Block:</span>
+                            <span class="detail-value">Year ${a.student_year} - Block ${a.student_block}</span>
+                        </div>
+                    </div>
+                    <button class="review-btn ${prefix}-review-btn full-width-btn">View Appeal Summary</button>
+                </div>
+            </div>`;
+        });
+        html += '</div>';
+        view.innerHTML = html;
+    }
+    // ==========================================
+
     // TOGGLE SWITCH
     const btnExcuse = document.getElementById('btn-excuse');
     const btnLeave = document.getElementById('btn-leave');
