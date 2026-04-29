@@ -20,7 +20,7 @@
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     --border-radius: 16px;
     --transition: all 0.3s ease;
-    --pending-color: #D69E2E;
+    --pending-color: #FF9100;
     --approved-color: #38A169;
     --rejected-color: #E53E3E;
     --sidebar-collapsed: 76px;

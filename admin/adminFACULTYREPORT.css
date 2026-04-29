@@ -519,13 +519,16 @@ body {
    Faculty Grid
    ========================================== */
 
+
 .faculty-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
 }
 
-.faculty-card {
+
+/* New Faculty Card - Student Style Layout */
+.faculty-card-item {
     background: var(--white);
     border-radius: var(--border-radius);
     padding: 20px;
@@ -533,96 +536,118 @@ body {
     transition: var(--transition);
 }
 
-.faculty-card:hover {
+
+.faculty-card-item:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
-.faculty-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-}
 
-.faculty-avatar {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-weight: 600;
-    font-size: 18px;
-    flex-shrink: 0;
-}
-
-.faculty-info h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--brown);
-    margin-bottom: 4px;
-}
-
-.faculty-info p {
-    font-size: 12px;
-    color: rgba(107, 78, 61, 0.6);
-}
-
-.attendance-bar-container {
-    margin-bottom: 16px;
-}
-
-.attendance-bar-header {
+.faculty-card-header-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+
+.faculty-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+.faculty-uid-text {
+    font-size: 11px;
+    color: rgba(107, 78, 61, 0.6);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+
+.faculty-name-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brown);
+}
+
+
+/* Horizontal Bar Chart for Faculty */
+.horizontal-chart-container {
+    margin-top: 12px;
+}
+
+
+.bar-chart-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+
+.bar-chart-label {
+    width: 80px;
     font-size: 12px;
-    color: rgba(107, 78, 61, 0.7);
+    color: var(--brown);
+    font-weight: 500;
 }
 
-.attendance-bar {
-    height: 10px;
-    background: rgba(212, 168, 67, 0.2);
-    border-radius: 5px;
+
+.bar-chart-track {
+    flex: 1;
+    height: 18px;
+    background: rgba(212, 168, 67, 0.15);
+    border-radius: 4px;
     overflow: hidden;
+    margin: 0 10px;
 }
 
-.attendance-bar-fill {
+
+.bar-chart-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
-    border-radius: 5px;
+    border-radius: 4px;
     transition: width 0.5s ease;
 }
 
-.faculty-actions {
-    display: flex;
-    gap: 10px;
+
+/* Edit these colors to change the bar colors */
+.bar-chart-fill.attendance { background: var(--primary-gold); }
+.bar-chart-fill.absence    { background: var(--absent-color); }
+.bar-chart-fill.late       { background: var(--excused-color); }
+
+
+.bar-chart-value {
+    width: 35px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brown);
+    text-align: right;
 }
 
-.btn-primary {
-    flex: 1;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-size: 13px;
+
+/* Button Styling for the Card Header */
+.btn-view-record-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--primary-gold);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border: none;
-    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
-    color: var(--white);
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(212, 168, 67, 0.4);
+
+.btn-view-record-gold:hover {
+    background: var(--dark-gold);
+    transform: translateY(-1px);
 }
+
 
 /* ==========================================
    Loading & Error States

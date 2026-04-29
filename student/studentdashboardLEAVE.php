@@ -78,7 +78,7 @@ $user_uid = $_SESSION['uid'];
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span class="nav-text">View Pending Appeals</span> 
+                    <span class="nav-text">View Appeal History</span> 
                 </a>
 
                 <div class="sidebar-footer">

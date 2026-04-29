@@ -11,9 +11,14 @@ if (!isset($user_id)) {
     exit;
 };
 
-$appeals_query = "SELECT teacher_id.user_uid,
-                    teacher_id.first_name,
-                    teacher_id.last_name,
+$dept_filter = $_GET['department'] ?? null;
+$coll_filter = $_GET['college'] ?? null;
+
+$appeals_query = "SELECT admin_id.first_name AS admin_fname,
+                    admin_id.last_name AS admin_lname,
+                    teacher_id.user_uid,
+                    teacher_id.first_name AS teacher_fname,
+                    teacher_id.last_name AS teacher_lname,
                     teacher_id.department_id,
                     college_id.college_code,
                     college_id.college_name,
@@ -31,11 +36,35 @@ $appeals_query = "SELECT teacher_id.user_uid,
                     appeals.status_updated_by,
                     appeals.id
                 FROM teacher_id
+                LEFT JOIN appeals ON teacher_id.user_Uid = appeals.user_uid
+                LEFT JOIN admin_id ON appeals.status_updated_by = admin_id.admin_id
                 LEFT JOIN department_id ON teacher_id.department_id = department_id.department_id
                 LEFT JOIN college_id ON department_id.college_id = college_id.college_id
-                LEFT JOIN appeals ON teacher_id.user_Uid = appeals.user_uid
-                GROUP BY appeals.time_type, appeals.status, department_id.department_name, college_id.college_name";
+                WHERE 1=1";
+
+$params = [];
+$types = "";
+
+if ($dept_filter && $dept_filter !== 'All') {
+    $teacher_query .= " AND department_id.department_name LIKE CONCAT('%', ?, '%')";
+    $params[] = $dept_filter;
+    $types .= "s";
+}
+
+if ($coll_filter && $coll_filter !== 'All') {
+    $teacher_query .= " AND college_id.college_name LIKE CONCAT('%', ?, '%')";
+    $params[] = $coll_filter;
+    $types .= "s";
+}
+
+$appeals_query .= " GROUP BY appeals.id";
+
 $stmt_appeals = $conn->prepare($appeals_query);
+
+if (!empty($params)) {
+    $stmt_appeals->bind_param($types, ...$params);
+}
+
 $stmt_appeals->execute();
 $appeals_result = $stmt_appeals->get_result();
 $appealData = [];
@@ -51,9 +80,15 @@ if ($appeals_result->num_rows > 0) {
                 $type = 'excuse';
             }
 
+            if (!empty($row['admin_fname']) && !empty($row['admin_lname'])) {
+                $admin_name = htmlspecialchars($row['admin_fname'] . ' ' . $row['admin_lname']);
+            } else {
+                $admin_name = 'System';
+            }
+
             $appealData[] = [
                 'id' => $row['id'],
-                'faculty_name' => $row['last_name'] . ', ' . $row['first_name'],
+                'faculty_name' => $row['teacher_lname'] . ', ' . $row['teacher_fname'],
                 'faculty_id' => $row['user_uid'],
                 'college_code' => $row['college_code'],
                 'college_name' => $row['college_name'],
@@ -69,7 +104,7 @@ if ($appeals_result->num_rows > 0) {
                 'status' => $row['status'],
                 'reason' => $row['comment'], 
                 'attachment' => $row['attachment'], 
-                'updated_by' => $row['status_updated_by'] 
+                'updated_by' => $admin_name 
             ];
         }
     }

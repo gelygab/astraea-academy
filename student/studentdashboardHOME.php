@@ -2,11 +2,13 @@
 session_start();
 require_once '../db.php';
 
+
 if (!isset($_SESSION['uid'])) {
     header('Location: studentlogin.php');
     exit();
 }
 $user_uid = $_SESSION['uid'];?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,12 +21,13 @@ $user_uid = $_SESSION['uid'];?>
     <title>Student Dashboard - Home</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="studentdashboardHOME.css">
-    
+   
 </head>
 <body>
     <div class="background-container">
         <img src="../images/Slogin_bg.gif" alt="Background" class="background-image">
     </div>
+
 
     <div class="container">
         <aside>
@@ -35,9 +38,10 @@ $user_uid = $_SESSION['uid'];?>
                 </div>
             </div>
 
+
             <div class="sidebar-nav">
                 <p class="nav-label">MAIN MENU</p>
-                
+               
                 <a href="studentdashboardHOME.php" class="active">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -45,6 +49,7 @@ $user_uid = $_SESSION['uid'];?>
                     </svg>
                     <span class="nav-text">Home</span>
                 </a>
+
 
                 <a href="studentdashboardSCHED.php">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -56,6 +61,7 @@ $user_uid = $_SESSION['uid'];?>
                     <span class="nav-text">View Schedule</span>
                 </a>
 
+
                 <a href="studentdashboardLEAVE.php">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -65,6 +71,7 @@ $user_uid = $_SESSION['uid'];?>
                     <span class="nav-text">Apply for Leave</span>
                 </a>
 
+
                 <a href="studentdashboardEXCUSE.php">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -73,13 +80,15 @@ $user_uid = $_SESSION['uid'];?>
                     <span class="nav-text">Request an Excuse</span>
                 </a>
 
+
                 <a href="studentdashboardAPPEALS.php">
                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span class="nav-text">View Pending Appeals</span> 
+                    <span class="nav-text">View Pending Appeals</span>
                 </a>
+
 
                 <div class="sidebar-footer">
                     <a href="studentlogout.php">
@@ -93,6 +102,7 @@ $user_uid = $_SESSION['uid'];?>
                 </div>
             </div>
         </aside>
+
 
         <main class="student-dashboard">
             <section class="card student-card">
@@ -115,6 +125,7 @@ $user_uid = $_SESSION['uid'];?>
                     </div>
                 </div>
 
+
                 <div class="student-info-flex">
                     <div class="pfp-circle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -122,7 +133,7 @@ $user_uid = $_SESSION['uid'];?>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                     </div>
-                    <div class="info-details"> 
+                    <div class="info-details">
                         <h2 id="studentName" class="stylized-name loading">Loading...</h2>
                         <div id="studentDetailsGrid" class="details-grid">
                             <p><strong>UID:</strong><br><span id="uid-val">...</span></p>
@@ -134,31 +145,13 @@ $user_uid = $_SESSION['uid'];?>
                 </div>
             </section>
 
+
             <div id="attendanceGrid" class="attendance-grid" style="min-height: 100px;"></div>
+
 
             <div class="main-grid-layout">
                 <div class="left-column">
                     <div class="left-column-1">
-                        <section class="card-content">
-                            <h2>Class Days</h2>
-                            <p style="font-size: 0.75rem; opacity: 0.8;">Class days for Monthly</p>
-                        </section>
-                        <div class="right-column-data">
-                            <div id="classDaysText"><h2>--</h2>Days</div>
-                        </div>
-                    </div>
-
-                    <div class="left-column-2">
-                        <section class="card-content">
-                            <h2>Attendance Rate</h2>
-                            <span class="tag">This Month</span>
-                        </section>
-                        <div class="right-column-data">
-                            <div id="rateCardValue"><h2>--%</h2></div>
-                        </div>
-                    </div>
-
-                    <div class="left-column-3">
                         <section class="card-content">
                             <h2>Monthly Rate</h2>
                             <span class="tag">Last 6 months</span>
@@ -172,25 +165,52 @@ $user_uid = $_SESSION['uid'];?>
                             <div id="pieLegend" class="legend-container"></div>
                         </div>
                     </div>
+
+
+                    <div class="left-column-2">
+                        <section class="card extra-card">
+                            <h2>Astraea Academy</h2>
+                            <p>Ad astra, Per Sapientiam</p>
+                        </section>
+                    </div>
                 </div>
+
 
                 <div class="right-column">
                     <div class="right-column-1">
+                        <section class="card-content">
+                            <h2>Attendance Rate</h2>
+                            <span class="tag">This Month</span>
+                        </section>
+                        <div class="right-column-data">
+                            <div id="rateCardValue"><h2>--%</h2></div>
+                        </div>
+                    </div>
+
+
+                    <div class="right-column-2">
+                        <section class="card-content">
+                            <h2>Class Days</h2>
+                            <p style="font-size: 0.75rem; opacity: 0.8;">Class days for Monthly</p>
+                        </section>
+                        <div class="right-column-data">
+                            <div id="classDaysText"><h2>--</h2><p>Days</p></div>
+                        </div>
+                    </div>
+
+
+                    <div class="right-column-3">
                         <section class="card summary-card">
                             <h2 id="summaryTitle">Summary</h2>
                             <div class="bar-chart" id="barChartContainer"></div>
                         </section>
                     </div>
-
-                    <div class="right-column-2">
-                        <section class="card extra-card">
-                            <h2>Astraea Academy</h2>
-                            <p style="color: var(--white); font-size: 2.5rem; font-weight: 700; margin-top: 10px;">Ad astra, Per Sapientiam</p>
-                        </section>
-                    </div>
                 </div>
             </div> </main>
-    </div> 
+    </div>
     <script src="studentdashboardHOME.js"></script>
 </body>
 </html>
+
+
+
