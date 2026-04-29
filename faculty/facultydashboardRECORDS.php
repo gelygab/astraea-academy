@@ -105,14 +105,24 @@
     </div>
 </section>
 
-            <div id="appealsGrid" class="appeals-grid">
-                
-                <div class="appeal-card pending">
-                    <div class="appeal-header">
-                        <div class="appeal-type">
-                            <div class="appeal-type-icon leave">
-                                <span class="material-symbols-outlined">description</span>
-                            </div>
+        <div id="appealsGrid" class="appeals-grid"></div>
+
+        <div id="loadingState" class="loading-state hidden">
+            <span class="material-symbols-outlined spinning">sync</span>
+            <p>Loading records...</p>
+        </div>
+
+        <div id="emptyState" class="empty-state hidden">
+            <span class="material-symbols-outlined">inbox</span>
+            <p>No appeals found</p>
+        </div>
+
+    </main>
+</div>
+
+<script src="facultydashboardRECORDS.js"></script>
+</body>
+</html>
                             <div class="appeal-type-info">
                                 <h4>Sick Leave</h4>
                                 <p>Applied on: March 5, 2026</p>
