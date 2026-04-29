@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="facultydashboardSTUDENT.css">
 </head>
 <body>
+
+<div class="background-container">
+        <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
+    </div>
+    
   <input type="file" id="pfpInput" style="display: none;" accept="image/*">
 
     <div class="container">
@@ -40,9 +45,6 @@
                      </div>
                 </div>
             </div>
-          </div>
-        </div>
-      </div>
 
             <div class="card filter-card">
                 <h2>Select Class</h2>
@@ -137,7 +139,6 @@
                              </div>
                           </div>
                         </div>
-                        <p class="apply-date">Applied on: March 2, 2026</p>
                       </div>
                   
                       <div id="e-pending-detail" style="display: none;">
@@ -146,66 +147,84 @@
                              <button class="back-btn" id="e-pending-back-btn">Back</button>
                           </div>
                           <div class="detail-content-row">
-                            <div class="detail-left-col admin-style-details">
-                              <div class="appeal-detail-section">
-                                <div class="detail-row">
-                                  <span class="detail-label">Student Name:</span>
-                                  <span class="detail-value student-name">[Student Name]</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Student ID:</span>
-                                  <span class="detail-value">2024-XXXXX</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">College:</span>
-                                  <span class="detail-value">College of Engineering</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Program:</span>
-                                  <span class="detail-value">BSCpE</span>
-                                </div>
-                                 <div class="detail-row">
-                                  <span class="detail-label">Year</span>
-                                  <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Block</span>
-                                  <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Date Applied:</span>
-                                  <span class="detail-value">March 1, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Appeal Type:</span>
-                                  <span class="detail-value">[Value]</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Start Date:</span>
-                                  <span class="detail-value">March 2, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">End Date:</span>
-                                  <span class="detail-value">March 2, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Number of Days:</span>
-                                  <span class="detail-value">1</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Return on:</span>
-                                  <span class="detail-value">March 3, 2026</span>
-                                </div>
-                                 <div class="detail-row attachment-row">
-                                <span class="detail-label">Attachment:</span>
-                                <a href="#" class="attachment-link">[File Name]</a> 
-                              </div>
-                              <div class="detail-row updated-by-row">
-                                <span class="detail-label">Status Updated by:</span>
-                                <span class="detail-value">Prof. Juan Dela Cruz</span>
-                              </div>
-                              </div>
-                            </div>
+                           
+                        <div class="detail-left-col admin-style-details">
+                      <div class="appeal-detail-section">
+                          <div class="detail-row">
+                              <span class="detail-label">Student Name:</span>
+                              <span class="detail-value student-name">[Student Name]</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Student ID:</span>
+                              <span class="detail-value">2024-XXXXX</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">College:</span>
+                              <span class="detail-value">College of Engineering</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Program:</span>
+                              <span class="detail-value">BSCpE</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Year</span>
+                              <span class="detail-value">2</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Block</span>
+                              <span class="detail-value">2</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Date Applied:</span>
+                              <span class="detail-value">March 2, 2026</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Appeal Type:</span>
+                              <span class="detail-value">Whole Day</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Start Date:</span>
+                              <span class="detail-value">March 3, 2026</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">End Date:</span>
+                              <span class="detail-value">March 5, 2026</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Number of Days:</span>
+                              <span class="detail-value">3</span>
+                          </div>
+                          <div class="detail-row">
+                              <span class="detail-label">Return on:</span>
+                              <span class="detail-value">March 6, 2026</span>
+                          </div>
+                          <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
+                                                <p><strong>Attachment:</strong></p>
+                                                <a href="#" class="attachment-link">medical-cert.pdf</a>
+                                            </div>
+                          <div class="detail-row updated-by-row">
+                              <span class="detail-label">Status Updated by:</span>
+                              <span class="detail-value">Prof. Juan Dela Cruz</span>
+                          </div>
+                      </div> <div class="warning-banner">
+                          <span class="warning-icon">⚠️ Warning:</span>
+                          <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
+                      </div>
+
+                      <div class="affected-classes-box">
+                          <table class="affected-table">
+                              <thead>
+                                  <tr><th>Affected Classes</th><th>Time</th></tr>
+                              </thead>
+                              <tbody>
+                                  <tr><td>• Software Design</td><td>(Mon 8:00 AM)</td></tr>
+                                  <tr><td>• Engineering Management</td><td>(Wed 10:00 AM)</td></tr>
+                                  <tr><td>• Basic Electrical Eng.</td><td>(Fri 1:00 PM)</td></tr>
+                              </tbody>
+                          </table>
+                      </div>
+
+                  </div>  
                              <div class="detail-right-col">
                                <div class="comment-section">
                                  <label><strong>Comment:</strong></label>
@@ -219,12 +238,7 @@
                            </div>
                         </div>
                       </div>
-
-                      <button class="review-btn e-review-btn full-width-btn">View Appeal Summary</button>
                     </div>
-                  </div>
-                </div>
-              </div>
 
                     <div id="e-approved-tab" class="tab-content" style="display: none;">
                        <div class="tab-top-controls" id="e-approved-controls">
@@ -241,7 +255,6 @@
                           </div>
                         </div>
                       </div>
-                    </div>
 
                        <h2 class="box-title" id="e-approved-title">Approved Requests</h2>
 
@@ -346,10 +359,6 @@
                          </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
                     <div id="e-declined-tab" class="tab-content" style="display: none;">
                        <div class="tab-top-controls" id="e-declined-controls">
@@ -401,65 +410,85 @@
                           </div>
                            <div class="detail-content-row">
                             <div class="detail-left-col admin-style-details">
-                              <div class="appeal-detail-section">
-                                <div class="detail-row">
-                                  <span class="detail-label">Student Name:</span>
-                                  <span class="detail-value student-name">[Student Name]</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Student ID:</span>
-                                  <span class="detail-value">2024-XXXXX</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">College:</span>
-                                  <span class="detail-value">College of Engineering</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Program:</span>
-                                  <span class="detail-value">BSCpE</span>
-                                </div>
-                                 <div class="detail-row">
-                                  <span class="detail-label">Year</span>
-                                  <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Block</span>
-                                  <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Date Applied:</span>
-                                  <span class="detail-value">March 1, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Appeal Type:</span>
-                                  <span class="detail-value">[Value]</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Start Date:</span>
-                                  <span class="detail-value">March 2, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">End Date:</span>
-                                  <span class="detail-value">March 2, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Number of Days:</span>
-                                  <span class="detail-value">1</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Return on:</span>
-                                  <span class="detail-value">March 3, 2026</span>
-                                </div>
-                                <div class="detail-row attachment-row">
-                                <span class="detail-label">Attachment:</span>
-                                <a href="#" class="attachment-link">[File Name]</a> 
-                              </div>
-                              <div class="detail-row updated-by-row">
-                                <span class="detail-label">Status Updated by:</span>
-                                <span class="detail-value">Prof. Juan Dela Cruz</span>
-                              </div>
-                              </div>
-                            </div>
+    
+    <div class="appeal-detail-section">
+        <div class="detail-row">
+            <span class="detail-label">Student Name:</span>
+            <span class="detail-value student-name">[Student Name]</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Student ID:</span>
+            <span class="detail-value">2024-XXXXX</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">College:</span>
+            <span class="detail-value">College of Engineering</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Program:</span>
+            <span class="detail-value">BSCpE</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Year</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Block</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Date Applied:</span>
+            <span class="detail-value">March 2, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Appeal Type:</span>
+            <span class="detail-value">Whole Day</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Start Date:</span>
+            <span class="detail-value">March 3, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">End Date:</span>
+            <span class="detail-value">March 5, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Number of Days:</span>
+            <span class="detail-value">3</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Return on:</span>
+            <span class="detail-value">March 6, 2026</span>
+        </div>
+
+         <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
+                              <p><strong>Attachment:</strong></p>
+                              <a href="#" class="attachment-link">medical-cert.pdf</a>
+                          </div>
+        
+        <div class="detail-row updated-by-row">
+            <span class="detail-label">Status Updated by:</span>
+            <span class="detail-value">Prof. Juan Dela Cruz</span>
+        </div>
+    </div> <div class="warning-banner">
+        <span class="warning-icon">⚠️ Warning:</span>
+        <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
+    </div>
+
+    <div class="affected-classes-box">
+        <table class="affected-table">
+            <thead>
+                <tr><th>Affected Classes</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>• Software Design</td><td>(Mon 8:00 AM)</td></tr>
+                <tr><td>• Engineering Management</td><td>(Wed 10:00 AM)</td></tr>
+                <tr><td>• Basic Electrical Eng.</td><td>(Fri 1:00 PM)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
                              <div class="detail-right-col">
                               <div class="comment-section">
                                <label><strong>Comment:</strong></label>
@@ -473,25 +502,7 @@
                          </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- EXCUSE DECLINED -->
-            <div id="e-declined-tab" class="tab-content" style="display: none;">
-              <div class="tab-top-controls" id="e-declined-controls">
-                <div class="search-container">
-                  <input type="text" class="search-input e-dec-search" placeholder="Search Name...">
-                </div>
-
-                <div class="sort-dropdown-container">
-                  <button class="sort-btn e-sort-btn">Sort <span>⇌</span></button>
-                  <div class="sort-menu e-sort-menu" style="display: none;">
-                    <a href="#">Date of Absence: Newest to Oldest</a>
-                    <a href="#">Date of Absence: Oldest to Newest</a>
-                    <a href="#">Date Declined: Newest to Oldest</a>
-                    <a href="#">Date Declined: Oldest to Newest</a>
                   </div>
                 </div>
              </div> 
@@ -519,7 +530,6 @@
                           </div>
                          </div>
                       </div>
-                    </div>
 
                       <h2 class="box-title" id="l-pending-title">Pending Requests</h2>
 
@@ -564,88 +574,117 @@
                           <div class="detail-top-actions">
                             <button class="back-btn" id="l-pending-back-btn">Back</button>
                           </div>
-                           <div class="detail-content-row">
-                            <div class="detail-left-col admin-style-details">
-                              <div class="appeal-detail-section">
-                                <div class="detail-row">
+                           
+                            <div class="detail-content-row">
+                      <div class="detail-left-col admin-style-details">
+                          
+                          <div class="appeal-detail-section">
+                              <div class="detail-row">
                                   <span class="detail-label">Student Name:</span>
                                   <span class="detail-value student-name">[Student Name]</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Student ID:</span>
                                   <span class="detail-value">2024-XXXXX</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">College:</span>
                                   <span class="detail-value">College of Engineering</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Program:</span>
                                   <span class="detail-value">BSCpE</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Year</span>
                                   <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Block</span>
                                   <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Date Applied:</span>
                                   <span class="detail-value">March 2, 2026</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Appeal Type:</span>
                                   <span class="detail-value">Whole Day</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Start Date:</span>
                                   <span class="detail-value">March 3, 2026</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">End Date:</span>
                                   <span class="detail-value">March 5, 2026</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Number of Days:</span>
                                   <span class="detail-value">3</span>
-                                </div>
-                                <div class="detail-row">
+                              </div>
+                              <div class="detail-row">
                                   <span class="detail-label">Return on:</span>
                                   <span class="detail-value">March 6, 2026</span>
-                                </div>
-                                <div class="detail-row attachment-row">
-                                <span class="detail-label">Attachment:</span>
-                                <a href="#" class="attachment-link">[File Name]</a> 
                               </div>
-                              <div class="detail-row updated-by-row">
-                                <span class="detail-label">Status Updated by:</span>
-                                <span class="detail-value">Prof. Juan Dela Cruz</span>
-                              </div>
-                              </div>
-                            </div>
-                             <div class="detail-right-col">
-                               <div class="comment-section">
-                               <label><strong>Comment:</strong></label>
-                               <textarea readonly class="comment-area"></textarea>
-                               </div>
-                              <div class="detail-action-buttons right-aligned-buttons">
-                                 <button class="action-btn decline-btn l-trigger-decline">Decline</button>
-                                <button class="action-btn approve-btn l-trigger-approve">Approve</button>
-                              </div>
-                             </div>
+                               <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
+                              <p><strong>Attachment:</strong></p>
+                              <a href="#" class="attachment-link">medical-cert.pdf</a>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-                    <div id="l-approved-tab" class="tab-content" style="display: none;">
-                      <div class="tab-top-controls" id="l-approved-controls">
+                          <div class="detail-row updated-by-row">
+            <span class="detail-label">Status Updated by:</span>
+            <span class="detail-value">Prof. Juan Dela Cruz</span>
+        </div>
+
+                          </div> <div class="warning-banner">
+                              <span class="warning-icon">⚠️ Warning:</span>
+                              <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
+                          </div>
+
+                          <div class="affected-classes-box">
+                              <table class="affected-table">
+                          <thead>
+                              <tr>
+                                  <th style="color: #000000;">Affected Classes</th>
+                                  <th style="color: #000000;">Time</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td style="color: #333333;">• Software Design</td>
+                                  <td style="color: #333333;">(Mon 8:00 AM)</td>
+                              </tr>
+                              <tr>
+                                  <td style="color: #333333;">• Engineering Management</td>
+                                  <td style="color: #333333;">(Wed 10:00 AM)</td>
+                              </tr>
+                              <tr>
+                                  <td style="color: #333333;">• Basic Electrical Eng.</td>
+                                  <td style="color: #333333;">(Fri 1:00 PM)</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                          </div>
+
+                      </div> <div class="detail-right-col">
+                          <div class="comment-section">
+                              <label><strong>Comment:</strong></label>
+                              <textarea class="comment-area" placeholder="Write a comment..."></textarea>
+                          </div>
+
+                         <div class="detail-action-buttons right-aligned-buttons">
+                              <button class="action-btn decline-btn l-trigger-decline">Decline</button>
+                              <button class="action-btn approve-btn l-trigger-approve">Approve</button>
+                          </div>
+                        </div> 
+                      </div> 
+                    </div> 
+                  </div> 
+                </div> 
+
+                <div id="l-approved-tab" class="tab-content" style="display: none;">
+                    <div class="tab-top-controls" id="l-approved-controls">
                         <div class="search-container">
                            <input type="text" class="search-input l-app-search" placeholder="Search Name...">
                          </div>
@@ -806,11 +845,6 @@
                            </table>
                          </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
                       <div id="l-declined-detail" style="display: none;">
                          <div class="detail-card-layout">
@@ -819,65 +853,84 @@
                           </div>
                              <div class="detail-content-row">
                             <div class="detail-left-col admin-style-details">
-                              <div class="appeal-detail-section">
-                                 <div class="detail-row">
-                                  <span class="detail-label">Student Name:</span>
-                                  <span class="detail-value student-name">[Student Name]</span>
-                                 </div>
-                                <div class="detail-row">
-                                     <span class="detail-label">Student ID:</span>
-                                   <span class="detail-value">2024-XXXXX</span>
-                                </div>
-                                 <div class="detail-row">
-                                   <span class="detail-label">College:</span>
-                                  <span class="detail-value">College of Engineering</span>
-                                 </div>
-                                 <div class="detail-row">
-                                  <span class="detail-label">Program:</span>
-                                   <span class="detail-value">BSCpE</span>
-                                  </div>
-                                   <div class="detail-row">
-                                  <span class="detail-label">Year</span>
-                                  <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Block</span>
-                                  <span class="detail-value">2</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Date Applied:</span>
-                                   <span class="detail-value">March 2, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Appeal Type:</span>
-                                  <span class="detail-value">Whole Day</span>
-                                 </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Start Date:</span>
-                                   <span class="detail-value">March 3, 2026</span>
-                                </div>
-                                <div class="detail-row">
-                                   <span class="detail-label">End Date:</span>
-                                  <span class="detail-value">March 5, 2026</span>
-                                </div>
-                               <div class="detail-row">
-                                  <span class="detail-label">Number of Days:</span>
-                                  <span class="detail-value">3</span>
-                                 </div>
-                                <div class="detail-row">
-                                  <span class="detail-label">Return on:</span>
-                                   <span class="detail-value">March 6, 2026</span>
-                                </div>
-                               <div class="detail-row attachment-row">
-                            <span class="detail-label">Attachment:</span>
-                            <a href="#" class="attachment-link">[File Name]</a> 
+    
+    <div class="appeal-detail-section">
+        <div class="detail-row">
+            <span class="detail-label">Student Name:</span>
+            <span class="detail-value student-name">[Student Name]</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Student ID:</span>
+            <span class="detail-value">2024-XXXXX</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">College:</span>
+            <span class="detail-value">College of Engineering</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Program:</span>
+            <span class="detail-value">BSCpE</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Year</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Block</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Date Applied:</span>
+            <span class="detail-value">March 2, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Appeal Type:</span>
+            <span class="detail-value">Whole Day</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Start Date:</span>
+            <span class="detail-value">March 3, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">End Date:</span>
+            <span class="detail-value">March 5, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Number of Days:</span>
+            <span class="detail-value">3</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Return on:</span>
+            <span class="detail-value">March 6, 2026</span>
+        </div>
+         <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
+                              <p><strong>Attachment:</strong></p>
+                              <a href="#" class="attachment-link">medical-cert.pdf</a>
                           </div>
-                          <div class="detail-row updated-by-row">
-                            <span class="detail-label">Status Updated by:</span>
-                            <span class="detail-value">Prof. Juan Dela Cruz</span>
-                          </div>
-                                </div>
-                            </div>
+        
+        <div class="detail-row updated-by-row">
+            <span class="detail-label">Status Updated by:</span>
+            <span class="detail-value">Prof. Juan Dela Cruz</span>
+        </div>
+    </div> <div class="warning-banner">
+        <span class="warning-icon">⚠️ Warning:</span>
+        <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
+    </div>
+
+    <div class="affected-classes-box">
+        <table class="affected-table">
+            <thead>
+                <tr><th>Affected Classes</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>• Software Design</td><td>(Mon 8:00 AM)</td></tr>
+                <tr><td>• Engineering Management</td><td>(Wed 10:00 AM)</td></tr>
+                <tr><td>• Basic Electrical Eng.</td><td>(Fri 1:00 PM)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> 
                             <div class="detail-right-col">
                                 <div class="comment-section">
                                 <label><strong>Comment:</strong></label>
@@ -892,24 +945,13 @@
                       </div>
                     </div>
 
-                    <div class="detail-right-col">
-                      <div class="comment-section">
-                        <label><strong>Comment:</strong></label>
-                        <textarea readonly class="comment-area"></textarea>
-                      </div>
-                    </div>
                   </div>
                 </div>
             </div> 
         </main>
     </div>
 
-            <!-- LEAVE DECLINED -->
-            <div id="l-declined-tab" class="tab-content" style="display: none;">
-              <div class="tab-top-controls" id="l-declined-controls">
-                <div class="search-container">
-                  <input type="text" class="search-input l-dec-search" placeholder="Search Name...">
-                </div>
+    <div id="modal-overlay" class="modal-overlay"></div>
 
     <div id="e-approve-modal" class="modal">
       <div class="modal-header" style="background-color: #2F8C2F;">Request Approved!</div>
@@ -919,11 +961,13 @@
       </div>
     </div>
 
-              <div id="l-declined-detail" style="display: none;">
-                <div class="detail-card-layout">
-                  <div class="detail-top-actions">
-                    <button class="back-btn" id="l-declined-back-btn">Back</button>
-                  </div>
+    <div id="l-approve-modal" class="modal">
+      <div class="modal-header" style="background-color: #2F8C2F;">Leave Request Approved!</div>
+      <div class="modal-body">
+        <p><strong>Student will be marked as 'On Leave' for the specified dates.</strong></p>
+        <button class="modal-btn back-to-pending-btn l-back-pending">Back to Pending Request</button>
+      </div>
+    </div>
 
     <div id="decline-success-modal" class="modal">
       <div class="modal-header" style="background-color: #9C2727;">Request Declined!</div>
@@ -932,7 +976,6 @@
         <button class="modal-btn back-to-pending-btn reset-pending-btn">Back to Pending Request</button>
       </div>
     </div>
-  </div>
 
     <div id="reeval-confirm-modal" class="modal">
       <div class="modal-header" style="background-color: #C19321;">Update Appeal Status</div>
@@ -944,7 +987,6 @@
         </div>
       </div>
     </div>
-  </div>
 
     <div id="reeval-success-modal" class="modal">
       <div class="modal-header" style="background-color: #C19321;">Update Appeal Status</div>
@@ -953,8 +995,7 @@
         <button class="modal-btn reset-pending-btn" style="background-color: #E0E0E0; color: #333333;">Back to Pending Request</button>
       </div>
     </div>
-  </div>
 
-  <script src="facultydashboardSTUDENT.js"></script>
+    <script src="facultydashboardSTUDENT.js"></script>
 </body>
 </html>
