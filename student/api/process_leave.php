@@ -13,16 +13,8 @@ if (!$user_id) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // 1. Smartly map the incoming time_type to match your DB ENUM exactly
-    $raw_time_type = strtolower($_POST['time_type'] ?? '');
-    $time_type = 'sick_leave'; // Default fallback
-    if (strpos($raw_time_type, 'emergency') !== false) {
-        $time_type = 'emergency_leave';
-    } else if (strpos($raw_time_type, 'absence') !== false) {
-        $time_type = 'leave_of_absence';
-    } else {
-        $time_type = 'sick_leave';
-    }
+   // 1. Grab the value directly from the frontend, it's already perfectly formatted!
+    $time_type = $_POST['time_type'] ?? 'other_leave';
 
     $comment = $_POST['comment'] ?? ''; 
     // ENUM must be exact lowercase to match your DB screenshot!
@@ -85,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $current_start->modify('+1 day');
     }
 
-    // 6. Fetch student year and block
-    $student_query = "SELECT student_year, student_block FROM student_id WHERE user_uid = ? LIMIT 1";
+    // 6. Fetch student year, block, AND department
+    $student_query = "SELECT student_year, student_block, department_id FROM student_id WHERE user_uid = ? LIMIT 1";
     $stmt_student = $conn->prepare($student_query);
     $stmt_student->bind_param("i", $user_id);
     $stmt_student->execute();
@@ -94,12 +86,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $year = $student_data['student_year'] ?? '';
     $block = $student_data['student_block'] ?? '';
+    $dept_id = $student_data['department_id'] ?? '';
 
-    // 7. Match schedule to year and block
+    // 7. Match schedule to year, block, AND department!
     $schedule_user = [];
-    $schedule_query = "SELECT * FROM schedule_id WHERE student_year = ? AND student_block = ?";
+    $schedule_query = "SELECT * FROM schedule_id WHERE student_year = ? AND student_block = ? AND department_id = ?";
     $stmt_schedule = $conn->prepare($schedule_query);
-    $stmt_schedule->bind_param("ii", $year, $block);
+    $stmt_schedule->bind_param("sss", $year, $block, $dept_id);
     $stmt_schedule->execute();
     $schedule_result = $stmt_schedule->get_result();
 

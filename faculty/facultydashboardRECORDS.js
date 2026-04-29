@@ -20,42 +20,38 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAppeals();
 });
 
-// Mock data fetch
-async function loadAppeals() {
+// REAL data fetch from the database!
+function loadAppeals() {
     showLoading(true);
     
-    setTimeout(() => {
-        appealsData = [
-            {
-                id: "1", status: "pending", appeal_type: "sick_leave",
-                date_filed: "2026-03-05", start_date: "2026-03-05", end_date: "2026-03-06",
-                num_days: "2", return_date: "2026-03-07", comment: "Medical certificate attached.",
-                attachment_url: "#", attachment_name: "medical_cert.pdf", updated_by: "Admin",
-                faculty_name: "Santos, Maria", faculty_id: "55556", college: "College of Education", department: "Elementary Education"
-            },
-            {
-                id: "2", status: "approved", appeal_type: "leave_of_absence",
-                date_filed: "2026-02-22", start_date: "2026-02-24", end_date: "2026-02-26",
-                num_days: "3", return_date: "2026-02-27", comment: "Attending a conference outside the city.",
-                attachment_url: null, attachment_name: null, updated_by: "Admin",
-                faculty_name: "Reyes, Pedro", faculty_id: "55557", college: "College of Humanities, Arts, and Social Sciences", department: "Psychology"
-            },
-            {
-                id: "3", status: "rejected", appeal_type: "medical_appointment",
-                date_filed: "2026-03-08", start_date: "2026-03-10", end_date: "2026-03-10",
-                num_days: "1", return_date: "2026-03-11", comment: "Routine check-up.",
-                attachment_url: "#", attachment_name: "invite.jpg", updated_by: "Admin",
-                faculty_name: "Garcia, Ana", faculty_id: "55558", college: "College of Engineering", department: "Computer Engineering"
+    fetch('api/api_get_my_records.php')
+        .then(response => response.json())
+        .then(data => {
+            const grid = document.getElementById('appealsGrid');
+            
+            if (data.success) {
+                appealsData = data.data; // Store the real data
+                
+                if (appealsData.length > 0) {
+                    renderAppealsGrid(appealsData);
+                } else {
+                    if(grid) grid.innerHTML = ''; // DESTROY FAKE CARDS
+                    showEmptyState(true);
+                }
+            } else {
+                console.error("Failed to load records:", data.message);
+                if(grid) grid.innerHTML = ''; // DESTROY FAKE CARDS
+                showEmptyState(true);
             }
-        ];
-
-        if (appealsData.length > 0) {
-            renderAppealsGrid(appealsData);
-        } else {
+            showLoading(false);
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+            const grid = document.getElementById('appealsGrid');
+            if(grid) grid.innerHTML = ''; // DESTROY FAKE CARDS
             showEmptyState(true);
-        }
-        showLoading(false);
-    }, 400);
+            showLoading(false);
+        });
 }
 
 function renderAppealsGrid(appeals) {
