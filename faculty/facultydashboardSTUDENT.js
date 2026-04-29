@@ -774,5 +774,5 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (requestedTab === 'excuse') {
         document.getElementById('btn-excuse')?.click();
     }
+    
 });
-

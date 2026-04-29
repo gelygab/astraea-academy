@@ -50,7 +50,7 @@ $stmt->close();
 <div class="background-container">
         <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
-   
+    
   <input type="file" id="pfpInput" style="display: none;" accept="image/*">
 
     <div class="container">
@@ -146,8 +146,42 @@ $stmt->close();
 
                        <h2 class="box-title" id="e-pending-title">Pending Requests</h2>
 
-                      <div id="e-pending-view"></div>
-                 
+                      <div id="e-pending-view">
+                        <div class="cards-grid">
+                          <div class="request-card">
+                            <div class="card-body">
+                              <div class="appeal-header">
+                                 <div class="appeal-title-group">
+                                  <span class="icon">📄</span> <h3 class="appeal-type">Emergency Leave</h3>
+                                </div>
+                                 <p class="apply-date">Applied on: March 2, 2026</p> 
+                              </div>
+
+                              <div class="appeal-detail-section card-details">
+                                 <div class="detail-row">
+                                  <span class="detail-label">Student Name:</span>
+                                  <span class="detail-value student-name">[Student Name]</span>
+                                 </div>
+                                <div class="detail-row">
+                                  <span class="detail-label">Student ID:</span>
+                                   <span class="detail-value">2024-XXXXX</span>
+                                </div>
+                                <div class="detail-row">
+                                   <span class="detail-label">College:</span>
+                                  <span class="detail-value">College of Engineering</span>
+                                </div>
+                                 <div class="detail-row">
+                                  <span class="detail-label">Program:</span>
+                                  <span class="detail-value">BSCpE</span>
+                                 </div>
+                              </div>
+
+                              <button class="review-btn e-review-btn full-width-btn">View Appeal Summary</button>
+                             </div>
+                          </div>
+                        </div>
+                      </div>
+                  
                       <div id="e-pending-detail" style="display: none;">
                         <div class="detail-card-layout">
                           <div class="detail-top-actions">
@@ -159,64 +193,63 @@ $stmt->close();
                       <div class="appeal-detail-section">
                           <div class="detail-row">
                               <span class="detail-label">Student Name:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value student-name">[Student Name]</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Student ID:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">2024-XXXXX</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">College:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">College of Engineering</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Program:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">BSCpE</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Year</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">2</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Block</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">2</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Date Applied:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">March 2, 2026</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Appeal Type:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">Whole Day</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Start Date:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">March 3, 2026</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">End Date:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">March 5, 2026</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Number of Days:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">3</span>
                           </div>
                           <div class="detail-row">
                               <span class="detail-label">Return on:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">March 6, 2026</span>
                           </div>
                           <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
                                                 <p><strong>Attachment:</strong></p>
-                                                <a href="#" class="attachment-link"></a>
+                                                <a href="#" class="attachment-link">medical-cert.pdf</a>
                                             </div>
                           <div class="detail-row updated-by-row">
                               <span class="detail-label">Status Updated by:</span>
-                              <span class="detail-value"></span>
+                              <span class="detail-value">Prof. Juan Dela Cruz</span>
                           </div>
-                      </div>
-                      <div class="warning-banner">
+                      </div> <div class="warning-banner">
                           <span class="warning-icon">⚠️ Warning:</span>
-                          <span class="warning-text">This request applies to your currently selected class.</span>
+                          <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
                       </div>
 
                       <div class="affected-classes-box">
@@ -224,7 +257,11 @@ $stmt->close();
                               <thead>
                                   <tr><th>Affected Classes</th><th>Time</th></tr>
                               </thead>
-                              <tbody></tbody>
+                              <tbody>
+                                  <tr><td>• Software Design</td><td>(Mon 8:00 AM)</td></tr>
+                                  <tr><td>• Engineering Management</td><td>(Wed 10:00 AM)</td></tr>
+                                  <tr><td>• Basic Electrical Eng.</td><td>(Fri 1:00 PM)</td></tr>
+                              </tbody>
                           </table>
                       </div>
 
@@ -342,9 +379,85 @@ $stmt->close();
                           </div>
                            <div class="detail-content-row">
                             <div class="detail-left-col admin-style-details">
-                              <div class="appeal-detail-section" id="e-declined-detail-info">
-                              </div>
-                            </div>
+    
+    <div class="appeal-detail-section">
+        <div class="detail-row">
+            <span class="detail-label">Student Name:</span>
+            <span class="detail-value student-name">[Student Name]</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Student ID:</span>
+            <span class="detail-value">2024-XXXXX</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">College:</span>
+            <span class="detail-value">College of Engineering</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Program:</span>
+            <span class="detail-value">BSCpE</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Year</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Block</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Date Applied:</span>
+            <span class="detail-value">March 2, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Appeal Type:</span>
+            <span class="detail-value">Whole Day</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Start Date:</span>
+            <span class="detail-value">March 3, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">End Date:</span>
+            <span class="detail-value">March 5, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Number of Days:</span>
+            <span class="detail-value">3</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Return on:</span>
+            <span class="detail-value">March 6, 2026</span>
+        </div>
+
+         <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
+                              <p><strong>Attachment:</strong></p>
+                              <a href="#" class="attachment-link">medical-cert.pdf</a>
+                          </div>
+        
+        <div class="detail-row updated-by-row">
+            <span class="detail-label">Status Updated by:</span>
+            <span class="detail-value">Prof. Juan Dela Cruz</span>
+        </div>
+    </div> <div class="warning-banner">
+        <span class="warning-icon">⚠️ Warning:</span>
+        <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
+    </div>
+
+    <div class="affected-classes-box">
+        <table class="affected-table">
+            <thead>
+                <tr><th>Affected Classes</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>• Software Design</td><td>(Mon 8:00 AM)</td></tr>
+                <tr><td>• Engineering Management</td><td>(Wed 10:00 AM)</td></tr>
+                <tr><td>• Basic Electrical Eng.</td><td>(Fri 1:00 PM)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
                              <div class="detail-right-col">
                               <div class="comment-section">
                                <label><strong>Comment:</strong></label>
@@ -399,70 +512,69 @@ $stmt->close();
                            
                             <div class="detail-content-row">
                       <div class="detail-left-col admin-style-details">
-                         
+                          
                           <div class="appeal-detail-section">
                               <div class="detail-row">
                                   <span class="detail-label">Student Name:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value student-name">[Student Name]</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Student ID:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">2024-XXXXX</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">College:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">College of Engineering</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Program:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">BSCpE</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Year</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">2</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Block</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">2</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Date Applied:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">March 2, 2026</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Appeal Type:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">Whole Day</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Start Date:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">March 3, 2026</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">End Date:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">March 5, 2026</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Number of Days:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">3</span>
                               </div>
                               <div class="detail-row">
                                   <span class="detail-label">Return on:</span>
-                                  <span class="detail-value"></span>
+                                  <span class="detail-value">March 6, 2026</span>
                               </div>
                                <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
                               <p><strong>Attachment:</strong></p>
-                              <a href="#" class="attachment-link"></a>
+                              <a href="#" class="attachment-link">medical-cert.pdf</a>
                           </div>
 
                           <div class="detail-row updated-by-row">
-                            <span class="detail-label">Status Updated by:</span>
-                            <span class="detail-value"></span>
-                          </div>
+            <span class="detail-label">Status Updated by:</span>
+            <span class="detail-value">Prof. Juan Dela Cruz</span>
+        </div>
 
-                          </div>
-                          <div class="warning-banner">
+                          </div> <div class="warning-banner">
                               <span class="warning-icon">⚠️ Warning:</span>
-                              <span class="warning-text">This request applies to your currently selected class.</span>
+                              <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
                           </div>
 
                           <div class="affected-classes-box">
@@ -473,12 +585,24 @@ $stmt->close();
                                   <th style="color: #000000;">Time</th>
                               </tr>
                           </thead>
-                          <tbody></tbody>
+                          <tbody>
+                              <tr>
+                                  <td style="color: #333333;">• Software Design</td>
+                                  <td style="color: #333333;">(Mon 8:00 AM)</td>
+                              </tr>
+                              <tr>
+                                  <td style="color: #333333;">• Engineering Management</td>
+                                  <td style="color: #333333;">(Wed 10:00 AM)</td>
+                              </tr>
+                              <tr>
+                                  <td style="color: #333333;">• Basic Electrical Eng.</td>
+                                  <td style="color: #333333;">(Fri 1:00 PM)</td>
+                              </tr>
+                          </tbody>
                       </table>
                           </div>
 
-                      </div>
-                      <div class="detail-right-col">
+                      </div> <div class="detail-right-col">
                           <div class="comment-section">
                               <label><strong>Comment:</strong></label>
                               <textarea class="comment-area" placeholder="Write a comment..."></textarea>
@@ -488,11 +612,11 @@ $stmt->close();
                               <button class="action-btn decline-btn l-trigger-decline">Decline</button>
                               <button class="action-btn approve-btn l-trigger-approve">Approve</button>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                        </div> 
+                      </div> 
+                    </div> 
+                  </div> 
+                </div> 
 
                 <div id="l-approved-tab" class="tab-content" style="display: none;">
                     <div class="tab-top-controls" id="l-approved-controls">
@@ -592,9 +716,84 @@ $stmt->close();
                           </div>
                              <div class="detail-content-row">
                             <div class="detail-left-col admin-style-details">
-                              <div class="appeal-detail-section" id="l-declined-detail-info">
-                              </div>
-                            </div>
+    
+    <div class="appeal-detail-section">
+        <div class="detail-row">
+            <span class="detail-label">Student Name:</span>
+            <span class="detail-value student-name">[Student Name]</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Student ID:</span>
+            <span class="detail-value">2024-XXXXX</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">College:</span>
+            <span class="detail-value">College of Engineering</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Program:</span>
+            <span class="detail-value">BSCpE</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Year</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Block</span>
+            <span class="detail-value">2</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Date Applied:</span>
+            <span class="detail-value">March 2, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Appeal Type:</span>
+            <span class="detail-value">Whole Day</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Start Date:</span>
+            <span class="detail-value">March 3, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">End Date:</span>
+            <span class="detail-value">March 5, 2026</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Number of Days:</span>
+            <span class="detail-value">3</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Return on:</span>
+            <span class="detail-value">March 6, 2026</span>
+        </div>
+         <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
+                              <p><strong>Attachment:</strong></p>
+                              <a href="#" class="attachment-link">medical-cert.pdf</a>
+                          </div>
+        
+        <div class="detail-row updated-by-row">
+            <span class="detail-label">Status Updated by:</span>
+            <span class="detail-value">Prof. Juan Dela Cruz</span>
+        </div>
+    </div> <div class="warning-banner">
+        <span class="warning-icon">⚠️ Warning:</span>
+        <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
+    </div>
+
+    <div class="affected-classes-box">
+        <table class="affected-table">
+            <thead>
+                <tr><th>Affected Classes</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>• Software Design</td><td>(Mon 8:00 AM)</td></tr>
+                <tr><td>• Engineering Management</td><td>(Wed 10:00 AM)</td></tr>
+                <tr><td>• Basic Electrical Eng.</td><td>(Fri 1:00 PM)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> 
                             <div class="detail-right-col">
                                 <div class="comment-section">
                                 <label><strong>Comment:</strong></label>
