@@ -1,55 +1,75 @@
 const STATUS_CONFIG = {
     'approved': { cardClass: 'approved', badgeClass: 'approved', display: 'Approved' },
-    'pending':  { cardClass: 'pending',  badgeClass: 'pending',  display: 'Pending'  },
+    'pending': { cardClass: 'pending', badgeClass: 'pending', display: 'Pending' },
     'rejected': { cardClass: 'rejected', badgeClass: 'rejected', display: 'Rejected' }
 };
 
 const APPEAL_TYPE_NAMES = {
-    'emergency_leave':          'Emergency Leave',
-    'sick_leave':               'Sick Leave',
-    'leave_of_absence':         'Leave of Absence',
-    'other_leave':              'Other Leave',
-    'medical_appointment':      'Medical Appointment',
-    'personal_emergency':       'Personal Emergency',
-    'extracurricular_activity': 'Extracurricular Activity',
-    'other_excuse':             'Other Excuse',
+    'emergency_leave': 'Emergency Leave',
+    'sick_leave': 'Sick Leave',
+    'leave_of_absence': 'Leave of Absence',
+    'other_leave': 'Other',
+    'medical_appointment': 'Medical Appointment',
+    'personal_emergency': 'Personal Emergency',
+    'other_excuse': 'Other',
 };
 
 let appealsData = [];
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     loadAppeals();
 });
 
+// REAL data fetch from the database!
 function loadAppeals() {
     showLoading(true);
-    appealsData = appealsDataFromDB;
-
-    if (appealsData && appealsData.length > 0) {
-        renderAppealsGrid(appealsData);
-    } else {
-        showEmptyState(true);
-    }
-    showLoading(false);
+    
+    fetch('api/api_get_my_records.php')
+        .then(response => response.json())
+        .then(data => {
+            const grid = document.getElementById('appealsGrid');
+            
+            if (data.success) {
+                appealsData = data.data; // Store the real data
+                
+                if (appealsData.length > 0) {
+                    renderAppealsGrid(appealsData);
+                } else {
+                    if(grid) grid.innerHTML = ''; // DESTROY FAKE CARDS
+                    showEmptyState(true);
+                }
+            } else {
+                console.error("Failed to load records:", data.message);
+                if(grid) grid.innerHTML = ''; // DESTROY FAKE CARDS
+                showEmptyState(true);
+            }
+            showLoading(false);
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+            const grid = document.getElementById('appealsGrid');
+            if(grid) grid.innerHTML = ''; // DESTROY FAKE CARDS
+            showEmptyState(true);
+            showLoading(false);
+        });
 }
 
 function renderAppealsGrid(appeals) {
     const grid = document.getElementById('appealsGrid');
     showEmptyState(false);
     if (grid) {
-        grid.innerHTML = appeals.map((appeal, index) => createAppealCard(appeal, index)).join('');
+        grid.innerHTML = appeals.map(appeal => createAppealCard(appeal)).join('');
     }
 }
 
-function createAppealCard(appeal, index) {
-    const statusConfig    = STATUS_CONFIG[appeal.status] || STATUS_CONFIG['pending'];
-    const typeDisplayName = APPEAL_TYPE_NAMES[appeal.time_type] || appeal.time_type;
-
-    const isLeave   = appeal.time_type && appeal.time_type.includes('leave');
+function createAppealCard(appeal) {
+    const statusConfig = STATUS_CONFIG[appeal.status] || STATUS_CONFIG['pending'];
+    const typeDisplayName = APPEAL_TYPE_NAMES[appeal.appeal_type] || appeal.appeal_type;
+    const dateFiled = formatDate(appeal.date_filed);
+    
+    const isLeave = appeal.appeal_type && appeal.appeal_type.includes('leave');
     const iconClass = isLeave ? 'leave' : 'excuse';
-    const iconName  = isLeave ? 'description' : 'schedule';
-
-    const fullName = `${appeal.first_name || ''} ${appeal.last_name || ''}`.trim() || '—';
+    const iconName = isLeave ? 'description' : 'schedule'; 
 
     return `
         <div class="appeal-card ${statusConfig.cardClass}">
@@ -60,7 +80,7 @@ function createAppealCard(appeal, index) {
                     </div>
                     <div class="appeal-type-info">
                         <h4>${escapeHtml(typeDisplayName)}</h4>
-                        <p>Applied on: ${formatDate(appeal.date_filed)}</p>
+                        <p>Applied on: ${dateFiled}</p>
                     </div>
                 </div>
                 <div class="status-badge ${statusConfig.cardClass}">${statusConfig.display}</div>
@@ -69,118 +89,119 @@ function createAppealCard(appeal, index) {
             <div class="appeal-details">
                 <div class="appeal-detail-row">
                     <span class="label">Faculty Name</span>
-                    <span class="value">${escapeHtml(fullName)}</span>
+                    <span class="value">${escapeHtml(appeal.faculty_name || 'N/A')}</span>
                 </div>
                 <div class="appeal-detail-row">
                     <span class="label">Faculty ID</span>
-                    <span class="value">${escapeHtml(String(appeal.teacher_id || appeal.user_uid || 'N/A'))}</span>
+                    <span class="value">${escapeHtml(appeal.faculty_id || 'N/A')}</span>
                 </div>
                 <div class="appeal-detail-row">
                     <span class="label">College</span>
-                    <span class="value">${escapeHtml(appeal.college_name || '—')}</span>
+                    <span class="value">${escapeHtml(appeal.college || 'N/A')}</span>
                 </div>
                 <div class="appeal-detail-row">
                     <span class="label">Department</span>
-                    <span class="value">${escapeHtml(appeal.department_name || '—')}</span>
+                    <span class="value">${escapeHtml(appeal.department || 'N/A')}</span>
                 </div>
             </div>
 
             <div class="appeal-actions">
-                <button type="button" class="view-btn" onclick="showAppealDetails(${index})">View Appeal Summary</button>
+                <button type="button" class="view-btn" onclick="showAppealDetails('${appeal.id}')">View Appeal Summary</button>
             </div>
         </div>
     `;
 }
 
-window.showAppealDetails = function (index) {
-    const appeal = appealsData[index];
+// Function to SHOW modal
+window.showAppealDetails = function(appealId) {
+    const appeal = appealsData.find(a => String(a.id) === String(appealId));
     if (!appeal) return;
-
+    
     populateDetails(appeal);
-
+    
     const modal = document.getElementById('appealDetailsSection');
     if (modal) {
         modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'; // Locks background scroll
     }
 };
 
-window.hideDetails = function () {
+// Function to HIDE modal
+window.hideDetails = function() {
     const modal = document.getElementById('appealDetailsSection');
     if (modal) {
         modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = 'auto'; // Unlocks background scroll
     }
 };
 
+// Fixed populateDetails function with setSafeText
 function populateDetails(appeal) {
-    const statusConfig    = STATUS_CONFIG[appeal.status] || STATUS_CONFIG['pending'];
-    const typeDisplayName = APPEAL_TYPE_NAMES[appeal.time_type] || appeal.time_type;
+    const statusConfig = STATUS_CONFIG[appeal.status] || STATUS_CONFIG['pending'];
+    const typeDisplayName = APPEAL_TYPE_NAMES[appeal.appeal_type] || appeal.appeal_type;
 
+    // Helper function to prevent errors if an ID is missing
     const setSafeText = (id, text) => {
         const el = document.getElementById(id);
-        if (el) el.textContent = text || '—';
+        if (el) el.textContent = text;
     };
 
-    setSafeText('detName',    `${appeal.first_name || ''} ${appeal.last_name || ''}`.trim() || '—');
-    setSafeText('detId', String(appeal.teacher_id || appeal.user_uid || '—'));
-    setSafeText('detCollege', appeal.college_name   || '—');
-    setSafeText('detDept',    appeal.department_name || '—');
-    setSafeText('detType',    typeDisplayName);
-    setSafeText('detDate',    formatDate(appeal.date_filed));
+    setSafeText('detName', appeal.faculty_name);
+    setSafeText('detId', appeal.faculty_id);
+    setSafeText('detCollege', appeal.college);
+    setSafeText('detDept', appeal.department);
+    setSafeText('detType', typeDisplayName);
+    setSafeText('detDate', formatDate(appeal.date_filed));
     setSafeText('detStartDate', formatDate(appeal.start_date));
-    setSafeText('detEndDate',   formatDate(appeal.end_date));
-    setSafeText('detNumDays',   appeal.number_of_days);
-    setSafeText('detReturn',    formatDate(appeal.return_on));
-    setSafeText('detReason',    appeal.comment);
-    setSafeText('detUpdatedBy', appeal.status_updated_by || 'Admin');
-
-    const affectedSubjectRow = document.getElementById('affectedSubjectRow');
-
-    if (appeal.affected_subject_name) {
-        setSafeText('detAffectedSubject',
-            `${appeal.affected_subject_name} (${appeal.affected_subject_code})`);
-        if (affectedSubjectRow) affectedSubjectRow.style.display = '';
-    } else {
-        if (affectedSubjectRow) affectedSubjectRow.style.display = 'none';
-    }
-
+    setSafeText('detEndDate', formatDate(appeal.end_date));
+    setSafeText('detNumDays', appeal.num_days);
+    setSafeText('detReturn', formatDate(appeal.return_date));
+    setSafeText('detReason', appeal.comment);
+    setSafeText('detUpdatedBy', appeal.updated_by);
+    
     const badge = document.getElementById('detStatusBadge');
     if (badge) {
-        badge.className   = `status-badge ${statusConfig.badgeClass}`;
+        badge.className = `status-badge ${statusConfig.badgeClass}`;
         badge.textContent = statusConfig.display;
     }
 
-    const row  = document.getElementById('attachmentRow');
+   const row = document.getElementById('attachmentRow');
     const link = document.getElementById('detAttachment');
     if (row && link) {
-        if (appeal.attachment && appeal.attachment !== 'NULL') {
-            link.href                = '../uploads/' + appeal.attachment;
-            link.textContent         = 'View Attached File';
-            link.style.pointerEvents = 'auto';
-            link.style.color         = '#94426A';
+        row.style.display = 'flex';
+        
+        if (appeal.attachment_url) {
+    
+            link.href = appeal.attachment_url;
+            link.textContent = appeal.attachment_name || "View Attachment";
+            link.style.pointerEvents = 'auto'; 
+            link.style.color = '#94426A'; 
+            link.style.textDecoration = 'underline';
         } else {
-            link.href                = '#';
-            link.textContent         = 'No attached file';
-            link.style.pointerEvents = 'none';
-            link.style.color         = '#888888';
+           
+            link.removeAttribute('href'); 
+            link.textContent = "No attached file"; 
+            link.style.pointerEvents = 'none'; 
+            link.style.color = '#888888'; 
+            link.style.textDecoration = 'none'; 
         }
     }
 }
 
 function showLoading(show) {
-    const el = document.getElementById('loadingState');
-    if (el) el.classList.toggle('hidden', !show);
+    const loadingState = document.getElementById('loadingState');
+    if(loadingState) loadingState.classList.toggle('hidden', !show);
 }
 
 function showEmptyState(show) {
-    const el = document.getElementById('emptyState');
-    if (el) el.classList.toggle('hidden', !show);
+    const emptyState = document.getElementById('emptyState');
+    if(emptyState) emptyState.classList.toggle('hidden', !show);
 }
 
 function formatDate(dateString) {
-    if (!dateString || dateString === 'NULL') return '—';
+    if (!dateString) return 'N/A';
     const date = new Date(dateString.replace(/-/g, '/'));
+    if (isNaN(date.getTime())) return dateString;
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
