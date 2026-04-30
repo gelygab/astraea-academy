@@ -291,8 +291,6 @@ $stmt->close();
                           <div class="sort-menu e-sort-menu" style="display: none;">
                              <a href="#">Date of Absence: Newest to Oldest</a>
                             <a href="#">Date of Absence: Oldest to Newest</a>
-                            <a href="#">Date Approved: Newest to Oldest</a>
-                             <a href="#">Date Approved: Oldest to Newest</a>
                           </div>
                         </div>
                       </div>
@@ -347,8 +345,6 @@ $stmt->close();
                           <div class="sort-menu e-sort-menu" style="display: none;">
                              <a href="#">Date of Absence: Newest to Oldest</a>
                             <a href="#">Date of Absence: Oldest to Newest</a>
-                            <a href="#">Date Declined: Newest to Oldest</a>
-                             <a href="#">Date Declined: Oldest to Newest</a>
                           </div>
                         </div>
                       </div>
