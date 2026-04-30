@@ -125,7 +125,8 @@ function normalizeAppealData(apiData) {
         status: item.status,
         reason: item.reason,
         attachmentName: item.attachment,
-        updatedBy: item.updated_by
+        updatedBy: item.updated_by,
+        affectedClasses: item.affected_subjects || []
     }));
 }
 
@@ -299,6 +300,14 @@ function viewSummary(appealId) {
     const appeal = appealsData.find(a => String(a.id) === String(appealId));
     if (!appeal) return;
 
+    const subjectsText = appeal.affectedClasses && appeal.affectedClasses.length > 0 
+    ? appeal.affectedClasses.map(c => `${c.name} (${c.time})`).join(', ')
+    : 'None';
+
+    const subjectEl = document.getElementById('summarySubjectAffected');
+    if(subjectEl) {
+        subjectEl.textContent = subjectsText;
+    }
 
     currentAppealId = appealId;
 
@@ -315,7 +324,7 @@ function viewSummary(appealId) {
     document.getElementById('summaryDays').textContent = appeal.numDays ? `${appeal.numDays} day(s)` : 'N/A';
     document.getElementById('summaryReturnDate').textContent = appeal.returnDate || 'N/A';
     document.getElementById('summaryReason').textContent = appeal.reason || 'N/A';
-    document.getElementById('summarySubjectAffected').textContent = appeal.subjectAffected || 'N/A';
+    // document.getElementById('summarySubjectAffected').textContent = appeal.subjectAffected || 'N/A';
     document.getElementById('summaryAttachment').textContent = appeal.attachmentName || 'No attachment';
     if (appeal.attachmentUrl) {
         document.getElementById('summaryAttachment').href = appeal.attachmentUrl;

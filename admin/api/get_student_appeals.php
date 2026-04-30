@@ -68,6 +68,7 @@ if ($block_filter && $block_filter !== 'All' && $block_filter !== 'All Blocks') 
 
 $appeals_query .= " GROUP BY appeals.id";
 
+global $conn;
 $stmt_appeals = $conn->prepare($appeals_query);
 
 if (!empty($params)) {
@@ -81,6 +82,42 @@ $appealData = [];
 if ($appeals_result->num_rows > 0) {
     while ($row = $appeals_result->fetch_assoc()) {
         if (!empty($row['date_filed'])) {
+
+            $affected_subjects = [];
+            $s_year = $row['student_year'];
+            $s_block = $row['student_block'];
+
+            $sql_sched = "SELECT subject_name, day_week, start_time 
+              FROM schedule_id 
+              WHERE student_year = ? AND student_block = ?"; 
+
+            $stmt_sched = $conn->prepare($sql_sched);
+            $stmt_sched->bind_param("ss", $s_year, $s_block);
+            $stmt_sched->execute();
+            $res_sched = $stmt_sched->get_result();
+
+            $block_schedules = [];
+            while($s = $res_sched->fetch_assoc()) {
+                $block_schedules[] = $s;
+            }
+
+            $current = strtotime($row['start_date']);
+            $last = strtotime($row['end_date']);
+
+            // Check bawat araw sa range ng leave
+            while($current <= $last) {
+                $day_name = date('l', $current);
+                foreach($block_schedules as $sched) {
+                    // I-match ang day_week mula sa DB sa current day ng loop
+                    if(strcasecmp(trim($sched['day_week']), trim($day_name)) == 0) {
+                        $affected_subjects[] = [
+                            'name' => $sched['subject_name'],
+                            'time' => $day_name . " " . date("g:i A", strtotime($sched['start_time']))
+                        ];
+                    }
+                }
+                $current = strtotime('+1 day', $current);
+            }
 
             $type = $row['time_type'];
             if (in_array($row['time_type'], ['sick_leave', 'emergency_leave', 'leave_of_absence', 'other_leave'], true)) {
@@ -113,7 +150,8 @@ if ($appeals_result->num_rows > 0) {
                 'status' => $row['status'],
                 'reason' => $row['comment'], 
                 'attachment' => $row['attachment'], 
-                'updated_by' => $teacher_name 
+                'updated_by' => $teacher_name,
+                'affected_subjects' => $affected_subjects
             ];
         }
     }

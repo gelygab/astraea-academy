@@ -13,10 +13,10 @@ if (!isset($user_id)) {
 // REMOVED: AND appeals.status = 'pending'
 // This query now fetches all records for the student regardless of status
 $sql = "SELECT appeals.*, 
-            teacher_id.first_name, 
-            teacher_id.last_name, 
-            student_id.first_name, 
-            student_id.last_name, 
+            teacher_id.first_name AS teacher_fname, 
+            teacher_id.last_name AS teacher_lname, 
+            student_id.first_name AS student_fname, 
+            student_id.last_name AS student_lname, 
             student_id.user_uid,
             student_id.student_year,
             student_id.student_block,
@@ -30,7 +30,7 @@ $sql = "SELECT appeals.*,
         LEFT JOIN college_id ON department_id.department_id = college_id.college_id
         LEFT JOIN schedule_id ON appeals.schedule_id = schedule_id.schedule_id
         WHERE appeals.user_uid = ?";
-
+global $conn;
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -42,13 +42,13 @@ $finalResponse = null;
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         // Determine teacher name or default to System
-        if (!empty($row['first_name']) && !empty($row['last_name'])) {
-            $teacher_name = htmlspecialchars($row['first_name'] . ' ' . $row['last_name']);
+        if (!empty($row['teacher_fname']) && !empty($row['teacher_lname'])) {
+            $teacher_name = htmlspecialchars($row['teacher_fname'] . ' ' . $row['teacher_lname']);
         } else {
             $teacher_name = 'System';
         }
         $data[] = [
-                'student_name' => $row['last_name'] . ', ' . $row['first_name'],
+                'student_name' => $row['student_lname'] . ', ' . $row['student_fname'],
                 'subject_name' => $row['subject_name'] ?? 'General Leave',
                 'year' => $row['student_year'],
                 'block' => $row['student_block'],

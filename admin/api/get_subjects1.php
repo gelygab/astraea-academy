@@ -1,3 +1,9 @@
+
+
+// ======================================
+// |            OLD VERSION             |             
+// ======================================
+
 <?php 
 session_start();
 date_default_timezone_set('Asia/Manila');
@@ -11,72 +17,91 @@ if (!isset($user_id)) {
     exit;
 };
 
+// present and absent = attendance_id
+// late = attendance_id (with computation?)
+// excuse = appeals (with time_type = excuse && status = approved)
+
 $studentId = $_GET['studentId'];
 if (!$studentId) {
     echo json_encode(['success' => false, 'message' => 'student_not_found']);
     exit;
 }
 
-// Queues year and block of student id selected 
-$yearblock_query = "SELECT student_year, student_block 
-                        FROM student_id
-                        WHERE user_uid = ?";
-$stmt_yearblock = $conn->prepare($yearblock_query);
-$stmt_yearblock->bind_param("i", $studentId);
-$stmt_yearblock->execute();
-$yearblock_result = $stmt_yearblock->get_result();
-$yearblock = $yearblock_result->fetch_assoc();
+$totalDays = 90;
 
-if (!$yearblock) {
-    echo json_encode(['success' => false, 'message' => 'student_not_found']);
-    exit;
-}
+// get the list of approved excuse appeals
+// loop thru the subjects to see which day matches
+// that becomes the new excuse count 
 
-// Queues schedule student_id's from year and block
-$schedule_query = "SELECT subject_code, subject_name FROM schedule_id WHERE student_year = ? AND student_block = ?";
-$stmt_schedule = $conn->prepare($schedule_query);
-$stmt_schedule->bind_param("ii", $yearblock['student_year'], $yearblock['student_block']);
-$stmt_schedule->execute();
-$schedule_result = $stmt_schedule->get_result();
-$schedule = [];
+global $conn;
+$excuse_query = "SELECT appeals.user_uid,
+                    appeals.status, 
+                    appeals.time_type, 
+                    appeals.start_date, 
+                    appeals.end_date
+                FROM appeals
+                WHERE appeals.status = 'approved' AND appeals.time_type IN ('extracurricular_activity', 'medical_appointment', 'personal_emergency', 'other_excuse')";
+$stmt_excuse = $conn->prepare($excuse_query);
+$stmt_excuse->execute();
+$excuse_result = $stmt_excuse->get_result();
+$excuse = [];
 
-if ($schedule_result->num_rows > 0) {
-    while($row = $schedule_result->fetch_assoc()) {
-        $schedule[] = $row;
+if ($excuse_result->num_rows > 0) {
+    while ($row = $excuse_result->fetch_assoc()) {
+        $excuse[] = $row;
     }
 }
 
-    if (empty($schedule)) {
-        echo json_encode(['success' => false, 'message' => 'schedule_not_found']);
-        exit;
-    }
+$subjects_query = "SELECT schedule_id.subject_code, 
+                        schedule_id.subject_name, 
+                        schedule_id.schedule_id,
+                        student_id.user_uid,
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Present' THEN 1 ELSE 0 END) as present_count,
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Absent' AND appeals.status IS NULL OR appeals.status != 'approved' THEN 1 ELSE 0 END) as absent_count,
+                            SUM(CASE WHEN attendance_id.attendance_status = 'Absent' AND appeals.status = 'approved' THEN 1 ELSE 0 END) as excuse_count
+                    FROM schedule_id
+                    LEFT JOIN student_id ON schedule_id.student_year = student_id.student_year AND schedule_id.student_block = student_id.student_block
+                    LEFT JOIN attendance_id ON student_id.user_uid = attendance_id.user_uid AND attendance_id.schedule_id = schedule_id.schedule_id
+                    LEFT JOIN appeals ON appeals.user_uid = attendance_id.user_uid
+                        AND attendance_id.schedule_id = appeals.schedule_id 
+                        AND attendance_id.date BETWEEN appeals.start_date AND appeals.end_date
+                    WHERE student_id.user_uid = ?
+                    GROUP BY schedule_id.subject_code, 
+                        schedule_id.subject_name, 
+                        schedule_id.student_year,
+                        schedule_id.student_block,
+                        student_id.user_uid,
+                        schedule_id.schedule_id";
+$stmt_subjects = $conn->prepare($subjects_query);
+$stmt_subjects->bind_param("i", $studentId);
+$stmt_subjects->execute();
+$subjects_result = $stmt_subjects->get_result();
+$subjects = [];
 
-
-
-$attendance_query = "SELECT attendance_status FROM attendance_id
-                        WHERE user_uid = ?
-                        AND schedule_id = ?";
-$stmt_attendance = $conn->prepare($attendance_query);
-$attendance_days = [];
-$stmt_attendance->bind_param("ii", $studentId, $schedule['subject_code']);
-$stmt_attendance->execute();
-$attendance_result = $stmt_attendance->get_result();
-if ($attendance_result->num_rows > 0) {
-    while ($row = $attendance_result->fetch_assoc()) {
-        $attendance_days[] = $row;
+if ($subjects_result->num_rows > 0) {
+    while ($row = $subjects_result->fetch_assoc()) {
+        $subjects[] = [
+            'studentId' => $row['user_uid'],
+            'code' => $row['subject_code'],  
+            'description' => $row['subject_name'],
+            'present' => (int)$row['present_count'],
+            'absence' => (int)$row['absent_count'],
+            'excuse' => (int)$row['excuse_count']
+        ];
     }
 }
 
-var_dump($schedule);
-// $finalResponse = null;
-// $finalResponse = [
 
-// ]
+$finalResponse = null;
 
-// $finalResponse = null;
+$finalResponse = [
+    "success" => true,
+    "data" => $subjects
+];
 
-// $finalResponse = [
-//     "success" => true,
-//     "data" => $subjects
-// ];
+echo json_encode($finalResponse);
+exit;
+
 ?>
+?>
+

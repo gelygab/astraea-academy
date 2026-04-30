@@ -306,7 +306,7 @@ $user_uid = $_SESSION['uid'];
                                     <th>Absence</th>
                                     <th>Late</th>
                                     <th>Excuse</th>
-                                    <th>Action</th>
+                                    <th> </th>
                                 </tr>
                             </thead>
                             <tbody id="subjectTableBody">

@@ -57,6 +57,7 @@ if ($coll_filter && $coll_filter !== 'All') {
 
 $teacher_query .= " GROUP BY teacher_id.user_uid, department_id.department_name";
 
+global $conn;
 $stmt_teacher = $conn->prepare($teacher_query);
 
 if (!empty($params)) {
@@ -107,10 +108,6 @@ if ($teacher_result->num_rows > 0) {
     }
 }
 
-// var_dump($teachersCount);
-
-
-// absent reasons include time_type: count
 $finalResponse = null;
 
 $finalResponse = [

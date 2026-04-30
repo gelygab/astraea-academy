@@ -20,6 +20,7 @@ if (!isset($appealId)) {
 
 $status = $body['status'];
 
+global $conn;
 $status_query = "UPDATE appeals SET status = ? WHERE id = ?";
 $stmt_query = $conn->prepare($status_query);
 $stmt_query->bind_param("si", $status, $appealId);
