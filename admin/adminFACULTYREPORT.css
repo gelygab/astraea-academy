@@ -64,7 +64,12 @@
     --excused-color: #D69E2E;
     --sidebar-collapsed: 76px;
     --sidebar-expanded: 260px;
+    --bar-absence: #8B4513;
+    --bar-leave:#A0522D;
+    --bar-excused:#CD853F;
 }
+
+
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -612,9 +617,9 @@ body {
 
 
 /* Edit these colors to change the bar colors */
-.bar-chart-fill.attendance { background: var(--primary-gold); }
-.bar-chart-fill.absence    { background: var(--absent-color); }
-.bar-chart-fill.late       { background: var(--excused-color); }
+.bar-chart-fill.attendance { background: var(--bar-absence); }
+.bar-chart-fill.absence    { background: var(--bar-leave); }
+.bar-chart-fill.late       { background: var(--bar-excused); }
 
 
 .bar-chart-value {

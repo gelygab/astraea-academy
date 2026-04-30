@@ -18,6 +18,7 @@ if (!$uid) {
     exit;
 }
 
+global $conn;
 $profile_query = "SELECT teacher_id.user_uid,
                     teacher_id.first_name,
                     teacher_id.last_name,

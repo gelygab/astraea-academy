@@ -16,6 +16,7 @@ $coll_filter = $_GET['college'] ?? null;
 
 $appeals_query = "SELECT admin_id.first_name AS admin_fname,
                     admin_id.last_name AS admin_lname,
+                    teacher_id.teacher_id AS real_id,
                     teacher_id.user_uid,
                     teacher_id.first_name AS teacher_fname,
                     teacher_id.last_name AS teacher_lname,
@@ -59,6 +60,7 @@ if ($coll_filter && $coll_filter !== 'All') {
 
 $appeals_query .= " GROUP BY appeals.id";
 
+global $conn; 
 $stmt_appeals = $conn->prepare($appeals_query);
 
 if (!empty($params)) {
@@ -72,7 +74,45 @@ $appealData = [];
 if ($appeals_result->num_rows > 0) {
     while ($row = $appeals_result->fetch_assoc()) {
         if (!empty($row['date_filed'])) {
-            
+
+            $teacher_db_id = $row['real_id'];
+            $affected_subjects = [];
+
+            // Kunin lahat ng schedule ni teacher para i-manual filter sa PHP
+            $sql_sched = "SELECT subject_name, day_week, start_time FROM schedule_id WHERE teacher_id = ?";
+            $stmt_sched = $conn->prepare($sql_sched);
+            $stmt_sched->bind_param("i", $teacher_db_id); // Siguraduhin na 's' or 'i' depende sa data type
+            $stmt_sched->execute();
+            $res_sched = $stmt_sched->get_result();
+            $teacher_schedules = [];
+            while($s = $res_sched->fetch_assoc()) {
+                $teacher_schedules[] = $s;
+            }
+
+            // DEBUG LOG: Tingnan kung may nakuha talagang schedule sa DB
+            error_log("DEBUG: Teacher $teacher_db_id has " . count($teacher_schedules) . " schedules in DB");
+
+            $current = strtotime($row['start_date']);
+            $last = strtotime($row['end_date']);
+
+            while($current <= $last) {
+                $day_name = date('l', $current);
+                error_log("DEBUG: Checking day: $day_name"); // I-log ang araw na chine-check
+
+                foreach($teacher_schedules as $sched) {
+                    error_log("DEBUG: Comparing DB Day '" . $sched['day_week'] . "' with '" . $day_name . "'");
+                    if(strcasecmp(trim($sched['day_week']), trim($day_name)) == 0) {
+                        $affected_subjects[] = [
+                            'name' => $sched['subject_name'],
+                            'time' => $day_name . " " . date("g:i A", strtotime($sched['start_time']))
+                        ];
+                    }
+                }
+                $current = strtotime('+1 day', $current);
+            }
+
+            // I-remove ang duplicates kung sakaling multi-week ang leave
+            $affected_subjects = array_map("unserialize", array_unique(array_map("serialize", $affected_subjects)));
             $type = $row['time_type'];
             if (in_array($row['time_type'], ['sick_leave', 'emergency_leave', 'leave_of_absence', 'other_leave'], true)) {
                 $type = 'leave';
@@ -104,7 +144,8 @@ if ($appeals_result->num_rows > 0) {
                 'status' => $row['status'],
                 'reason' => $row['comment'], 
                 'attachment' => $row['attachment'], 
-                'updated_by' => $admin_name 
+                'updated_by' => $admin_name,
+                'affected_subjects' => $affected_subjects
             ];
         }
     }

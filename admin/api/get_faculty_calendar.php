@@ -38,6 +38,7 @@ if (!$year) {
 
 // absent leave excuse markers for calendar
 
+global $conn;
 $teacherid_query = "SELECT teacher_id FROM teacher_id WHERE user_uid = ?";
 $stmt_teacherid = $conn->prepare($teacherid_query);
 $stmt_teacherid->bind_param("i", $uid);
@@ -103,7 +104,7 @@ while ($app = $appeals_result->fetch_assoc()) {
                     'appealType' => $type,
                     'dateApplied' => $app['date_filed'],
                     'reason' => $app['comment'],
-                    'updatedBy' => 'Admin Alexandra'
+                    'updatedBy' => 'Admin'
                 ];
         }
         $start->modify('+1 day');

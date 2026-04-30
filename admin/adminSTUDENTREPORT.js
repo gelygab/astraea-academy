@@ -41,8 +41,8 @@ const DEPARTMENT_MAP = {
 // ==========================================
 
 let currentStudent = null;
-let currentMonth = 2; // March (0-indexed)
-let currentYear = 2026;
+let currentMonth = new Date().getMonth(); // March (0-indexed)
+let currentYear = new Date().getFullYear();
 let currentSubject = { code: 'CET 0211', name: 'Differential Equations' };
 let allStudents = []; // Will be populated from API
 let filteredStudents = []; // Current filtered view
@@ -150,7 +150,26 @@ async function fetchAttendanceCalendar(studentId, subjectCode, month, year) {
         }
 
         const data = await response.json();
-        return data.success ? data.calendarDays : {};
+        
+        if (data.success && data.data.attendance_days) {
+            const map = {};
+            data.data.attendance_days.forEach(item => {
+                const dayNumber = parseInt(item.date.split('-')[2]);
+                const cleanReason = item.reason 
+                ? item.reason.replace(/[\r\n]+/g, ' ').trim() 
+                : '-';
+                map[dayNumber] = {
+                    status: item.status,
+                    date: item.date,
+                    appealType: item.appealType || '-',
+                    reason: cleanReason, 
+                    dateApplied: item.dateApplied || '-',
+                    updatedBy: item.updatedBy || 'System'
+                };
+            });
+            return map;
+        }
+        return {};
     } catch (error) {
         console.error('Error fetching attendance:', error);
         return {};
@@ -295,13 +314,13 @@ async function showStudentRecord(studentData) {
 }
 // end edit
 
-async function showCalendarView(subjectCode = null) {
+async function showCalendarView(subjectCode = null, subjectName = 'Subject Details') {
     if (subjectCode && currentStudent) {
         // Fetch calendar data from API
         const calendarData = await fetchAttendanceCalendar(
             currentStudent.uid, 
             subjectCode, 
-            currentMonth, 
+            currentMonth + 1, 
             currentYear
         );
         
@@ -311,7 +330,7 @@ async function showCalendarView(subjectCode = null) {
         // Update subject info
         currentSubject = { 
             code: subjectCode, 
-            name: 'Subject Details' // Could fetch full details
+            name: subjectName // Could fetch full details
         };
     }
     
@@ -683,7 +702,7 @@ async function loadSubjectTable(studentId) {
             <td>${subject.late}</td>
             <td>${subject.excuse}</td>
             <td>
-                <button class="btn-view-calendar-small" onclick="showCalendarView('${subject.code}')">
+                <button class="btn-view-calendar-small" onclick="showCalendarView('${subject.code}', '${subject.description}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -729,9 +748,13 @@ function renderCalendar() {
 
     // Current month days with status indicators
     for (let day = 1; day <= daysInMonth; day++) {
-        const status = calendarDays[day];
+        const dayData = calendarDays[day];
+        const status = dayData ? dayData.status : '';
         const statusIndicator = status ? `<span class="status-indicator ${status}"></span>` : '';
-        const clickHandler = status ? `onclick="showAttendanceDetails(${day}, '${status}')"` : '';
+
+        const clickHandler = dayData 
+        ? `onclick="showAttendanceDetails(${day}, '${status}', '${dayData.appealType || '-'}', '${dayData.dateApplied || '-'}', '${dayData.reason || '-'}', '${dayData.updatedBy || 'System'}')"` 
+        : '';
 
         html += `<div class="calendar-day-cell" ${clickHandler}>
             <span class="day-number">${day}</span>

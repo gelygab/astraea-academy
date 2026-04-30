@@ -447,7 +447,7 @@ async function viewRecord(uid) {
 
     currentFaculty = basicInfo;
     
-    const profileData = await fetchFacultyProfile(uid);
+    const response = await fetchFacultyProfile(uid);
 
     if (response && response.success) {
         const profileData = response.data;
@@ -468,6 +468,7 @@ async function viewRecord(uid) {
         });
 
     showFacultyRecord(basicInfo, profileData, totals);
+    }
 }
 
 // ==========================================
@@ -581,18 +582,15 @@ function showMainReport() { showView('mainReportView'); }
 function backToFacultyTeamRecords() { showView('mainReportView'); }
 function backToFacultyRecord() { showView('facultyRecordView'); }
 
-function showFacultyRecord(basicInfo, profileData) {
-    let lastName = "-";
-    let firstName = "-";
+function showFacultyRecord(basicInfo, profileData, totals) {
+    let lastName = profileData?.lastName || "-";
+    let firstName = profileData?.firstName || "-";
     
-    if (profileData && profileData.data && profileData.data.lastName) {
-        lastName = profileData.data.lastName;
-        firstName = profileData.data.firstName;
-    } else if (basicInfo.name) {
+    if (lastName === "-" && basicInfo.name) {
         const parts = basicInfo.name.split(',');
-        lastName = parts[0] ? parts[0] + ',' : '';
+        lastName = parts[0] ? parts[0].trim() : '';
         firstName = parts[1] ? parts[1].trim() : '';
-    };
+    }
 
     console.log('profileData: ', profileData);
     document.getElementById('profileLastName').textContent = lastName;
@@ -600,10 +598,16 @@ function showFacultyRecord(basicInfo, profileData) {
     document.getElementById('profileCollege').textContent = basicInfo.collegeName || '-';
     document.getElementById('profileDepartment').textContent = basicInfo.departmentName || '-';
 
-    initDonutCharts(basicInfo);
+    if (totals) {
+        initDonutCharts(totals);
+    }
     
-    const subjects = profileData && profileData.data.subjects ? profileData.data.subjects : [];
-    loadSubjectTable(subjects);
+    if (profileData && profileData.subjects) {
+        loadSubjectTable(profileData.subjects);
+    }
+
+    // const subjects = profileData && profileData.data.subjects ? profileData.data.subjects : [];
+    // loadSubjectTable(subjects);
 
     showView('facultyRecordView');
 }
