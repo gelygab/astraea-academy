@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ==========================================
-    // DYNAMIC DROPDOWN LOGIC
-    // ==========================================
+    // Dropdown logic for selecting subject, program, and block
     const subjectSelect = document.getElementById('subject-select');
     const programSelect = document.getElementById('program-select');
     const blockSelect   = document.getElementById('block-select');
@@ -155,9 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // RESET ALL DETAIL VIEWS
-    // ==========================================
+    // Clear out the detail views
     function resetAllDetailViews() {
         const pairs = [
             { view: 'e-pending-view',  detail: 'e-pending-detail',  controls: 'e-pending-controls',  title: 'e-pending-title'  },
@@ -179,30 +175,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    //  fetchAndInjectWarning 
-    // ==========================================
+    // Check for overlaps and show warnings
     function fetchAndInjectWarning(appealData, detailView) {
+        const warningBanner = detailView.querySelector('.warning-banner');
         const warningTextEl = detailView.querySelector('.warning-text');
         const affectedTbody = detailView.querySelector('.affected-table tbody');
 
         if (warningTextEl) warningTextEl.textContent = 'Loading affected classes...';
-        if (affectedTbody) affectedTbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:10px;color:#888;">Loading...</td></tr>';
+        if (affectedTbody) affectedTbody.innerHTML =
+            '<tr><td colspan="2" style="text-align:center;padding:10px;color:#888;">Loading...</td></tr>';
+
+        const startDate  = appealData.start_date  || '';
+        const endDate    = appealData.end_date    || '';
+        const studentUid = appealData.user_uid    || '';
+
+        if (!startDate || !endDate) {
+            console.error('fetchAndInjectWarning: missing dates in appealData', appealData);
+            if (warningTextEl) warningTextEl.textContent = 'Could not load affected classes (missing dates).';
+            if (affectedTbody) affectedTbody.innerHTML =
+                '<tr><td colspan="2" style="text-align:center;padding:10px;color:#c00;">Missing date data.</td></tr>';
+            return;
+        }
 
         const formData = new FormData();
-        formData.append('appeal_id', appealData.id);
+        formData.append('start_date',  startDate);
+        formData.append('end_date',    endDate);
+        formData.append('student_uid', studentUid);
 
         fetch('api/api_get_affected_classes.php', { method: 'POST', body: formData })
-            .then(res => res.json())
+            .then(res => res.text().then(text => {
+                if (!text || text.trim() === '') throw new Error('Empty response from server');
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    throw new Error('Invalid JSON: ' + text.substring(0, 300));
+                }
+            }))
             .then(data => {
                 if (!data.success) {
                     if (warningTextEl) warningTextEl.textContent = 'Could not load affected classes.';
-                    if (affectedTbody) affectedTbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:10px;color:#c00;">Error loading data.</td></tr>';
+                    if (affectedTbody) affectedTbody.innerHTML =
+                        '<tr><td colspan="2" style="text-align:center;padding:10px;color:#c00;">' +
+                        (data.message || 'Error loading data.') + '</td></tr>';
                     return;
                 }
 
-                const count   = data.affected_count || 0;
-                const classes = data.classes        || [];
+                const classes = data.classes || data.affected || [];
+                const count   = data.affected_count ?? classes.length;
+
+                if (warningBanner) warningBanner.style.display = count === 0 ? 'none' : '';
 
                 if (warningTextEl) {
                     if (count === 0) {
@@ -216,24 +237,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (affectedTbody) {
                     if (classes.length === 0) {
-                        affectedTbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:10px;color:#888;">No affected classes found.</td></tr>';
+                        affectedTbody.innerHTML =
+                            '<tr><td colspan="2" style="text-align:center;padding:10px;color:#888;">No affected classes found.</td></tr>';
                     } else {
+                        const fmt = (t) => {
+                            if (!t) return '—';
+                            const parts = t.split(':');
+                            let h = parseInt(parts[0], 10);
+                            const m    = parts[1] || '00';
+                            const ampm = h >= 12 ? 'PM' : 'AM';
+                            h = h % 12 || 12;
+                            return `${h}:${m} ${ampm}`;
+                        };
+
                         affectedTbody.innerHTML = classes.map(c => {
-                            const fmt = (t) => {
-                                if (!t) return '—';
-                                const parts = t.split(':');
-                                let h = parseInt(parts[0], 10);
-                                const m = parts[1] || '00';
-                                const ampm = h >= 12 ? 'PM' : 'AM';
-                                h = h % 12 || 12;
-                                return `${h}:${m} ${ampm}`;
-                            };
                             const timeStr = (c.time_start && c.time_end)
                                 ? `${fmt(c.time_start)} – ${fmt(c.time_end)}`
-                                : '—';
+                                : (c.time || '—');
+
+                            const dayLabel = c.day_of_week || c.day_week || '';
                             const subjectLabel = c.subject_name
-                                ? `${c.subject_name} (${c.day_of_week})`
+                                ? `${c.subject_name}${dayLabel ? ' (' + dayLabel + ')' : ''}`
                                 : c.subject_code;
+
                             return `<tr>
                                 <td style="padding:10px 20px; font-weight:600;">${subjectLabel}</td>
                                 <td style="padding:10px 20px; text-align:right; font-weight:600;">${timeStr}</td>
@@ -245,13 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => {
                 console.error('fetchAndInjectWarning error:', err);
                 if (warningTextEl) warningTextEl.textContent = 'Could not load affected classes.';
-                if (affectedTbody) affectedTbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:10px;color:#c00;">Network error.</td></tr>';
+                if (affectedTbody) affectedTbody.innerHTML =
+                    '<tr><td colspan="2" style="text-align:center;padding:10px;color:#c00;">Network error.</td></tr>';
             });
     }
 
-    // ==========================================
-    // RENDER PENDING CARDS
-    // ==========================================
+    // Render pending cards
     function renderPendingCards(prefix, appeals, programName) {
         const view = document.getElementById(`${prefix}-pending-view`);
         if (!view) return;
@@ -303,9 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupViewToggles(prefix);
     }
 
-    // ==========================================
-    // RENDER APPROVED / DECLINED TABLES
-    // ==========================================
+    // Render approved/declined table
     function renderTable(prefix, status, appeals) {
         const tbody = document.querySelector(`#${prefix}-${status}-view tbody`);
         if (!tbody) return;
@@ -341,9 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==========================================
-    // SHOW DETAIL FOR APPROVED / DECLINED ROWS
-    // ==========================================
+    // Shows summary when a row is clicked
     function showResolvedDetail(prefix, status, appealData) {
         const tableView   = document.getElementById(`${prefix}-${status}-view`);
         const detailView  = document.getElementById(`${prefix}-${status}-detail`);
@@ -389,13 +410,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (status === 'declined') {
             const reevalBtn = detailView.querySelector('.e-trigger-reeval, .l-trigger-reeval');
             if (reevalBtn) {
-                reevalBtn.onclick = () => {
+                const newReevalBtn = reevalBtn.cloneNode(true);
+                reevalBtn.parentNode.replaceChild(newReevalBtn, reevalBtn);
+                newReevalBtn.onclick = () => {
                     const overlay       = document.getElementById('modal-overlay');
                     const reevalConfirm = document.getElementById('reeval-confirm-modal');
                     if (overlay)       overlay.style.display       = 'block';
                     if (reevalConfirm) reevalConfirm.style.display = 'block';
                     const confirmBtn = document.getElementById('confirm-reeval-btn');
-                    if (confirmBtn) confirmBtn.onclick = () => revertToPending(appealData.id, prefix, status);
+                    if (confirmBtn) {
+                        const newConfirmBtn = confirmBtn.cloneNode(true);
+                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                        newConfirmBtn.addEventListener('click', () => revertToPending(appealData.appeal_id, prefix, status));
+                    }
                 };
             }
         }
@@ -416,6 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (titleEl)     titleEl.style.display     = 'block';
             });
         }
+
+        fetchAndInjectWarning(appealData, detailView);
     }
 
     function revertToPending(appealId, prefix, status) {
@@ -438,9 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // ==========================================
-    // TOGGLE SWITCH
-    // ==========================================
+    // Toggle switch
     const btnExcuse    = document.getElementById('btn-excuse');
     const btnLeave     = document.getElementById('btn-leave');
     const toggleSlider = document.getElementById('toggle-slider');
@@ -463,9 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
         leaveSection.style.display  = 'block';
     });
 
-    // ==========================================
-    // TAB SWITCHING
-    // ==========================================
+    // Tab switching
     function setupTabs(sectionId) {
         const section = document.getElementById(sectionId);
         if (!section) return;
@@ -484,18 +509,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs('excuse-section');
     setupTabs('leave-section');
 
-    // ==========================================
-    // SORT
-    // ==========================================
+    // Sort
     const SORT_MAP = {
         'Date Applied: Newest to Oldest':    { field: 'date_filed',  dir: 'desc' },
         'Date Applied: Oldest to Newest':    { field: 'date_filed',  dir: 'asc'  },
         'Date of Absence: Newest to Oldest': { field: 'start_date',  dir: 'desc' },
         'Date of Absence: Oldest to Newest': { field: 'start_date',  dir: 'asc'  },
-        'Date Approved: Newest to Oldest':   { field: 'date_filed',  dir: 'desc' },
-        'Date Approved: Oldest to Newest':   { field: 'date_filed',  dir: 'asc'  },
-        'Date Declined: Newest to Oldest':   { field: 'date_filed',  dir: 'desc' },
-        'Date Declined: Oldest to Newest':   { field: 'date_filed',  dir: 'asc'  },
         'Leave Duration: Newest to Oldest':  { field: 'start_date',  dir: 'desc' },
         'Leave Duration: Oldest to Newest':  { field: 'start_date',  dir: 'asc'  },
     };
@@ -558,9 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.sort-menu').forEach(m => m.style.display = 'none');
     });
 
-    // ==========================================
-    // PENDING DETAIL VIEW
-    // ==========================================
+    // Pending detail view
     function setupViewToggles(prefix) {
         const reviewBtns = document.querySelectorAll(`.${prefix}-review-btn`);
         const detailView = document.getElementById(`${prefix}-pending-detail`);
@@ -595,7 +612,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const commentBox = detailView.querySelector('.comment-area');
-                if (commentBox) commentBox.value = appealData.comment || 'No comment provided.';
+                if (commentBox) {
+                    commentBox.value       = appealData.comment || '';
+                    commentBox.readOnly    = false;
+                    commentBox.placeholder = 'Write a comment...';
+                }
 
                 const attachmentLink = detailView.querySelector('.attachment-link');
                 if (attachmentLink) {
@@ -625,10 +646,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 gridView.style.display   = 'none';
                 detailView.style.display = 'block';
 
-                const approveBtn = detailView.querySelector('.approve-btn');
-                const declineBtn = detailView.querySelector('.decline-btn');
-                if (approveBtn) approveBtn.onclick = () => handleStatusUpdate(appealData.id, 'approved', prefix);
-                if (declineBtn) declineBtn.onclick = () => handleStatusUpdate(appealData.id, 'rejected', prefix);
+                const approveBtnOld = detailView.querySelector('.approve-btn');
+                const declineBtnOld = detailView.querySelector('.decline-btn');
+
+                if (approveBtnOld) {
+                    const approveBtn = approveBtnOld.cloneNode(true);
+                    approveBtnOld.parentNode.replaceChild(approveBtn, approveBtnOld);
+                    approveBtn.addEventListener('click', () => {
+                        const comment = detailView.querySelector('.comment-area')?.value || '';
+                        handleStatusUpdate(appealData.appeal_id, 'approved', prefix, comment);
+                    });
+                }
+
+                if (declineBtnOld) {
+                    const declineBtn = declineBtnOld.cloneNode(true);
+                    declineBtnOld.parentNode.replaceChild(declineBtn, declineBtnOld);
+                    declineBtn.addEventListener('click', () => {
+                        const comment = detailView.querySelector('.comment-area')?.value || '';
+                        handleStatusUpdate(appealData.appeal_id, 'rejected', prefix, comment);
+                    });
+                }
             });
         });
     }
@@ -653,14 +690,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (title) title.style.display = 'block';
     });
 
-    // ==========================================
-    // STATUS UPDATE & MODAL LOGIC
-    // ==========================================
-    function handleStatusUpdate(appealId, newStatus, prefix) {
+    // Update status and modal handling
+    function handleStatusUpdate(appealId, newStatus, prefix, comment) {
         const formData = new FormData();
         formData.append('appeal_id', appealId);
         formData.append('status',    newStatus);
-        fetch('/astrea-academy/faculty/api/api_update_status.php', { method: 'POST', body: formData })
+        formData.append('comment',   comment || '');
+
+        fetch('api/api_update_status.php', { method: 'POST', body: formData })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -689,6 +726,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     alert("Error updating status.");
                 }
+            })
+            .catch(err => {
+                console.error("handleStatusUpdate error:", err);
+                alert("Network error. Please try again.");
             });
     }
 
@@ -704,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // MODALS
+    // Modals
     const overlay             = document.getElementById('modal-overlay');
     const eApproveModal       = document.getElementById('e-approve-modal');
     const lApproveModal       = document.getElementById('l-approve-modal');
@@ -737,9 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (overlay) overlay.addEventListener('click', closeAllModals);
 
-    // ==========================================
-    // SEARCH
-    // ==========================================
+    // Search
     function setupSearch(inputSelector, containerSelector, nameSelector) {
         const searchInput = document.querySelector(inputSelector);
         if (!searchInput) return;
@@ -774,5 +813,5 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (requestedTab === 'excuse') {
         document.getElementById('btn-excuse')?.click();
     }
-    
+
 });
