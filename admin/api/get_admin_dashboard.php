@@ -5,13 +5,14 @@ require_once '../../db.php';
 
 header('Content-Type: application/json');
 
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
+$user_id = $_GET['uid'] ?? $_SESSION['uid'];
 if (!isset($user_id)) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
 };
 
 // Admin Profile 
+global $conn;
 $profile_query = "SELECT * FROM admin_id WHERE user_uid = ?";
 $stmt_profile = $conn->prepare($profile_query);
 $stmt_profile->bind_param("i", $user_id);
@@ -73,12 +74,14 @@ $department_count = $department_result->num_rows;
 
 // Attendance Rate
 // Present count per department ID
-$present_query = "SELECT student_id.department_id, COUNT(*) AS count
-                    FROM attendance_id 
-                    JOIN student_id ON attendance_id.user_uid = student_id.user_uid
-                    WHERE attendance_id.attendance_status != 'Absent' 
-                    AND date >= NOW() - INTERVAL 7 DAY
-                    GROUP BY student_id.department_id";
+$present_query = "SELECT 
+                    s.department_id, 
+                    COUNT(DISTINCT a.user_uid) AS count 
+                  FROM attendance_id a
+                  JOIN student_id s ON a.user_uid = s.user_uid 
+                  WHERE a.attendance_status = 'Present' 
+                  AND a.user_type = 'Student'
+                  GROUP BY s.department_id";
 $stmt_present = $conn->prepare($present_query);
 $stmt_present->execute();
 $present_result = $stmt_present->get_result();
@@ -91,15 +94,14 @@ if ($present_result->num_rows > 0) {
 }
 
 // Schedule count per department ID
-$expected_query = "SELECT student_id.department_id, department_id.department_code, department_id.department_name, COUNT(*) AS count
-                    FROM schedule_id
-                    JOIN student_id 
-                        ON student_id.student_year = schedule_id.student_year
-                        AND student_id.student_block = schedule_id.student_block
-                        AND student_id.department_id = schedule_id.department_id
-                    JOIN department_id
-                        ON schedule_id.department_id = department_id.department_id
-                    GROUP BY student_id.department_id";
+$expected_query = "SELECT 
+                    d.department_id, 
+                    d.department_code, 
+                    d.department_name, 
+                    COUNT(s.user_uid) AS count
+                FROM department_id d
+                LEFT JOIN student_id s ON d.department_id = s.department_id
+                GROUP BY d.department_id";
 $stmt_expected = $conn->prepare($expected_query);
 $stmt_expected->execute();
 $expected_result = $stmt_expected->get_result();
@@ -118,16 +120,20 @@ foreach ($present_count as $row) {
 
 $matchedData = [];
 foreach ($expected_count as $row2) {
-    $expected_present_result = $row2['department_id'];
-    if (isset($actual_result[$expected_present_result])) {
-        $rate = ($actual_result[$expected_present_result]['count'] / $row2['count'])*100;
-        $matchedData[] = [
-            'department_id' => $expected_present_result,
-            'code' => $row2['department_code'],
-            'name' => $row2['department_name'],
-            'rate' => $rate
-        ];
-    }
+    $dept_id = $row2['department_id'];
+    
+    // Kunin ang count mula sa actual result, default to 0 kung walang record
+    $present = isset($actual_result[$dept_id]) ? $actual_result[$dept_id]['count'] : 0;
+    
+    // Iwasan ang Division by Zero
+    $rate = ($row2['count'] > 0) ? ($present / $row2['count']) * 100 : 0;
+    
+    $matchedData[] = [
+        'department_id' => $dept_id,
+        'code' => $row2['department_code'],
+        'name' => $row2['department_name'],
+        'rate' => round($rate, 2) // Round para malinis tingnan
+    ];
 }
 // $row2 contains department_id and count in expected_count
 // $actual_result[$expected_present_result] contains matching row with the same department_id for that with dept_id and count as well

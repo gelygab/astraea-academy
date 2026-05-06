@@ -353,6 +353,6 @@ function viewSummary(appealId) {
 document.querySelector('.logout')?.addEventListener('click', function(e) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out?')) {
-        window.location.href = '/login';
+        window.location.href = 'adminlogout.php';
     }
 });

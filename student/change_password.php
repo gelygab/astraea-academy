@@ -9,7 +9,7 @@
 <body>
     <!-- Background -->
     <div class="background-container">
-        <img src="images/Slogin_bg.gif" alt="Background" class="background-image">
+        <img src="../images/Slogin_bg.gif" alt="Background" class="background-image">
     </div>
 
     <!-- Pink Top Bar -->
@@ -17,7 +17,7 @@
 
     <!-- Floating Logo -->
     <div class="floating-logo-container">
-        <img src="images/AA_Font.png" alt="Astraea Academy" class="floating-logo">
+        <img src="../images/AA_Font.png" alt="Astraea Academy" class="floating-logo">
         <div class="floating-sparkles">
             <div class="f-spark f-spark-1">✦</div>
             <div class="f-spark f-spark-2">✧</div>
@@ -32,7 +32,7 @@
         <div class="login-card" id="login-card">
             <div class="card-header">
                 <div class="logo-circle">
-                    <img src="images/AA_Logo.png" alt="Astraea Academy Logo" class="card-logo">
+                    <img src="../images/AA_Logo.png" alt="Astraea Academy Logo" class="card-logo">
                 </div>
             </div>
             <div class="card-body">

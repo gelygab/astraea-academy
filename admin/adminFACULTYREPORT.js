@@ -885,7 +885,7 @@ function toggleNavGroup(button) {
 document.querySelector('.logout')?.addEventListener('click', function(e) {
     e.preventDefault();
     if (confirm('Are you sure you want to log out?')) {
-        window.location.href = '/login'; // Adjust to real logout endpoint
+        window.location.href = 'adminlogout.php'; // Adjust to real logout endpoint
     }
 });
 

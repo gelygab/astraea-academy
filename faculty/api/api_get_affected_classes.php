@@ -1,157 +1,197 @@
+
 <?php
 ob_start();
-error_reporting(0);
+error_reporting(E_ALL);
 ini_set('display_errors', 0);
 session_start();
 header('Content-Type: application/json');
 include '../../db.php';
 
-if (!isset($_SESSION['uid'])) {
+
+// Check session for faculty uid
+$faculty_uid = $_SESSION['uid'] ?? $_SESSION['user_uid'] ?? null;
+if (!$faculty_uid) {
     ob_end_clean();
     echo json_encode(['success' => false, 'message' => 'Unauthorized.']);
     exit();
 }
 
-if (!isset($_POST['appeal_id'])) {
+
+// Get inputs from post
+$start_date  = trim($_POST['start_date']  ?? '');
+$end_date    = trim($_POST['end_date']    ?? '');
+$student_uid = trim($_POST['student_uid'] ?? '');
+
+
+if (!$start_date || !$end_date) {
     ob_end_clean();
-    echo json_encode(['success' => false, 'message' => 'Missing appeal_id.']);
+    echo json_encode(['success' => false, 'message' => 'Missing dates.']);
     exit();
 }
 
-$faculty_uid = $_SESSION['uid'];
-$appeal_id   = (int)$_POST['appeal_id'];
 
-// Get teacher_id
-$stmt = $conn->prepare("SELECT teacher_id FROM teacher_id WHERE user_uid = ?");
-$stmt->bind_param("s", $faculty_uid);
-$stmt->execute();
-$teacher_row = $stmt->get_result()->fetch_assoc();
-$stmt->close();
-
-if (!$teacher_row) {
+// Get the teacher_id of the current user
+$t_stmt = mysqli_prepare($conn, "SELECT teacher_id FROM teacher_id WHERE user_uid = ?");
+if (!$t_stmt) {
     ob_end_clean();
-    echo json_encode(['success' => false, 'message' => 'Teacher profile not found.']);
+    echo json_encode(['success' => false, 'message' => 'DB error (teacher prepare): ' . mysqli_error($conn)]);
     exit();
 }
-$teacher_id = (int)$teacher_row['teacher_id'];
+mysqli_stmt_bind_param($t_stmt, 's', $faculty_uid);
+mysqli_stmt_execute($t_stmt);
+$t_row = mysqli_fetch_assoc(mysqli_stmt_get_result($t_stmt));
+mysqli_stmt_close($t_stmt);
 
-// Get appeal details
-$stmt = $conn->prepare("
-    SELECT a.start_date, a.end_date, a.user_uid,
-           s.department_id, s.student_year, s.student_block
-    FROM   appeals a
-    INNER JOIN student_id s
-        ON CONVERT(CAST(a.user_uid AS CHAR) USING utf8mb4) COLLATE utf8mb4_unicode_ci = s.user_uid
-    WHERE  a.id = ?
-");
 
-if ($stmt === false) {
+if (!$t_row) {
     ob_end_clean();
-    echo json_encode(['success' => false, 'message' => 'Query failed: ' . $conn->error]);
+    echo json_encode(['success' => false, 'message' => 'Faculty not found.']);
     exit();
 }
+$teacher_id = (int)$t_row['teacher_id'];
 
-$stmt->bind_param("i", $appeal_id);
-$stmt->execute();
-$appeal = $stmt->get_result()->fetch_assoc();
-$stmt->close();
 
-if (!$appeal) {
-    ob_end_clean();
-    echo json_encode(['success' => false, 'message' => 'Appeal not found.']);
-    exit();
-}
-
-$start_date    = $appeal['start_date'];
-$end_date      = $appeal['end_date'];
-$dept_id       = (int)$appeal['department_id'];
-$student_year  = (int)$appeal['student_year'];
-$student_block = (int)$appeal['student_block'];
-
-// Build list of affected days of week
-$affected_days = [];
-$current = strtotime($start_date);
-$end     = strtotime($end_date);
-while ($current <= $end) {
-    $affected_days[] = date('l', $current);
-    $current = strtotime('+1 day', $current);
-}
-$affected_days = array_unique($affected_days);
-
-$day_abbr_map = [
-    'Monday'    => ['M',  'Mon'],
-    'Tuesday'   => ['T',  'Tue'],
-    'Wednesday' => ['W',  'Wed'],
-    'Thursday'  => ['Th', 'Thu'],
-    'Friday'    => ['F',  'Fri'],
-    'Saturday'  => ['S',  'Sat'],
-    'Sunday'    => ['Su', 'Sun'],
+$day_map = [
+    'Monday'    => 1, 'Mon' => 1, 'M'  => 1,
+    'Tuesday'   => 2, 'Tue' => 2, 'Tu' => 2,
+    'Wednesday' => 3, 'Wed' => 3, 'W'  => 3,
+    'Thursday'  => 4, 'Thu' => 4, 'Th' => 4,
+    'Friday'    => 5, 'Fri' => 5, 'F'  => 5,
+    'Saturday'  => 6, 'Sat' => 6, 'Sa' => 6,
+    'Sunday'    => 7, 'Sun' => 7, 'Su' => 7,
 ];
 
-// Fetch schedules
-$stmt = $conn->prepare("
-    SELECT sc.schedule_id, sc.subject_code, sc.subject_name,
-           sc.day_week, sc.time_start, sc.time_end
-    FROM   schedule_id sc
-    WHERE  sc.teacher_id    = ?
-      AND  sc.department_id = ?
-      AND  sc.student_year  = ?
-      AND  sc.student_block = ?
-");
 
-if ($stmt === false) {
+// Fetch student info to filter schedules
+$s_row = null;
+if ($student_uid) {
+    $s_stmt = mysqli_prepare($conn, "
+        SELECT department_id, student_year, student_block
+        FROM student_id
+        WHERE user_uid = ?
+        LIMIT 1
+    ");
+    if ($s_stmt) {
+        mysqli_stmt_bind_param($s_stmt, 's', $student_uid);
+        mysqli_stmt_execute($s_stmt);
+        $s_row = mysqli_fetch_assoc(mysqli_stmt_get_result($s_stmt));
+        mysqli_stmt_close($s_stmt);
+    }
+}
+
+
+// Fetch the schedules for this specific student/class
+if ($s_row) {
+    $sched_stmt = mysqli_prepare($conn, "
+        SELECT DISTINCT subject_name, subject_code, day_week, start_time
+        FROM schedule_id
+        WHERE teacher_id    = ?
+          AND department_id = ?
+          AND student_year  = ?
+          AND student_block = ?
+    ");
+    if (!$sched_stmt) {
+        ob_end_clean();
+        echo json_encode(['success' => false, 'message' => 'DB error (schedule scoped): ' . mysqli_error($conn)]);
+        exit();
+    }
+    mysqli_stmt_bind_param(
+        $sched_stmt, 'iiii',
+        $teacher_id,
+        $s_row['department_id'],
+        $s_row['student_year'],
+        $s_row['student_block']
+    );
+} else {
+    // Fallback: all schedules for this teacher
+    $sched_stmt = mysqli_prepare($conn, "
+        SELECT DISTINCT subject_name, subject_code, day_week, start_time
+        FROM schedule_id
+        WHERE teacher_id = ?
+    ");
+    if (!$sched_stmt) {
+        ob_end_clean();
+        echo json_encode(['success' => false, 'message' => 'DB error (schedule fallback): ' . mysqli_error($conn)]);
+        exit();
+    }
+    mysqli_stmt_bind_param($sched_stmt, 'i', $teacher_id);
+}
+
+
+mysqli_stmt_execute($sched_stmt);
+$sched_result = mysqli_stmt_get_result($sched_stmt);
+$schedules    = [];
+while ($row = mysqli_fetch_assoc($sched_result)) {
+    $schedules[] = $row;
+}
+mysqli_stmt_close($sched_stmt);
+
+
+// Identify which days of the week are covered by the absence range
+$appeal_day_numbers = [];
+try {
+    $start     = new DateTime($start_date);
+    $end       = new DateTime($end_date);
+    $end->modify('+1 day');
+    $interval  = new DateInterval('P1D');
+    $daterange = new DatePeriod($start, $interval, $end);
+
+
+    foreach ($daterange as $date) {
+        $appeal_day_numbers[] = (int)$date->format('N');
+    }
+    $appeal_day_numbers = array_unique($appeal_day_numbers);
+} catch (Exception $e) {
     ob_end_clean();
-    echo json_encode(['success' => false, 'message' => 'Schedule query failed: ' . $conn->error]);
+    echo json_encode(['success' => false, 'message' => 'Invalid dates: ' . $e->getMessage()]);
     exit();
 }
 
-$stmt->bind_param("iiii", $teacher_id, $dept_id, $student_year, $student_block);
-$stmt->execute();
-$all_schedules = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
 
-// Day matching function
-function dayMatches(string $schedule_day, array $affected_days, array $day_abbr_map): bool {
-    if (in_array($schedule_day, $affected_days)) return true;
-    foreach ($affected_days as $full_day) {
-        $abbrs = $day_abbr_map[$full_day] ?? [];
-        foreach ($abbrs as $abbr) {
-            if (strpos($schedule_day, $abbr) !== false) {
-                if ($abbr === 'T' && strpos($schedule_day, 'Th') !== false) {
-                    if (!in_array('Thursday', $affected_days)) continue;
-                }
-                return true;
-            }
-        }
-    }
-    return false;
-}
+// Filter the schedules that match the absence days
+$affected  = [];
+$seen_keys = [];
 
-$affected_classes   = [];
-$seen_subject_codes = [];
 
-foreach ($all_schedules as $sc) {
-    if (!dayMatches($sc['day_week'], $affected_days, $day_abbr_map)) continue;
+foreach ($schedules as $sched) {
+    $day_name   = trim($sched['day_week']);
+    $day_number = $day_map[$day_name] ?? null;
 
-    $affected_classes[] = [
-        'subject_name' => $sc['subject_name'],
-        'subject_code' => $sc['subject_code'],
-        'day_of_week'  => $sc['day_week'],  
-        'time_start'   => $sc['time_start'],
-        'time_end'     => $sc['time_end'],
+
+    if ($day_number === null || !in_array($day_number, $appeal_day_numbers)) continue;
+
+
+    $time_raw       = $sched['start_time'] ?? '';
+    $time_formatted = $time_raw ? date('g:i A', strtotime($time_raw)) : '—';
+    $unique_key     = $sched['subject_name'] . '|' . $day_name . '|' . $time_raw;
+
+
+    if (in_array($unique_key, $seen_keys)) continue;
+
+
+    $seen_keys[] = $unique_key;
+    $affected[]  = [
+        'subject_name' => $sched['subject_name'],
+        'subject_code' => $sched['subject_code'],
+        'day_of_week'  => $day_name,
+        'day_week'     => $day_name,
+        'time_start'   => $time_raw,
+        'time_end'     => $sched['end_time'] ?? '',
+        'time'         => $time_formatted,
     ];
-
-    $seen_subject_codes[$sc['subject_code']] = true;
 }
 
-usort($affected_classes, fn($a, $b) => strcmp($a['time_start'], $b['time_start']));
 
-$affected_subject_count = count($seen_subject_codes);
+// Sort affected classes by time
+usort($affected, fn($a, $b) => strcmp($a['time_start'] ?? '', $b['time_start'] ?? ''));
+
 
 ob_end_clean();
 echo json_encode([
     'success'        => true,
-    'affected_count' => $affected_subject_count,
-    'classes'        => $affected_classes,
+    'affected_count' => count($affected),
+    'affected'       => $affected,  
+    'classes'        => $affected,  
 ]);
 ?>
+

@@ -5,6 +5,7 @@ require_once '../db.php';
 $user_uid = $_POST['uid'];
 $user_password = $_POST['password'];
 
+global $conn;
 $user_query = "SELECT user_uid, password, is_first_login
                 FROM admin_id
                 WHERE user_uid = ?";

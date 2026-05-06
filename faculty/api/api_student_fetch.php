@@ -3,38 +3,55 @@ session_start();
 header('Content-Type: application/json');
 include '../../db.php';
 
+
 if (!isset($_POST['schedule_id']) || !isset($_POST['dept_id']) || !isset($_POST['year']) || !isset($_POST['block'])) {
     echo json_encode(['success' => false, 'message' => 'Missing required parameters.']);
     exit();
 }
+
 
 $schedule_id = (int)$_POST['schedule_id'];
 $dept_id     = (int)$_POST['dept_id'];
 $year        = (int)$_POST['year'];
 $block       = (int)$_POST['block'];
 
+
+// Get the subject and teacher details for this schedule
 $meta = $conn->prepare("SELECT subject_code, teacher_id FROM schedule_id WHERE schedule_id = ?");
+if (!$meta) {
+    echo json_encode(['success' => false, 'message' => 'DB prepare error (meta): ' . $conn->error]);
+    exit();
+}
 $meta->bind_param('i', $schedule_id);
 $meta->execute();
 $meta_row = $meta->get_result()->fetch_assoc();
 $meta->close();
+
 
 if (!$meta_row) {
     echo json_encode(['success' => false, 'message' => 'Schedule not found.']);
     exit();
 }
 
+
 $subject_code = $meta_row['subject_code'];
 $teacher_id   = $meta_row['teacher_id'];
 
+
+// Find all related schedule IDs for this class
 $sibling_stmt = $conn->prepare(
-    "SELECT schedule_id FROM schedule_id 
-     WHERE subject_code = ? AND teacher_id = ? 
+    "SELECT schedule_id FROM schedule_id
+     WHERE subject_code = ? AND teacher_id = ?
      AND department_id = ? AND student_year = ? AND student_block = ?"
 );
+if (!$sibling_stmt) {
+    echo json_encode(['success' => false, 'message' => 'DB prepare error (siblings): ' . $conn->error]);
+    exit();
+}
 $sibling_stmt->bind_param('siiii', $subject_code, $teacher_id, $dept_id, $year, $block);
 $sibling_stmt->execute();
 $sibling_result = $sibling_stmt->get_result();
+
 
 $sibling_ids = [];
 while ($row = $sibling_result->fetch_assoc()) {
@@ -42,33 +59,47 @@ while ($row = $sibling_result->fetch_assoc()) {
 }
 $sibling_stmt->close();
 
+
 if (empty($sibling_ids)) {
     echo json_encode(['success' => true, 'excuse' => [], 'leave' => []]);
     exit();
 }
 
+
+// Prepare placeholders for the IN clause
 $placeholders = implode(',', array_fill(0, count($sibling_ids), '?'));
 $types        = str_repeat('i', count($sibling_ids));
 
 
 $sql = "
-    SELECT 
-        a.*,
+    SELECT
+        a.id            AS appeal_id,
+        a.user_uid,
+        a.user_type,
+        a.time_type,
+        a.comment,
+        a.start_date,
+        a.end_date,
+        a.number_of_days,
+        a.return_on,
+        a.attachment,
+        a.schedule_id,
+        a.date_filed,
         COALESCE(a.status, 'pending') AS status,
-        CASE 
+        CASE
             WHEN a.status IN ('approved','rejected') AND t.first_name IS NOT NULL
             THEN CONCAT(t.first_name, ' ', t.last_name)
-            ELSE NULL 
+            ELSE NULL
         END AS status_updated_by,
-        s.first_name, 
-        s.last_name, 
-        s.student_year, 
-        s.student_block, 
+        s.first_name,
+        s.last_name,
+        s.student_year,
+        s.student_block,
         s.department_id
     FROM appeals a
-    INNER JOIN student_id s 
+    INNER JOIN student_id s
         ON CONVERT(CAST(a.user_uid AS CHAR) USING utf8mb4) COLLATE utf8mb4_unicode_ci = s.user_uid
-    LEFT JOIN teacher_id t 
+    LEFT JOIN teacher_id t
         ON CONVERT(CAST(a.status_updated_by AS CHAR) USING utf8mb4) COLLATE utf8mb4_unicode_ci = t.user_uid
     WHERE s.user_type = 'Student'
       AND s.department_id = ?
@@ -78,17 +109,26 @@ $sql = "
     ORDER BY a.date_filed DESC
 ";
 
-$bind_types   = 'iii' . $types;
-$bind_params  = array_merge([$dept_id, $year, $block], $sibling_ids);
+
+$bind_types  = 'iii' . $types;
+$bind_params = array_merge([$dept_id, $year, $block], $sibling_ids);
+
 
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    echo json_encode(['success' => false, 'message' => 'DB prepare error (appeals): ' . $conn->error]);
+    exit();
+}
 $stmt->bind_param($bind_types, ...$bind_params);
 $stmt->execute();
 $result = $stmt->get_result();
 
+
 $excuse = [];
 $leave  = [];
 
+
+// Separate appeals into excuse or leave arrays
 while ($row = $result->fetch_assoc()) {
     $type = strtolower($row['time_type'] ?? '');
     if (strpos($type, 'leave') !== false) {
@@ -99,9 +139,11 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+
 echo json_encode([
     'success' => true,
     'excuse'  => $excuse,
-    'leave'   => $leave
+    'leave'   => $leave,
 ]);
 ?>
+

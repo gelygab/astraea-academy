@@ -5,7 +5,7 @@ require_once '../../db.php';
 
 header('Content-Type: application/json');
 
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
+$user_id = $_GET['uid'] ?? $_SESSION['uid'];
 if (!isset($user_id)) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
@@ -36,7 +36,7 @@ $profile_query = "SELECT
                     WHERE student_id.user_uid = ?
                     GROUP BY schedule_id.subject_code";
 $stmt_profile = $conn->prepare($profile_query);
-$stmt_profile->bind_param("i", $studentId);
+$stmt_profile->bind_param("s", $studentId);
 $stmt_profile->execute();
 $profile_result = $stmt_profile->get_result();
 $subjects_map = [];

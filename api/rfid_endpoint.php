@@ -153,10 +153,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($tap_time > ($start + $absent_threshold)) {
         $dynamic_status = 'Absent';
     } elseif ($tap_time > ($start + $late_threshold)) {
-        $dynamic_status = 'Late';
+        $dynamic_status = 'Present';
+    // } else if ($tap_time < ()) {
+
+    // } 
     } else {
         $dynamic_status = 'Present';
     }
+   
    
 
 

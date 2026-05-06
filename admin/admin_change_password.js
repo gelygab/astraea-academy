@@ -209,11 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new CustomCursor();
     new LoginForm();
     document.body.style.cursor = 'none';
-<<<<<<< HEAD
-    console.log('✨ Student Login initialized');
-=======
     console.log('✨ Admin Login initialized');
->>>>>>> 61fa391ed86d853022c510978d504960baf9947c
 });
 
 const style = document.createElement('style');

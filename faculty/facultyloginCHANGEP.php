@@ -18,6 +18,7 @@ if ($new_password !== $confirm_password) {
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 }
 
+global $conn;
 $update_query = "UPDATE teacher_id 
                 SET password = ?,
                 is_first_login = 0 

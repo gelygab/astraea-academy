@@ -2,13 +2,16 @@
 session_start();
 include '../db.php';
 
+
 if (!isset($_SESSION['uid'])) {
     header("Location: facultylogin.php");
     exit();
 }
 
+
 $faculty_uid = $_SESSION['uid'];
 
+global $conn;
 // Get Teacher ID
 $stmt = $conn->prepare("SELECT teacher_id FROM teacher_id WHERE user_uid = ?");
 $stmt->bind_param("s", $faculty_uid);
@@ -16,14 +19,16 @@ $stmt->execute();
 $teacher_row = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+
 if (!$teacher_row) {
     die("Error: Faculty record not found.");
 }
 $teacher_id = $teacher_row['teacher_id'];
 
-// Fetch subjects with schedule_id 
-$sub_query = "SELECT MIN(schedule_id) AS schedule_id, subject_name, subject_code 
-              FROM schedule_id WHERE teacher_id = ? 
+
+// Fetch subjects with schedule_id
+$sub_query = "SELECT MIN(schedule_id) AS schedule_id, subject_name, subject_code
+              FROM schedule_id WHERE teacher_id = ?
               GROUP BY subject_name, subject_code ORDER BY subject_name ASC";
 $stmt = $conn->prepare($sub_query);
 $stmt->bind_param("i", $teacher_id);
@@ -47,11 +52,13 @@ $stmt->close();
 </head>
 <body>
 
+
 <div class="background-container">
         <img src="../images/Flogin_bg.gif" alt="Background" class="background-image">
     </div>
-    
+   
   <input type="file" id="pfpInput" style="display: none;" accept="image/*">
+
 
     <div class="container">
       <?php include 'faculty_sidebar.php'; ?>
@@ -65,6 +72,7 @@ $stmt->close();
                     <span class="material-symbols-outlined star-4">star_border</span>
                     <span class="material-symbols-outlined star-5">star</span>
                 </div>
+
 
                 <div class="header-content">
                    <div class="icon-wrapper">
@@ -82,6 +90,7 @@ $stmt->close();
                      </div>
                 </div>
             </div>
+
 
             <div class="card filter-card">
                 <h2>Select Class</h2>
@@ -115,10 +124,12 @@ $stmt->close();
                 </div>
             </div>
 
+
             <div id="no-filter-msg" style="text-align:center; padding:30px; color:#888; font-family:'Inter',sans-serif;">
                 <span class="material-symbols-outlined" style="font-size:3rem; display:block; margin-bottom:10px; color:#ccc;">filter_list</span>
                 Please select a Subject, Program, and Block to view student records.
             </div>
+
 
             <div id="excuse-section" class="section-wrapper" style="display:none;">
                 <div class="requests-container">
@@ -127,6 +138,7 @@ $stmt->close();
                     <div class="tab" data-target="e-approved-tab">Approved</div>
                     <div class="tab" data-target="e-declined-tab">Declined</div>
                   </div>
+
 
                    <div class="main-white-box">
                    
@@ -144,7 +156,9 @@ $stmt->close();
                         </div>
                       </div>
 
+
                        <h2 class="box-title" id="e-pending-title">Pending Requests</h2>
+
 
                       <div id="e-pending-view">
                         <div class="cards-grid">
@@ -154,8 +168,9 @@ $stmt->close();
                                  <div class="appeal-title-group">
                                   <span class="icon">📄</span> <h3 class="appeal-type">Emergency Leave</h3>
                                 </div>
-                                 <p class="apply-date">Applied on: March 2, 2026</p> 
+                                 <p class="apply-date">Applied on: March 2, 2026</p>
                               </div>
+
 
                               <div class="appeal-detail-section card-details">
                                  <div class="detail-row">
@@ -176,12 +191,13 @@ $stmt->close();
                                  </div>
                               </div>
 
+
                               <button class="review-btn e-review-btn full-width-btn">View Appeal Summary</button>
                              </div>
                           </div>
                         </div>
                       </div>
-                  
+                 
                       <div id="e-pending-detail" style="display: none;">
                         <div class="detail-card-layout">
                           <div class="detail-top-actions">
@@ -252,6 +268,7 @@ $stmt->close();
                           <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
                       </div>
 
+
                       <div class="affected-classes-box">
                           <table class="affected-table">
                               <thead>
@@ -264,6 +281,7 @@ $stmt->close();
                               </tbody>
                           </table>
                       </div>
+
 
                   </div>  
                              <div class="detail-right-col">
@@ -281,6 +299,7 @@ $stmt->close();
                       </div>
                     </div>
 
+
                     <div id="e-approved-tab" class="tab-content" style="display: none;">
                        <div class="tab-top-controls" id="e-approved-controls">
                          <div class="search-container">
@@ -291,13 +310,13 @@ $stmt->close();
                           <div class="sort-menu e-sort-menu" style="display: none;">
                              <a href="#">Date of Absence: Newest to Oldest</a>
                             <a href="#">Date of Absence: Oldest to Newest</a>
-                            <a href="#">Date Approved: Newest to Oldest</a>
-                             <a href="#">Date Approved: Oldest to Newest</a>
                           </div>
                         </div>
                       </div>
 
+
                        <h2 class="box-title" id="e-approved-title">Approved Requests</h2>
+
 
                       <div id="e-approved-view">
                         <div class="table-wrapper">
@@ -315,6 +334,7 @@ $stmt->close();
                           </table>
                          </div>
                       </div>
+
 
                       <div id="e-approved-detail" style="display: none;">
                         <div class="detail-card-layout">
@@ -337,6 +357,7 @@ $stmt->close();
                       </div>
                     </div>
 
+
                     <div id="e-declined-tab" class="tab-content" style="display: none;">
                        <div class="tab-top-controls" id="e-declined-controls">
                         <div class="search-container">
@@ -347,13 +368,13 @@ $stmt->close();
                           <div class="sort-menu e-sort-menu" style="display: none;">
                              <a href="#">Date of Absence: Newest to Oldest</a>
                             <a href="#">Date of Absence: Oldest to Newest</a>
-                            <a href="#">Date Declined: Newest to Oldest</a>
-                             <a href="#">Date Declined: Oldest to Newest</a>
                           </div>
                         </div>
                       </div>
 
+
                        <h2 class="box-title" id="e-declined-title">Declined Requests</h2>
+
 
                       <div id="e-declined-view">
                         <div class="table-wrapper">
@@ -372,6 +393,7 @@ $stmt->close();
                         </div>
                        </div>
 
+
                       <div id="e-declined-detail" style="display: none;">
                         <div class="detail-card-layout">
                           <div class="detail-top-actions">
@@ -379,7 +401,7 @@ $stmt->close();
                           </div>
                            <div class="detail-content-row">
                             <div class="detail-left-col admin-style-details">
-    
+   
     <div class="appeal-detail-section">
         <div class="detail-row">
             <span class="detail-label">Student Name:</span>
@@ -430,11 +452,12 @@ $stmt->close();
             <span class="detail-value">March 6, 2026</span>
         </div>
 
+
          <div class="attachment-section" style="margin-top: px; margin-bottom: 5px;">
                               <p><strong>Attachment:</strong></p>
                               <a href="#" class="attachment-link">medical-cert.pdf</a>
                           </div>
-        
+       
         <div class="detail-row updated-by-row">
             <span class="detail-label">Status Updated by:</span>
             <span class="detail-value">Prof. Juan Dela Cruz</span>
@@ -443,6 +466,7 @@ $stmt->close();
         <span class="warning-icon">⚠️ Warning:</span>
         <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
     </div>
+
 
     <div class="affected-classes-box">
         <table class="affected-table">
@@ -456,6 +480,7 @@ $stmt->close();
             </tbody>
         </table>
     </div>
+
 
 </div>
                              <div class="detail-right-col">
@@ -472,6 +497,7 @@ $stmt->close();
                       </div>
                     </div>
 
+
                   </div>
                 </div>
              </div>
@@ -483,6 +509,7 @@ $stmt->close();
                      <div class="tab" data-target="l-approved-tab">Approved</div>
                     <div class="tab" data-target="l-declined-tab">Declined</div>
                   </div>
+
 
                   <div class="main-white-box">
                    
@@ -500,7 +527,9 @@ $stmt->close();
                          </div>
                       </div>
 
+
                       <h2 class="box-title" id="l-pending-title">Pending Requests</h2>
+
 
                       <div id="l-pending-view"></div>
                      
@@ -512,7 +541,7 @@ $stmt->close();
                            
                             <div class="detail-content-row">
                       <div class="detail-left-col admin-style-details">
-                          
+                         
                           <div class="appeal-detail-section">
                               <div class="detail-row">
                                   <span class="detail-label">Student Name:</span>
@@ -567,15 +596,18 @@ $stmt->close();
                               <a href="#" class="attachment-link">medical-cert.pdf</a>
                           </div>
 
+
                           <div class="detail-row updated-by-row">
             <span class="detail-label">Status Updated by:</span>
             <span class="detail-value">Prof. Juan Dela Cruz</span>
         </div>
 
+
                           </div> <div class="warning-banner">
                               <span class="warning-icon">⚠️ Warning:</span>
                               <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
                           </div>
+
 
                           <div class="affected-classes-box">
                               <table class="affected-table">
@@ -602,21 +634,24 @@ $stmt->close();
                       </table>
                           </div>
 
+
                       </div> <div class="detail-right-col">
                           <div class="comment-section">
                               <label><strong>Comment:</strong></label>
                               <textarea class="comment-area" placeholder="Write a comment..."></textarea>
                           </div>
 
+
                          <div class="detail-action-buttons right-aligned-buttons">
                               <button class="action-btn decline-btn l-trigger-decline">Decline</button>
                               <button class="action-btn approve-btn l-trigger-approve">Approve</button>
                           </div>
-                        </div> 
-                      </div> 
-                    </div> 
-                  </div> 
-                </div> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
 
                 <div id="l-approved-tab" class="tab-content" style="display: none;">
                     <div class="tab-top-controls" id="l-approved-controls">
@@ -634,7 +669,9 @@ $stmt->close();
                         </div>
                        </div>
 
+
                       <h2 class="box-title" id="l-approved-title">Approved Requests</h2>
+
 
                       <div id="l-approved-view">
                         <div class="table-wrapper">
@@ -652,6 +689,7 @@ $stmt->close();
                            </table>
                         </div>
                       </div>
+
 
                       <div id="l-approved-detail" style="display: none;">
                          <div class="detail-card-layout">
@@ -674,6 +712,7 @@ $stmt->close();
                       </div>
                     </div>
 
+
                      <div id="l-declined-tab" class="tab-content" style="display: none;">
                       <div class="tab-top-controls" id="l-declined-controls">
                         <div class="search-container">
@@ -690,7 +729,9 @@ $stmt->close();
                         </div>
                       </div>
 
+
                        <h2 class="box-title" id="l-declined-title">Declined Requests</h2>
+
 
                       <div id="l-declined-view">
                         <div class="table-wrapper">
@@ -709,6 +750,7 @@ $stmt->close();
                          </div>
                       </div>
 
+
                       <div id="l-declined-detail" style="display: none;">
                          <div class="detail-card-layout">
                             <div class="detail-top-actions">
@@ -716,7 +758,7 @@ $stmt->close();
                           </div>
                              <div class="detail-content-row">
                             <div class="detail-left-col admin-style-details">
-    
+   
     <div class="appeal-detail-section">
         <div class="detail-row">
             <span class="detail-label">Student Name:</span>
@@ -770,7 +812,7 @@ $stmt->close();
                               <p><strong>Attachment:</strong></p>
                               <a href="#" class="attachment-link">medical-cert.pdf</a>
                           </div>
-        
+       
         <div class="detail-row updated-by-row">
             <span class="detail-label">Status Updated by:</span>
             <span class="detail-value">Prof. Juan Dela Cruz</span>
@@ -779,6 +821,7 @@ $stmt->close();
         <span class="warning-icon">⚠️ Warning:</span>
         <span class="warning-text">This leave overlaps with 3 of your handled subjects.</span>
     </div>
+
 
     <div class="affected-classes-box">
         <table class="affected-table">
@@ -793,7 +836,8 @@ $stmt->close();
         </table>
     </div>
 
-</div> 
+
+</div>
                             <div class="detail-right-col">
                                 <div class="comment-section">
                                 <label><strong>Comment:</strong></label>
@@ -808,13 +852,16 @@ $stmt->close();
                       </div>
                     </div>
 
+
                   </div>
                 </div>
               </div>
         </main>
     </div>
 
+
     <div id="modal-overlay" class="modal-overlay"></div>
+
 
     <div id="e-approve-modal" class="modal">
       <div class="modal-header" style="background-color: #2F8C2F;">Request Approved!</div>
@@ -824,6 +871,7 @@ $stmt->close();
       </div>
     </div>
 
+
     <div id="l-approve-modal" class="modal">
       <div class="modal-header" style="background-color: #2F8C2F;">Leave Request Approved!</div>
       <div class="modal-body">
@@ -832,6 +880,7 @@ $stmt->close();
       </div>
     </div>
 
+
     <div id="decline-success-modal" class="modal" style="display:none;">
       <div class="modal-header" style="background-color: #9C2727;">Request Declined!</div>
         <div class="modal-body">
@@ -839,6 +888,7 @@ $stmt->close();
         <button class="modal-btn back-to-pending-btn reset-pending-btn">Back to Pending Request</button>
       </div>
     </div>
+
 
     <div id="reeval-confirm-modal" class="modal" style="display:none;">
       <div class="modal-header" style="background-color: #C19321;">Update Appeal Status</div>
@@ -851,6 +901,7 @@ $stmt->close();
       </div>
     </div>
 
+
     <div id="reeval-success-modal" class="modal" style="display:none;">
       <div class="modal-header" style="background-color: #C19321;">Update Appeal Status</div>
       <div class="modal-body">
@@ -859,6 +910,8 @@ $stmt->close();
       </div>
     </div>
 
+
     <script src="facultydashboardSTUDENT.js"></script>
 </body>
 </html>
+

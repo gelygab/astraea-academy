@@ -4,8 +4,8 @@ session_start();
 require_once '../../db.php';
 
 header('Content-Type: application/json');
-
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
+global $conn;
+$user_id = $_GET['uid'] ?? $_SESSION['uid'];
 if (!isset($user_id)) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 6. Fetch student year, block, AND department
     $student_query = "SELECT student_year, student_block, department_id FROM student_id WHERE user_uid = ? LIMIT 1";
     $stmt_student = $conn->prepare($student_query);
-    $stmt_student->bind_param("i", $user_id);
+    $stmt_student->bind_param("s", $user_id);
     $stmt_student->execute();
     $student_data = $stmt_student->get_result()->fetch_assoc();
 
@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $inserted_count = 0;
     $current_schedule_id = null;
-    $stmt->bind_param("issssssssssi", 
+    $stmt->bind_param("sssssssssssi", 
             $user_id, $user_type, $time_type, $comment, 
             $leave_startdate, $leave_enddate, $number_of_days, 
             $return_on, $supporting_document, $leave_status, 
