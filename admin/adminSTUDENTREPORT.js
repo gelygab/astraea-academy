@@ -862,7 +862,7 @@ document.querySelector('.logout')?.addEventListener('click', function(e) {
     if (confirm('Are you sure you want to log out?')) {
         // Optional: Call logout API
         // fetch(`${API_CONFIG.baseUrl}/logout.php`, { method: 'POST' });
-        window.location.href = '/login';
+        window.location.href = 'adminlogout.php';
     }
 });
 

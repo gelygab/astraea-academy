@@ -2,6 +2,7 @@
 session_start();
 require_once '../db.php';
 
+global $conn;
 $user_uid = $_POST['uid'];
 $user_password = $_POST['password'];
 
@@ -21,14 +22,13 @@ if ($stmt_user) {
             $_SESSION['uid'] = $row['user_uid'];
         } else {
             // Valid UID, invalid password -> Kick them back to login
-            header("Location: facultylogin.php?error=invalid_password");
+            echo "invalid password";
             exit();
         }
 
         if ($row['is_first_login'] == 1) {
             // Moves to change password page
-            header("Location: faculty_change_password.php"); 
-            exit();
+            echo "first_login";
         } else {
             // Moves safely into their faculty dashboard!
             echo "dashboard";
@@ -36,7 +36,7 @@ if ($stmt_user) {
         }
     } else {
         // Invalid UID and password -> Kick them back to login
-        header("Location: facultylogin.php?error=invalid_user");
+        echo "invalid uid and password";
         exit();
     }
     
@@ -44,9 +44,7 @@ if ($stmt_user) {
     $stmt_user->close();
 } else {
     // Database connection error -> Kick back to login
-    header("Location: facultylogin.php?error=db_error");
-    exit();
+    $error_message = "Database error: " . $conn->error;
 }
-
 $conn->close();
 ?>

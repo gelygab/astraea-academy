@@ -488,3 +488,19 @@ async function updateStatus(newStatus) {
     }
 }
 
+// ==========================================
+// LOGOUT
+// ==========================================
+ 
+document.querySelector('.logout')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to log out?')) {
+        // Optional: Call logout API
+        // fetch(`${API_CONFIG.baseUrl}/logout.php`, { method: 'POST' });
+        window.location.href = 'adminlogout.php';
+    }
+});
+
+
+
+

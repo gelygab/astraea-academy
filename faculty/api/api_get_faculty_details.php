@@ -12,6 +12,7 @@ if (!isset($_SESSION['uid'])) {
 
 $user_uid = $_SESSION['uid'];
 
+global $conn;
 // Helper function to calculate real attendance stats!
 function getAttendanceStats($conn, $teacher_id, $time_condition) {
     $sql = "SELECT 

@@ -4,7 +4,7 @@ require_once '../../db.php';
 
 header('Content-Type: application/json');
 
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid'] ?? 0);
+$user_id = $_GET['uid'] ?? $_SESSION['uid'] ?? '';
 if (!$user_id) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
@@ -20,6 +20,7 @@ if (empty($subject_code)) {
 $sql_month = intval($_GET['month']); 
 $year = intval($_GET['year']);
 
+global $conn;
 // 1. Fetch year and block from user uid
 $yearblock_query = "SELECT student_year, student_block FROM student_id WHERE user_uid = ?";
 $stmt_yearblock = $conn->prepare($yearblock_query);

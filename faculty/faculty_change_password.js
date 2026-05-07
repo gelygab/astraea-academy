@@ -115,7 +115,7 @@ class LoginForm {
         const formData = new FormData(this.form);
         this.setLoading(true);
 
-        fetch('api/faculty_change_password.php', {
+        fetch('facultyloginCHANGEP.php', {
             method: 'POST',
             body: formData
         })

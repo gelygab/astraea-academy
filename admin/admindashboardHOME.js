@@ -55,14 +55,16 @@ function initAttendanceChart(data) {
     const departments = data.departments;
     const colors = data.colors;
 
+    // Check kung lahat ba ay 0% para hindi magmukhang sira yung chart
+    const totalRate = departments.reduce((sum, d) => sum + d.rate, 0);
+    
     const chartData = {
-        labels: departments.map(d => d.code),
+        labels: departments.length > 0 ? departments.map(d => d.code) : ['No Data'],
         datasets: [{
-            data: departments.map(d => d.rate),
-            backgroundColor: colors,
+            data: departments.length > 0 ? departments.map(d => d.rate) : [100], // Show a full gray circle if no data
+            backgroundColor: departments.length > 0 ? colors : ['#E0E0E0'],
             borderColor: '#FFFFFF',
-            borderWidth: 2,
-            hoverOffset: 6
+            borderWidth: 2
         }]
     };
 

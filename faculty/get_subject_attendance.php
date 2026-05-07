@@ -1,14 +1,10 @@
 <?php
 session_start();
-<<<<<<<< HEAD:student/api/get_subject_attendance.php
 require_once '../../db.php';
-========
-require_once '../db.php';
-
->>>>>>>> main:faculty/get_subject_attendance.php
 header('Content-Type: application/json');
 
-$user_id = intval($_GET['uid'] ?? $_SESSION['uid']);
+
+$user_id = $_GET['uid'] ?? $_SESSION['uid'];
 if (!isset($user_id)) {
     echo json_encode(['success' => false, 'message' => 'session_error']);
     exit;
@@ -20,6 +16,8 @@ if (!isset($subject_code)) {
 }
 $month = $_GET['month']; // countings: 0 is january, 1 is febraury
 $year = $_GET['year'];
+
+global $conn; 
 
 // Fetch year and block from user uid
 $yearblock_query = "SELECT student_year, student_block FROM student_id WHERE user_uid = ?";
