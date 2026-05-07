@@ -15,7 +15,7 @@ global $conn;
 // Get teacher_id
 $teacherid_query = "SELECT teacher_id FROM teacher_id WHERE user_uid = ?";
 $stmt_teacherid = $conn->prepare($teacherid_query);
-$stmt_teacherid->bind_param("i", $user_id);
+$stmt_teacherid->bind_param("s", $user_id);
 $stmt_teacherid->execute();
 $teacher_id = $stmt_teacherid->get_result()->fetch_assoc();
 
@@ -52,14 +52,12 @@ $total_enrolled = (int)$stmt_enrolled->get_result()->fetch_assoc()['total'];
 
 // C. Total Present Today (Counts everyone who tapped in)
 $present_query = "SELECT COUNT(*) as total 
-                    FROM attendance_id a 
-                    JOIN schedule_id sch 
-                    ON a.schedule_id = sch.schedule_id 
-                    WHERE sch.teacher_id = ? 
-                    AND a.date = CURDATE() 
-                    AND a.attendance_status != 'Absent'";
+                  FROM attendance_id 
+                  WHERE user_uid = ? 
+                  AND date = CURDATE() 
+                  AND timestamp_in IS NOT NULL";
 $stmt = $conn->prepare($present_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']);
+$stmt->bind_param("s", $user_id);
 $stmt->execute();
 $total_present = (int)$stmt->get_result()->fetch_assoc()['total'];
 
@@ -68,25 +66,23 @@ $late_query = "SELECT COUNT(*) as total
                     FROM attendance_id a 
                     JOIN schedule_id sch 
                     ON a.schedule_id = sch.schedule_id 
-                    WHERE sch.teacher_id = ? 
+                    WHERE a.user_uid = ? 
                     AND a.date = CURDATE() 
                 AND a.timestamp_in > ADDTIME(sch.start_time, '00:15:00')";
 $stmt = $conn->prepare($late_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); 
+$stmt->bind_param("s", $user_id); 
 $stmt->execute();
 $total_late = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // C3. Total Undertime Today (Checks if they left before end_time)
 $undertime_query = "SELECT COUNT(*) as total 
-                        FROM attendance_id a 
-                        JOIN schedule_id sch 
-                        ON a.schedule_id = sch.schedule_id 
-                        WHERE sch.teacher_id = ? 
-                        AND a.date = CURDATE() 
-                        AND a.timestamp_out IS NOT NULL 
-                        AND a.timestamp_out < sch.end_time";
+                    FROM attendance_id 
+                    WHERE user_uid = ? 
+                    AND date = CURDATE() 
+                    AND timestamp_out IS NOT NULL 
+                    AND attendance_status = 'Absent'";
 $stmt = $conn->prepare($undertime_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); 
+$stmt->bind_param("s", $user_id); 
 $stmt->execute();
 $total_undertime = (int)$stmt->get_result()->fetch_assoc()['total'];
 
@@ -95,14 +91,12 @@ $total_absent = max(0, $total_enrolled - $total_present);
 // --- WEEKLY STATS ---
 // 1. Weekly Present
 $weeklypresent_query = "SELECT COUNT(*) as total 
-                            FROM attendance_id a 
-                            JOIN schedule_id sch 
-                            ON a.schedule_id = sch.schedule_id 
-                            WHERE sch.teacher_id = ? 
-                            AND YEARWEEK(a.date, 1) = YEARWEEK(CURDATE(), 1) 
-                            AND a.attendance_status != 'Absent'";
+                        FROM attendance_id a 
+                        WHERE a.user_uid = ? 
+                        AND YEARWEEK(a.date, 1) = YEARWEEK(CURDATE(), 1) 
+                        AND a.timestamp_in IS NOT NULL";
 $stmt = $conn->prepare($weeklypresent_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); $stmt->execute();
+$stmt->bind_param("s", $user_id); $stmt->execute();
 $weekly_present = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // 2. Weekly Late
@@ -110,65 +104,58 @@ $weeklylate_query = "SELECT COUNT(*) as total
                         FROM attendance_id a 
                         JOIN schedule_id sch 
                         ON a.schedule_id = sch.schedule_id 
-                        WHERE sch.teacher_id = ? 
+                        WHERE a.user_uid = ? 
                         AND YEARWEEK(a.date, 1) = YEARWEEK(CURDATE(), 1) 
                         AND a.timestamp_in > ADDTIME(sch.start_time, '00:15:00')";
 $stmt = $conn->prepare($weeklylate_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); $stmt->execute();
+$stmt->bind_param("s", $user_id); $stmt->execute();
 $weekly_late = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // 3. Weekly Undertime
 $weeklyundertime_query = "SELECT COUNT(*) as total 
-                            FROM attendance_id a 
-                            JOIN schedule_id sch 
-                            ON a.schedule_id = sch.schedule_id 
-                            WHERE sch.teacher_id = ? 
-                            AND YEARWEEK(a.date, 1) = YEARWEEK(CURDATE(), 1) 
-                            AND a.timestamp_out IS NOT NULL 
-                            AND a.timestamp_out < sch.end_time";
+                          FROM attendance_id a 
+                          WHERE a.user_uid = ? 
+                          AND YEARWEEK(a.date, 1) = YEARWEEK(CURDATE(), 1) 
+                          AND a.timestamp_out IS NOT NULL 
+                          AND a.attendance_status = 'Absent'";
 $stmt = $conn->prepare($weeklyundertime_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); $stmt->execute();
+$stmt->bind_param("s", $user_id); $stmt->execute();
 $weekly_undertime = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // --- MONTHLY STATS ---
 // 1. Monthly Present
 $monthlypresent_query = "SELECT COUNT(*) as total 
-                            FROM attendance_id a 
-                            JOIN schedule_id sch 
-                            ON a.schedule_id = sch.schedule_id 
-                            WHERE sch.teacher_id = ? 
-                            AND MONTH(a.date) = MONTH(CURDATE()) 
-                            AND YEAR(a.date) = YEAR(CURDATE()) 
-                            AND a.attendance_status != 'Absent'";
+                         FROM attendance_id a 
+                         WHERE a.user_uid = ? 
+                         AND MONTH(a.date) = MONTH(CURDATE()) 
+                         AND YEAR(a.date) = YEAR(CURDATE()) 
+                         AND a.timestamp_in IS NOT NULL";
 $stmt = $conn->prepare($monthlypresent_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); $stmt->execute();
+$stmt->bind_param("s", $user_id); $stmt->execute();
 $monthly_present = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // 2. Monthly Late
 $monthlylate_query = "SELECT COUNT(*) as total 
-                        FROM attendance_id a 
-                        JOIN schedule_id sch 
-                        ON a.schedule_id = sch.schedule_id 
-                        WHERE sch.teacher_id = ? 
-                        AND MONTH(a.date) = MONTH(CURDATE()) 
-                        AND YEAR(a.date) = YEAR(CURDATE()) 
-                        AND a.timestamp_in > ADDTIME(sch.start_time, '00:15:00')";
-$stmt = $conn->prepare($monthlypresent_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); $stmt->execute();
+                      FROM attendance_id a 
+                      JOIN schedule_id sch ON a.schedule_id = sch.schedule_id 
+                      WHERE a.user_uid = ? 
+                      AND MONTH(a.date) = MONTH(CURDATE()) 
+                      AND YEAR(a.date) = YEAR(CURDATE()) 
+                      AND a.timestamp_in > ADDTIME(sch.start_time, '00:15:00')";
+$stmt = $conn->prepare($monthlylate_query);
+$stmt->bind_param("s", $user_id); $stmt->execute();
 $monthly_late = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // 3. Monthly Undertime
 $monthlyundertime_query ="SELECT COUNT(*) as total 
-                            FROM attendance_id a 
-                            JOIN schedule_id sch 
-                            ON a.schedule_id = sch.schedule_id 
-                            WHERE sch.teacher_id = ? 
-                            AND MONTH(a.date) = MONTH(CURDATE()) 
-                            AND YEAR(a.date) = YEAR(CURDATE()) 
-                            AND a.timestamp_out IS NOT NULL 
-                            AND a.timestamp_out < sch.end_time"; 
+                           FROM attendance_id a 
+                           WHERE a.user_uid = ? 
+                           AND MONTH(a.date) = MONTH(CURDATE()) 
+                           AND YEAR(a.date) = YEAR(CURDATE()) 
+                           AND a.timestamp_out IS NOT NULL 
+                           AND a.attendance_status = 'Absent'"; 
 $stmt = $conn->prepare($monthlyundertime_query);
-$stmt->bind_param("i", $teacher_id['teacher_id']); $stmt->execute();
+$stmt->bind_param("s", $user_id); $stmt->execute();
 $monthly_undertime = (int)$stmt->get_result()->fetch_assoc()['total'];
 
 // Expected calculations for Absents (Assumes 5 days/week and 20 days/month)

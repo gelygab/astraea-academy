@@ -87,11 +87,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
     $active_schedule_id = null;
     $class_start_time = null;
+    $class_end_time = null;
 
 
     if ($user_type === 'Student') {
         // Find a class happening right now (Allows tapping in 30 mins early)
-        $sched_sql = "SELECT schedule_id, start_time FROM schedule_id
+        $sched_sql = "SELECT schedule_id, start_time, end_time FROM schedule_id
                       WHERE student_year = ? AND student_block = ? AND department_id = ?
                       AND day_week = ?
                       AND ? BETWEEN SUBTIME(start_time, '00:30:00') AND end_time
@@ -103,12 +104,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($s_row = $sched_result->fetch_assoc()) {
             $active_schedule_id = $s_row['schedule_id'];
             $class_start_time = $s_row['start_time'];
+            $class_end_time = $s_row['end_time'];
         }
         $sched_stmt->close();
        
     } elseif ($user_type === 'Teacher') {
         // Find a class this exact teacher is scheduled to teach right now
-        $sched_sql = "SELECT schedule_id, start_time FROM schedule_id
+        $sched_sql = "SELECT schedule_id, start_time, end_time FROM schedule_id
                       WHERE teacher_id = ? AND day_week = ?
                       AND ? BETWEEN SUBTIME(start_time, '00:30:00') AND end_time
                       LIMIT 1";
@@ -119,6 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($s_row = $sched_result->fetch_assoc()) {
             $active_schedule_id = $s_row['schedule_id'];
             $class_start_time = $s_row['start_time'];
+            $class_end_time = $s_row['end_time'];
         }
         $sched_stmt->close();
     }
@@ -143,31 +146,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $tap_time = strtotime($current_time_only);
     $start = strtotime($class_start_time);
+    $end = strtotime($class_end_time);
    
-    // --- CONFIGURE YOUR SCHOOL RULES HERE ---
+    // Rules configuration
     $late_threshold = 15 * 60;   // 15 minutes late
     $absent_threshold = 45 * 60; // 45 minutes late = Auto Absent
-    // ----------------------------------------
-
 
     if ($tap_time > ($start + $absent_threshold)) {
         $dynamic_status = 'Absent';
     } elseif ($tap_time > ($start + $late_threshold)) {
-        $dynamic_status = 'Present';
-    // } else if ($tap_time < ()) {
-
-    // } 
+        $dynamic_status = 'Present'; // Late is still marked as present, counting late logic is done separately in APIs
     } else {
         $dynamic_status = 'Present';
     }
    
-   
-
-
     // ==========================================
     // 4. CHECK FOR EXISTING TIME IN TODAY
     // ==========================================
-    $check_sql = "SELECT attendance_id, timestamp_out FROM attendance_id WHERE user_uid = ? AND date = ? AND schedule_id = ? ORDER BY timestamp_in DESC LIMIT 1";
+    $check_sql = "SELECT attendance_id, timestamp_out, attendance_status FROM attendance_id WHERE user_uid = ? AND date = ? AND schedule_id = ? ORDER BY timestamp_in DESC LIMIT 1";
     $check_stmt = $conn->prepare($check_sql);
     $check_stmt->bind_param("ssi", $user_uid, $current_date, $active_schedule_id);
     $check_stmt->execute();
@@ -180,9 +176,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // --- TIME OUT LOGIC ---
         if ($row['timestamp_out'] === null) {
             $att_id = $row['attendance_id'];
-            $update_sql = "UPDATE attendance_id SET timestamp_out = ? WHERE attendance_id = ?";
+
+            $current_tap_out = strtotime($current_time_only);
+            $scheduled_end = strtotime($class_end_time);
+            $new_status = $row['attendance_status'];
+
+            if ($current_tap_out < $scheduled_end) {
+                $new_status = 'Absent';
+            }
+
+            $update_sql = "UPDATE attendance_id SET timestamp_out = ?, attendance_status = ? WHERE attendance_id = ?";
             $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->bind_param("si", $current_time, $att_id);
+            $update_stmt->bind_param("ssi", $current_time, $new_status, $att_id);
             if ($update_stmt->execute()) {
                 echo "Success: $user_type Time OUT Logged!";
             } else {
@@ -205,7 +210,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error saving Time In.";
     }
     $insert_stmt->close();
-
 
 } else {
     echo "Endpoint active. Waiting for POST request from ESP32.";
